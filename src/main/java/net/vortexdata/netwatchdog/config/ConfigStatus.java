@@ -1,4 +1,4 @@
-package net.vortexdata.netwatchdog.configs;
+package net.vortexdata.netwatchdog.config;
 
 public enum ConfigStatus {
     UNLOADED,LOADED,LOAD_FAILED

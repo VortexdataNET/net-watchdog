@@ -1,8 +1,10 @@
-package net.vortexdata.netwatchdog.configs;
+package net.vortexdata.netwatchdog.config.configs;
 
+import net.vortexdata.netwatchdog.config.ConfigStatus;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.util.Stack;
 
 /**
  * This is the base class for configs.
@@ -36,7 +38,12 @@ public abstract class BaseConfig {
             while (br.ready()) {
                 sb.append(br.readLine());
             }
-            value = new JSONObject(sb.toString());
+            try {
+                value = new JSONObject(sb.toString());
+            } catch (Exception e) {
+                create();
+            }
+
 
             configStatus = ConfigStatus.LOADED;
         } catch (FileNotFoundException e) {
@@ -53,7 +60,7 @@ public abstract class BaseConfig {
 
     public boolean create() {
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(path));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(path, false));
             bw.write(defaultValue.toString(3));
             bw.flush();
             bw.close();
@@ -80,7 +87,7 @@ public abstract class BaseConfig {
         return value;
     }
 
-    public abstract boolean checkIntegrity();
+    public abstract Stack<String> checkIntegrity();
 
     public abstract JSONObject populateDefaultValue();
 
