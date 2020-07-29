@@ -1,5 +1,6 @@
 package net.vortexdata.netwatchdog.console;
 
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.layout.TTLLLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
@@ -25,5 +26,6 @@ public final class JLineAppender extends AppenderBase<ILoggingEvent> {
     protected void append(ILoggingEvent event) {
         CLI.lineReader.printAbove(layout.doLayout(event));
     }
+
 
 }

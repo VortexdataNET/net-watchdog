@@ -3,13 +3,34 @@
     <!-- Stop output INFO at start -->
     <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
 
-    <appender name="TERMINAL" class="net.vortexdata.netwatchdog.console.JLineAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <FileNamePattern>logs//file.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <MaxHistory>30</MaxHistory>
+            <!-- or whenever the file size reaches 10MB -->
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>5MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
         </encoder>
     </appender>
 
+    <appender name="STDOUT" class="net.vortexdata.netwatchdog.console.JLineAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
     <root level="DEBUG">
-        <appender-ref ref="TERMINAL" />
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
     </root>
+
 </configuration>

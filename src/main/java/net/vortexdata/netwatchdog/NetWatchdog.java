@@ -5,6 +5,7 @@ import net.vortexdata.netwatchdog.console.CLI;
 import net.vortexdata.netwatchdog.console.CommandRegister;
 import net.vortexdata.netwatchdog.console.ConsoleThread;
 import net.vortexdata.netwatchdog.console.JLineAppender;
+import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
 import net.vortexdata.netwatchdog.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,9 @@ public class NetWatchdog {
     }
 
     public void launch() {
+
+        Boothandler.bootStart = LocalDateTime.now();
+
         // Display start screen
         printCopyHeader();
 
@@ -34,6 +38,7 @@ public class NetWatchdog {
         JLineAppender jLineAppender = new JLineAppender();
         jLineAppender.start();
         logger = LoggerFactory.getLogger("Main");
+        logger.info("App starting... Please wait.");
         commandRegister = new CommandRegister(this);
         CLI.init(commandRegister);
 
@@ -41,6 +46,10 @@ public class NetWatchdog {
 
         consoleThread = new ConsoleThread(commandRegister);
         consoleThread.start();
+
+        Boothandler.bootEnd = LocalDateTime.now();
+        logger.info("It took " + Boothandler.getBootTimeMillis() + " ms to launch the app.");
+
     }
 
     public void printCopyHeader() {
