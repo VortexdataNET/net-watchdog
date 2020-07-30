@@ -16,7 +16,9 @@ public class CLI {
         Terminal terminal = null;
 
         try {
-            terminal = TerminalBuilder.terminal();
+            terminal = TerminalBuilder
+                    .builder()
+                    .build();
         } catch (IOException e) {
             e.printStackTrace();
         }

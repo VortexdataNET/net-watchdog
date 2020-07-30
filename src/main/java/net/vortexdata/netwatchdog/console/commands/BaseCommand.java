@@ -72,4 +72,11 @@ public abstract class BaseCommand {
         return name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public HashMap<String, String> getArgs() {
+        return args;
+    }
 }

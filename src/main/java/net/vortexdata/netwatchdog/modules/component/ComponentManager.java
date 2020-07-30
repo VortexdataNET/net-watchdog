@@ -11,12 +11,15 @@ import java.util.HashMap;
 public class ComponentManager {
 
     public static final String COMPONENTS_DIR = "components//";
+    public static final String COMPONENT_IDENTIFIER = "-component.conf";
 
+    private ArrayList<File> unloadedComponents;
     private ArrayList<BaseComponent> components;
     private NetWatchdog netWatchdog;
 
     public ComponentManager(NetWatchdog netWatchdog) {
         components = new ArrayList<>();
+        unloadedComponents = new ArrayList<>();
         this.netWatchdog = netWatchdog;
     }
 
@@ -115,6 +118,8 @@ public class ComponentManager {
                     netWatchdog.getLogger().debug("Adding component " + c.getName() + " to component registry.");
                     components.add(c);
                 }
+            } else {
+                unloadedComponents.add(fileList[i]);
             }
         }
         return false;
@@ -198,4 +203,19 @@ public class ComponentManager {
         return performanceClassWebhooks;
     }
 
+    public ArrayList<BaseComponent> getComponents() {
+        return components;
+    }
+
+    public NetWatchdog getNetWatchdog() {
+        return netWatchdog;
+    }
+
+    public boolean unloadComponent(BaseComponent component) {
+        return components.remove(component);
+    }
+
+    public ArrayList<File> getUnloadedComponents() {
+        return unloadedComponents;
+    }
 }

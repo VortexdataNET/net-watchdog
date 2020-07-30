@@ -1,9 +1,11 @@
 package net.vortexdata.netwatchdog.modules.component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public abstract class BaseComponent {
 
+    protected LocalDateTime lastCheck;
     protected String address;
     protected String name;
     protected ArrayList<PerformanceClass> performanceClasses;
@@ -12,6 +14,11 @@ public abstract class BaseComponent {
         this.address = address;
         this.name = name;
         this.performanceClasses = performanceClasses;
+    }
+
+    public PerformanceClass check() {
+        lastCheck = LocalDateTime.now();
+        return runPerformanceCheck();
     }
 
     public abstract PerformanceClass runPerformanceCheck();
@@ -34,5 +41,9 @@ public abstract class BaseComponent {
 
     public ArrayList<PerformanceClass> getPerformanceClasses() {
         return performanceClasses;
+    }
+
+    public LocalDateTime getLastCheck() {
+        return lastCheck;
     }
 }

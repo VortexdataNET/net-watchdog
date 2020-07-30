@@ -93,4 +93,8 @@ public class NetWatchdog {
     public ConfigRegister getConfigRegister() {
         return configRegister;
     }
+
+    public ComponentManager getComponentManager() {
+        return componentManager;
+    }
 }

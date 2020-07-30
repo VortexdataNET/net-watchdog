@@ -1,9 +1,7 @@
 package net.vortexdata.netwatchdog.console;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.commands.BaseCommand;
-import net.vortexdata.netwatchdog.console.commands.ExitCommand;
-import net.vortexdata.netwatchdog.console.commands.ComponentCommand;
+import net.vortexdata.netwatchdog.console.commands.*;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
 
@@ -34,6 +32,9 @@ public class CommandRegister {
     private void registerCommands() {
         registerCommand(new ExitCommand(netWatchdog));
         registerCommand(new ComponentCommand(netWatchdog));
+        registerCommand(new ComponentsCommand(netWatchdog));
+        registerCommand(new HelpCommand(netWatchdog));
+        registerCommand(new ClearCommand(netWatchdog));
     }
 
     public boolean registerCommand(BaseCommand command) {
@@ -61,4 +62,7 @@ public class CommandRegister {
         return new ArgumentCompleter(new StringsCompleter(names));
     }
 
+    public ArrayList<BaseCommand> getCommands() {
+        return commands;
+    }
 }
