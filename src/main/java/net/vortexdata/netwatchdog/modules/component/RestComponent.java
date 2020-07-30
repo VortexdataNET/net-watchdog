@@ -84,13 +84,36 @@ public class RestComponent extends BaseComponent {
 
     public static RestComponent getRestComponentFromJSON(JSONObject obj, NetWatchdog netWatchdog) {
         String method = obj.getString("method");
+        method = method.toUpperCase();
         if (!method.equalsIgnoreCase("POST") && !method.equalsIgnoreCase("GET") && !method.equalsIgnoreCase("PUT")) {
             netWatchdog.getLogger().error("Failed to construct rest component as the specified request time is not supported.");
             return null;
         }
+        RequestMethod rmethod = RequestMethod.valueOf(method);
         String name = obj.getString("name");
         String address = obj.getString("address");
-        JSONArray performanceClassesJSON = obj.getJSONArray("performanceClasses");
+        String body = obj.getString("body");
+        ArrayList<PerformanceClass> pcs = ComponentManager.constructPerformanceClassesFromJSONArray(netWatchdog, name, obj.getJSONArray("performanceClasses"));
+
+        HashMap<String, String> headers = new HashMap<>();
+        JSONArray headersJSON = obj.getJSONArray("headers");
+        for (int i = 0; i < headersJSON.length(); i++) {
+            String[] parts = headersJSON.getString(i).split(":");
+            if (parts.length == 2) {
+                headers.put(parts[0], parts[1]);
+            } else {
+                netWatchdog.getLogger().warn("Skipping addition of request header " + headersJSON.getString(i) + " as it's malformed. Please consult documentation.");
+            }
+        }
+
+        return new RestComponent(
+                address,
+                name,
+                pcs,
+                headers,
+                body,
+                rmethod
+        );
     }
 
 }
