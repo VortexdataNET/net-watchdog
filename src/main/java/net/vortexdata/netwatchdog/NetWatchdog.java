@@ -6,6 +6,7 @@ import net.vortexdata.netwatchdog.console.CommandRegister;
 import net.vortexdata.netwatchdog.console.ConsoleThread;
 import net.vortexdata.netwatchdog.console.JLineAppender;
 import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
+import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.utils.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 
 public class NetWatchdog {
 
+    private ComponentManager componentManager;
     private Logger logger;
     private CommandRegister commandRegister;
     private ConsoleThread consoleThread;
@@ -42,13 +44,15 @@ public class NetWatchdog {
         commandRegister = new CommandRegister(this);
         CLI.init(commandRegister);
 
-        configRegister = new ConfigRegister(this);
-
         consoleThread = new ConsoleThread(commandRegister);
         consoleThread.start();
 
+        configRegister = new ConfigRegister(this);
+        componentManager = new ComponentManager(this);
+        componentManager.loadAll();
+
         Boothandler.bootEnd = LocalDateTime.now();
-        logger.info("It took " + Boothandler.getBootTimeMillis() + " ms to launch the app.");
+        logger.info("It took " + (int) Boothandler.getBootTimeMillis() / 100000000 + " ("+Boothandler.getBootTimeMillis()+") ms to launch the app.");
 
     }
 

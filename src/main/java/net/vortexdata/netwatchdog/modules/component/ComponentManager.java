@@ -4,10 +4,7 @@ import net.vortexdata.netwatchdog.NetWatchdog;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,15 +24,28 @@ public class ComponentManager {
         JSONObject obj = loadComponentJSON(filename);
 
         boolean hasFatalFlaw = false;
-        if (!obj.has("name")) {
+        try {
+            if (!obj.has("name")) {
+                netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its name is not configured.");
+                hasFatalFlaw = true;
+            }
+        } catch (Exception e) {
             netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its name is not configured.");
             hasFatalFlaw = true;
-        }
-        if (!obj.has("address")) {
+        } try {
+            if (!obj.has("address")) {
+                netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its address is not configured.");
+                hasFatalFlaw = true;
+            }
+        } catch (Exception e) {
             netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its address is not configured.");
             hasFatalFlaw = true;
-        }
-        if (!obj.has("performanceClasses")) {
+        } try {
+            if (!obj.has("performanceClasses")) {
+                netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its performance classes are not configured.");
+                hasFatalFlaw = true;
+            }
+        } catch (Exception e) {
             netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its performance classes are not configured.");
             hasFatalFlaw = true;
         }
@@ -63,7 +73,11 @@ public class ComponentManager {
             StringBuilder sb = new StringBuilder();
             while (br.ready())
                 sb.append(br.readLine());
-            return new JSONObject(sb.toString());
+            try {
+                return new JSONObject(sb.toString());
+            } catch (Exception e) {
+                netWatchdog.getLogger().error("Failed to load component " + filename + ", appending error message: \n"+e.getMessage());
+            }
         } catch (FileNotFoundException e) {
             netWatchdog.getLogger().error("Failed to load component " + filename + " as its file could not be found.");
         } catch (IOException e) {
@@ -73,7 +87,45 @@ public class ComponentManager {
     }
 
     public boolean loadAll() {
+        netWatchdog.getLogger().info("Trying to load and initiate all components...");
+        File file = new File(COMPONENTS_DIR);
+        file.mkdirs();
+        FilenameFilter compFileFilter = new FilenameFilter(){
+            public boolean accept(File dir, String name) {
+                String lowercaseName = name.toLowerCase();
+                if (lowercaseName.endsWith("-component.conf")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+        File[] fileList = file.listFiles(compFileFilter);
+        if (fileList.length == 0) {
+            netWatchdog.getLogger().info("There are no components to load.");
+            return true;
+        }
+        for (int i = 0; i < fileList.length; i++) {
+            netWatchdog.getLogger().debug("Trying to load component " + fileList[i].getName() + "...");
+            BaseComponent c = loadComponent(fileList[i].getName());
+            if (c != null) {
+                if (getComponentByName(c.getName()) == null) {
+                    netWatchdog.getLogger().error("Skipping addition of component " + c.getName() + " as this name is already used by another one.");
+                } else {
+                    netWatchdog.getLogger().debug("Adding component " + c.getName() + " to component registry.");
+                    components.add(c);
+                }
+            }
+        }
         return false;
+    }
+
+    public BaseComponent getComponentByName(String componentName) {
+        for (BaseComponent c : components) {
+            if (c.getName().equalsIgnoreCase(componentName))
+                return c;
+        }
+        return null;
     }
 
     public static ArrayList<PerformanceClass> constructPerformanceClassesFromJSONArray(NetWatchdog netWatchdog, String componentName, JSONArray array) {
