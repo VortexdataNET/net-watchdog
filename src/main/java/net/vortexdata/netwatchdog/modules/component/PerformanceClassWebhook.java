@@ -2,13 +2,13 @@ package net.vortexdata.netwatchdog.modules.component;
 
 import java.util.HashMap;
 
-public class PerformanceClassWebhooks {
+public class PerformanceClassWebhook {
 
     private String address;
     private HashMap<String, String> headers;
     private String body;
 
-    public PerformanceClassWebhooks(String address, HashMap<String, String> headers, String body) {
+    public PerformanceClassWebhook(String address, HashMap<String, String> headers, String body) {
         this.address = address;
         this.headers = headers;
         this.body = body;

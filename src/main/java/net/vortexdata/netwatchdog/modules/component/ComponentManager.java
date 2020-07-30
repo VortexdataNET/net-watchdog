@@ -8,8 +8,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ComponentManager {
 
@@ -111,19 +111,39 @@ public class ComponentManager {
             return null;
         }
         String contentLookup = obj.getString("contentLookup");
-        ArrayList<PerformanceClassWebhooks> webhooks = getPerformanceClassWebhooksFromJSONArray(netWatchdog, componentName, name, obj.getJSONArray("webhookPosts"));
+        ArrayList<PerformanceClassWebhook> webhooks = getPerformanceClassWebhooksFromJSONArray(netWatchdog, componentName, name, obj.getJSONArray("webhookPosts"));
 
         return new PerformanceClass(name, responseTimes, contentLookup, webhooks);
 
     }
 
-    public static ArrayList<PerformanceClassWebhooks> getPerformanceClassWebhooksFromJSONArray(NetWatchdog netWatchdog, String componentName, String pcName, JSONArray array) {
+    public static ArrayList<PerformanceClassWebhook> getPerformanceClassWebhooksFromJSONArray(NetWatchdog netWatchdog, String componentName, String pcName, JSONArray array) {
+        ArrayList<PerformanceClassWebhook> performanceClassWebhooks = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
             if (!obj.has("address")) {
-
+                netWatchdog.getLogger().error("Failed to add performance class webhook for performance class " + pcName + " in component "+ componentName + " as its address is not defined.");
+                continue;
             }
+
+            HashMap<String, String> headers = new HashMap<String, String>();
+            JSONArray headerarray = obj.getJSONArray("headers");
+            for (int j = 0; j < headerarray.length(); j++) {
+                String[] pair = headerarray.getString(j).split(":");
+                if (pair.length != 2) {
+                    netWatchdog.getLogger().warn("Skipping addition of webhook header " + headerarray.getString(j) + " as its malformed. Please consult documentation.");
+                    continue;
+                }
+                headers.put(pair[0], pair[1]);
+            }
+
+            performanceClassWebhooks.add(new PerformanceClassWebhook(
+                    obj.getString("address"),
+                    headers,
+                    obj.getString("body")
+            ));
         }
+        return performanceClassWebhooks;
     }
 
 }

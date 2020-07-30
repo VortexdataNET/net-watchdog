@@ -3,7 +3,6 @@ package net.vortexdata.netwatchdog.modules.component;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PerformanceClass {
 
@@ -12,9 +11,9 @@ public class PerformanceClass {
     private int[] responseTimeRange;
     private int lastRecordedResponseTime;
     private String contentLookup;
-    private ArrayList<PerformanceClassWebhooks> webhooks;
+    private ArrayList<PerformanceClassWebhook> webhooks;
 
-    public PerformanceClass(String name, int[] responseTimeRange, String contentLookup, ArrayList<PerformanceClassWebhooks> webhooks) {
+    public PerformanceClass(String name, int[] responseTimeRange, String contentLookup, ArrayList<PerformanceClassWebhook> webhooks) {
         this.name = name;
         this.responseTimeRange = responseTimeRange;
         this.contentLookup = contentLookup;
