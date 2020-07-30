@@ -1,0 +1,42 @@
+{
+   "type":"REST",
+   "method":"POST",
+   "name":"testcomponent",
+   "address":"myaddress.com",
+   "headers":[
+      "MyHeader:213sdf",
+      "AnotherOne:asfsaf"
+   ],
+   "body":"{'status':'0'}",
+   "":"",
+   "performanceClasses":[
+      {
+         "name":"myperformanceclass",
+         "responseTimeRange":"100-200",
+         "contentLookup":"'status':'offline'",          <- Overrides response time range if met and will return this class | done
+         "webhookPosts":[
+            {
+               "address":"https://mywebhook1.com",
+               "headers":[
+                  "Content-Type:MyContentType",
+                  "AnotherOne:AnotherOnesValue"
+               ],
+               "body":"{'test':'value'}"
+            }
+         ]
+      },
+      {
+         "name":"mytimeoutclass",
+         "responseTimeRange":"timeout",
+         "webhookPosts":[
+            {
+               "address":"https://mywebhookfortimeouts.com",
+               "headers":[
+                  "Content-Type:MyContentType",
+                  "AnotherOne:AnotherOnesValue"
+               ]
+            }
+         ]
+      }
+   ]
+}

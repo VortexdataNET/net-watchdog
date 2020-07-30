@@ -3,10 +3,10 @@ package net.vortexdata.netwatchdog.console.commands;
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.console.CLI;
 
-public class TargetCommand extends BaseCommand {
+public class ComponentCommand extends BaseCommand {
 
-    public TargetCommand(NetWatchdog netWatchdog) {
-        super(netWatchdog, "target", "Configure and set up targets.");
+    public ComponentCommand(NetWatchdog netWatchdog) {
+        super(netWatchdog, "component", "Configure and set up components.");
         this.args.put("create", "Creates a new target.");
         this.args.put("disable", "Disables a target.");
         this.args.put("enable", "Enables a target.");
