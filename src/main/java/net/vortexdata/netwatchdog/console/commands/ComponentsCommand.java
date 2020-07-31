@@ -21,8 +21,19 @@ public class ComponentsCommand extends BaseCommand {
     @Override
     public void call(String[] args) {
         if (args.length > 0) {
-            printUsage();
+            if (args[0].equalsIgnoreCase("reload")) {
+                netWatchdog.getComponentManager().loadAll();
+            } else {
+                printUsage();
+            }
         } else {
+
+            if (netWatchdog.getComponentManager().getComponents().size() == 0 && netWatchdog.getComponentManager().getUnloadedComponents().size() == 0) {
+                CLI.print("There are no components to show.");
+                return;
+            }
+
+
             StringBuilder sb = new StringBuilder();
             AttributedStringBuilder builder = new AttributedStringBuilder();
             builder.append(String.format("%-32s%-32s", "Name", "Status") + "\n")

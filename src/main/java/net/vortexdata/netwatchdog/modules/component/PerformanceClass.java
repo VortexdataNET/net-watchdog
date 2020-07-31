@@ -1,7 +1,5 @@
 package net.vortexdata.netwatchdog.modules.component;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 
 public class PerformanceClass {
@@ -25,7 +23,7 @@ public class PerformanceClass {
     }
 
     public void runWebhooks() {
-        throw new NotImplementedException();
+
     }
 
     public int getLastRecordedResponseTime() {

@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ public class RestComponent extends BaseComponent {
     private String body;
     private RequestMethod requestMethod;
 
-    public RestComponent(String address, String name, ArrayList<PerformanceClass> performanceClasses, HashMap<String, String> headers, String body, RequestMethod requestMethod) {
-        super(address, name, performanceClasses);
+    public RestComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, HashMap<String, String> headers, String body, RequestMethod requestMethod) {
+        super(address, name, filename, performanceClasses);
         this.headers = headers;
         this.body = body;
         this.requestMethod = requestMethod;
@@ -93,6 +94,7 @@ public class RestComponent extends BaseComponent {
         String name = obj.getString("name");
         String address = obj.getString("address");
         String body = obj.getString("body");
+        String filename = obj.getString("filename");
         ArrayList<PerformanceClass> pcs = ComponentManager.constructPerformanceClassesFromJSONArray(netWatchdog, name, obj.getJSONArray("performanceClasses"));
 
         HashMap<String, String> headers = new HashMap<>();
@@ -109,6 +111,7 @@ public class RestComponent extends BaseComponent {
         return new RestComponent(
                 address,
                 name,
+                filename,
                 pcs,
                 headers,
                 body,

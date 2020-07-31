@@ -1,6 +1,7 @@
 package net.vortexdata.netwatchdog.modules.component;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
+import net.vortexdata.netwatchdog.console.CLI;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -51,12 +52,24 @@ public class ComponentManager {
         } catch (Exception e) {
             netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its performance classes are not configured.");
             hasFatalFlaw = true;
+        } try {
+            String jsonFilename = obj.getString("filename");
+            if (!jsonFilename.equals(filename+ComponentManager.COMPONENT_IDENTIFIER)) {
+                netWatchdog.getLogger().error("Component of file " + filename + " has non-matching filename parameter. Please check configuration.");
+                hasFatalFlaw = true;
+            }
+        } catch (Exception e) {
+            netWatchdog.getLogger().error("Component of file " + filename + " is missing filename parameter. Please check configuration.");
+            hasFatalFlaw = true;
         }
 
         if (hasFatalFlaw)
             return null;
 
-
+        if (getComponentByName(obj.getString("name")) != null) {
+            netWatchdog.getLogger().error("Can not load component " + obj.getString("name") + " as its either already loaded or another one with same name is loaded.");
+            return null;
+        }
 
         if (obj.getString("type").equalsIgnoreCase("REST")) {
             return RestComponent.getRestComponentFromJSON(obj, netWatchdog);
@@ -90,6 +103,8 @@ public class ComponentManager {
     }
 
     public boolean loadAll() {
+        unloadedComponents.clear();
+        components.clear();
         netWatchdog.getLogger().info("Trying to load and initiate all components...");
         File file = new File(COMPONENTS_DIR);
         file.mkdirs();
@@ -164,8 +179,13 @@ public class ComponentManager {
             responseTimes[0] = Integer.parseInt(responseTimeRange[0]);
             responseTimes[1] = Integer.parseInt(responseTimeRange[1]);
         } catch (Exception e) {
-            netWatchdog.getLogger().error("Failed to parse response time range of performance class "+name+" in component " + componentName + ".");
-            return null;
+            if (responseTimeRange[0].equalsIgnoreCase("timeout")) {
+                responseTimes[0] = -1;
+                responseTimes[1] = -1;
+            } else {
+                netWatchdog.getLogger().error("Failed to parse response time range of performance class "+name+" in component " + componentName + ".");
+                return null;
+            }
         }
         String contentLookup = obj.getString("contentLookup");
         ArrayList<PerformanceClassWebhook> webhooks = getPerformanceClassWebhooksFromJSONArray(netWatchdog, componentName, name, obj.getJSONArray("webhookPosts"));
@@ -201,6 +221,35 @@ public class ComponentManager {
             ));
         }
         return performanceClassWebhooks;
+    }
+
+    public boolean enableComponent(String filename) {
+        netWatchdog.getLogger().info("Trying to enable component " + filename + "...");
+        BaseComponent c = loadComponent(filename);
+        if (c == null) {
+            netWatchdog.getLogger().error("Failed to enable component " + filename + ".");
+            return false;
+        } else {
+            unloadedComponents.removeIf(f -> f.getName().equals(filename));
+            components.add(c);
+            netWatchdog.getLogger().info("Component " + c.getName() + " successfully enabled.");
+            return true;
+        }
+    }
+
+    public boolean disableComponent(String name) {
+        netWatchdog.getLogger().info("Trying to disable component " + name + "...");
+        BaseComponent c = getComponentByName(name);
+        if (c != null) {
+            netWatchdog.getLogger().info("Disabling component "+name+"...");
+            unloadedComponents.add(new File(ComponentManager.COMPONENTS_DIR + c.getFilename()));
+            components.removeIf(x -> x.getName().equalsIgnoreCase(c.getName()));
+            return true;
+        } else {
+            netWatchdog.getLogger().info("Component "+name+" not found.");
+            CLI.print("Component " + name + " not found. Is it enabled?");
+            return false;
+        }
     }
 
     public ArrayList<BaseComponent> getComponents() {

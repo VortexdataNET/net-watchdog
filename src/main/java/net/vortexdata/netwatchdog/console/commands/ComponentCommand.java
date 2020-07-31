@@ -2,6 +2,7 @@ package net.vortexdata.netwatchdog.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.console.CLI;
+import net.vortexdata.netwatchdog.modules.component.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 
 import java.io.*;
@@ -46,7 +47,12 @@ public class ComponentCommand extends BaseCommand {
             } else if (args[0].equalsIgnoreCase("disable")) {
 
             } else if (args[0].equalsIgnoreCase("enable")) {
-
+                if (args.length > 1) {
+                    CLI.print("Trying to load component from file " + args[2] + "...");
+                    netWatchdog.getComponentManager().enableComponent(args[2]);
+                } else {
+                    CLI.print("Please specify the components filename.");
+                }
             } else if (args[0].equalsIgnoreCase("delete")) {
 
             } else {

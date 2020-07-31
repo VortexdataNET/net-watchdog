@@ -9,11 +9,13 @@ public abstract class BaseComponent {
     protected String address;
     protected String name;
     protected ArrayList<PerformanceClass> performanceClasses;
+    protected String filename;
 
-    public BaseComponent(String address, String name, ArrayList<PerformanceClass> performanceClasses) {
+    public BaseComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses) {
         this.address = address;
         this.name = name;
         this.performanceClasses = performanceClasses;
+        this.filename = filename;
     }
 
     public PerformanceClass check() {
@@ -45,5 +47,9 @@ public abstract class BaseComponent {
 
     public LocalDateTime getLastCheck() {
         return lastCheck;
+    }
+
+    public String getFilename() {
+        return filename;
     }
 }
