@@ -26,6 +26,8 @@ public class ComponentManager {
 
     public BaseComponent loadComponent(String filename) {
         JSONObject obj = loadComponentJSON(filename);
+        if (obj == null)
+            return null;
 
         boolean hasFatalFlaw = false;
         try {
@@ -54,8 +56,8 @@ public class ComponentManager {
             hasFatalFlaw = true;
         } try {
             String jsonFilename = obj.getString("filename");
-            if (!jsonFilename.equals(filename+ComponentManager.COMPONENT_IDENTIFIER)) {
-                netWatchdog.getLogger().error("Component of file " + filename + " has non-matching filename parameter. Please check configuration.");
+            if (!(jsonFilename+ComponentManager.COMPONENT_IDENTIFIER).equals(filename)) {
+                netWatchdog.getLogger().error("Component of file " + filename + " has non-matching filename parameter (expected: "+filename+", got: "+jsonFilename+ComponentManager.COMPONENT_IDENTIFIER+").");
                 hasFatalFlaw = true;
             }
         } catch (Exception e) {
@@ -95,7 +97,7 @@ public class ComponentManager {
                 netWatchdog.getLogger().error("Failed to load component " + filename + ", appending error message: \n"+e.getMessage());
             }
         } catch (FileNotFoundException e) {
-            netWatchdog.getLogger().error("Failed to load component " + filename + " as its file could not be found.");
+            netWatchdog.getLogger().error("Failed to load component " + filename + " as its file could not be found: " + e.getMessage());
         } catch (IOException e) {
             netWatchdog.getLogger().error("Failed to load component " + filename + ", appending error message: " + e.getMessage());
         }
@@ -127,7 +129,7 @@ public class ComponentManager {
             netWatchdog.getLogger().debug("Trying to load component " + fileList[i].getName() + "...");
             BaseComponent c = loadComponent(fileList[i].getName());
             if (c != null) {
-                if (getComponentByName(c.getName()) == null) {
+                if (getComponentByName(c.getName()) != null) {
                     netWatchdog.getLogger().error("Skipping addition of component " + c.getName() + " as this name is already used by another one.");
                 } else {
                     netWatchdog.getLogger().debug("Adding component " + c.getName() + " to component registry.");
@@ -187,7 +189,13 @@ public class ComponentManager {
                 return null;
             }
         }
-        String contentLookup = obj.getString("contentLookup");
+        String contentLookup = null;
+        try {
+            contentLookup = obj.getString("contentLookup");
+        } catch (Exception e) {
+            netWatchdog.getLogger().debug("Content lookup header not found for component " + componentName + ".");
+        }
+
         ArrayList<PerformanceClassWebhook> webhooks = getPerformanceClassWebhooksFromJSONArray(netWatchdog, componentName, name, obj.getJSONArray("webhookPosts"));
 
         return new PerformanceClass(name, responseTimes, contentLookup, webhooks);
@@ -214,13 +222,27 @@ public class ComponentManager {
                 headers.put(pair[0], pair[1]);
             }
 
+            String body = null;
+            try {
+                body = obj.getString("body");
+            } catch (Exception e) {
+                netWatchdog.getLogger().debug("No body parameter found for performance class " + pcName + " in component " + componentName + ".");
+            }
+
             performanceClassWebhooks.add(new PerformanceClassWebhook(
                     obj.getString("address"),
                     headers,
-                    obj.getString("body")
+                    body
             ));
         }
         return performanceClassWebhooks;
+    }
+
+    public boolean enableComponent(String name, boolean appendCompIdentifier) {
+        if (appendCompIdentifier)
+            return enableComponent(name + ComponentManager.COMPONENT_IDENTIFIER);
+        else
+            return enableComponent(name);
     }
 
     public boolean enableComponent(String filename) {
