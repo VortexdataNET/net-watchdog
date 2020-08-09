@@ -96,6 +96,7 @@ public class ComponentManager {
             } catch (Exception e) {
                 netWatchdog.getLogger().error("Failed to load component " + filename + ", appending error message: \n"+e.getMessage());
             }
+            br.close();
         } catch (FileNotFoundException e) {
             netWatchdog.getLogger().error("Failed to load component " + filename + " as its file could not be found: " + e.getMessage());
         } catch (IOException e) {

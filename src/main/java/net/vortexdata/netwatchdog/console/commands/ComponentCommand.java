@@ -6,6 +6,8 @@ import net.vortexdata.netwatchdog.modules.component.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,9 +17,9 @@ public class ComponentCommand extends BaseCommand {
     public ComponentCommand(NetWatchdog netWatchdog) {
         super(netWatchdog, "component", "Configure and set up components.");
         this.args.put("create [name]", "Creates a new target.");
-        this.args.put("disable", "Disables a target.");
-        this.args.put("enable", "Enables a target.");
-        this.args.put("delete", "Deletes a target (must be disabled).");
+        this.args.put("disable [name]", "Disables a target.");
+        this.args.put("enable [filename]", "Enables a target.");
+        this.args.put("delete [filename]", "Deletes a target (must be disabled).");
     }
 
     @Override
@@ -66,7 +68,16 @@ public class ComponentCommand extends BaseCommand {
                     CLI.print("Please specify the components filename.");
                 }
             } else if (args[0].equalsIgnoreCase("delete")) {
-
+                if (args.length > 1) {
+                    try {
+                        Files.delete(Paths.get(ComponentManager.COMPONENTS_DIR + args[1] + ComponentManager.COMPONENT_IDENTIFIER));
+                        CLI.print("Component file " + args[1] + " successfully deleted. Please bear in mind that the component may still be loaded. To unload, use 'component disable [name]'.");
+                    } catch (IOException e) {
+                        CLI.print("Could not delete component file " + args[1] + ": " + e.getMessage());
+                    }
+                } else {
+                    printUsage();
+                }
             } else {
                 printUsage();
             }

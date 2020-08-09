@@ -36,16 +36,16 @@ public class ComponentsCommand extends BaseCommand {
 
             StringBuilder sb = new StringBuilder();
             AttributedStringBuilder builder = new AttributedStringBuilder();
-            builder.append(String.format("%-32s%-32s", "Name", "Status") + "\n")
-            .append("--------------------------------------------------\n\n");
+            builder.append(String.format("%-32s%-32s%-32s", "Filename", "Custom Name", "Status") + "\n")
+            .append("----------------------------------------------------------------------------\n\n");
 
             for (BaseComponent c : netWatchdog.getComponentManager().getComponents()) {
                 builder.style(AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN))
-                        .append(String.format("%-32s%-32s", c.getName(), "loaded") + "\n");
+                        .append(String.format("%-32s%-32s%-32s", c.getFilename(), c.getName(), "loaded") + "\n");
             }
             for (File f : netWatchdog.getComponentManager().getUnloadedComponents()) {
                 builder.style(AttributedStyle.DEFAULT.foreground(AttributedStyle.RED))
-                        .append(String.format("%-32s%-32s", f.getName().split("-")[0], "not loaded") + "\n");
+                        .append(String.format("%-32s%-32s%-32s", f.getName().split("-")[0], "N/A", "not loaded") + "\n");
             }
             CLI.print(builder.toAnsi());
         }
