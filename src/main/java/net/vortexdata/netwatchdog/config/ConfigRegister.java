@@ -11,7 +11,6 @@ public class ConfigRegister {
 
     private NetWatchdog netWatchdog;
     private MainConfig mainConfig;
-    private ArrayList<TargetConfig> targetConfigs;
 
     public ConfigRegister(NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;
@@ -38,4 +37,11 @@ public class ConfigRegister {
         return true;
     }
 
+    public NetWatchdog getNetWatchdog() {
+        return netWatchdog;
+    }
+
+    public MainConfig getMainConfig() {
+        return mainConfig;
+    }
 }

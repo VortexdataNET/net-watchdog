@@ -29,6 +29,7 @@ public class MainConfig extends BaseConfig {
     public JSONObject populateDefaultValue() {
         JSONObject obj = new JSONObject();
         obj.put("enabled", "true");
+        obj.put("pollRate", "30");
         return obj;
     }
 

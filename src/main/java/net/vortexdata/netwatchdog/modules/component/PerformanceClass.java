@@ -1,5 +1,12 @@
 package net.vortexdata.netwatchdog.modules.component;
 
+import net.vortexdata.netwatchdog.utils.RequestMethod;
+import net.vortexdata.netwatchdog.utils.RestUtils;
+
+import javax.net.ssl.HttpsURLConnection;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class PerformanceClass {
@@ -23,6 +30,7 @@ public class PerformanceClass {
     }
 
     public void runWebhooks() {
+        HttpsURLConnection hurlc = null;
 
     }
 

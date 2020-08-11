@@ -74,9 +74,11 @@ public class ComponentManager {
         }
 
         if (obj.getString("type").equalsIgnoreCase("REST")) {
+            netWatchdog.getLogger().info("Loading REST component...");
             return RestComponent.getRestComponentFromJSON(obj, netWatchdog);
         } else if (obj.getString("type").equalsIgnoreCase("SOCKET")) {
-
+            netWatchdog.getLogger().info("Loading SOCKET component...");
+            return SocketComponent.getSocketComponentFromJSON(obj, netWatchdog);
         } else if (obj.getString("type").equalsIgnoreCase("PING")) {
 
         } else {
