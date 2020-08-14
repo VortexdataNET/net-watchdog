@@ -30,7 +30,7 @@ public abstract class BaseComponent {
             if (pc.getResponseTimeRange()[0] <= responseTime && pc.getResponseTimeRange()[1] >= responseTime)
                 return pc;
         }
-        return null;
+        return new FallbackPerformanceClass(responseTime, "");
     }
 
     public String getAddress() {

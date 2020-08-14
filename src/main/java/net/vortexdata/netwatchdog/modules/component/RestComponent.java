@@ -43,7 +43,7 @@ public class RestComponent extends BaseComponent {
         try {
             long start = System.currentTimeMillis();
             int responseCode = hurlc.getResponseCode();
-            long responseTime = System.currentTimeMillis() - start;
+            int responseTime = (int) (System.currentTimeMillis() - start);
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 String response = RestUtils.readResponseStream(new BufferedReader(
                         new InputStreamReader(hurlc.getInputStream())));
@@ -52,12 +52,14 @@ public class RestComponent extends BaseComponent {
                         return pc;
 
                 // Fallback on response time base evaluation
-                return getPerformanceClassByResponseTime(responseCode);
+                return getPerformanceClassByResponseTime(responseTime);
+            } else {
+                // TODO: Give more user agency about what happens if non-ok status is returned
+                return getPerformanceClassByResponseTime(-1);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            return new FallbackPerformanceClass(-1, e.getMessage());
         }
-        return null;
     }
 
     // TODO: Add parameter support

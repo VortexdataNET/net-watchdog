@@ -43,7 +43,10 @@ public class PerformanceClass {
 
         for (PerformanceClassWebhook pcw : webhooks) {
             try {
-                HttpsURLConnection hurlc = RestUtils.getPostConnection(RestUtils.getPostBytes(pcw.getBody()), pcw.getAddress(), "application/json", pcw.getHeaders());
+                String body = "";
+                if (pcw.getBody() != null && !pcw.getBody().isEmpty())
+                    body = pcw.getBody();
+                HttpsURLConnection hurlc = RestUtils.getPostConnection(RestUtils.getPostBytes(body), pcw.getAddress(), "application/json", pcw.getHeaders());
                 if (hurlc.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     netWatchdog.getLogger().info("OK from webook " + pcw.getAddress() + ".");
                 } else {
