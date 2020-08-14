@@ -1,12 +1,17 @@
 package net.vortexdata.netwatchdog.modules.component;
 
+import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.utils.RequestMethod;
 import net.vortexdata.netwatchdog.utils.RestUtils;
+import org.json.JSONException;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
+import java.nio.Buffer;
 import java.util.ArrayList;
 
 public class PerformanceClass {
@@ -17,12 +22,14 @@ public class PerformanceClass {
     private int lastRecordedResponseTime;
     private String contentLookup;
     private ArrayList<PerformanceClassWebhook> webhooks;
+    private NetWatchdog netWatchdog;
 
-    public PerformanceClass(String name, int[] responseTimeRange, String contentLookup, ArrayList<PerformanceClassWebhook> webhooks) {
+    public PerformanceClass(String name, int[] responseTimeRange, String contentLookup, ArrayList<PerformanceClassWebhook> webhooks, NetWatchdog netWatchdog) {
         this.name = name;
         this.responseTimeRange = responseTimeRange;
         this.contentLookup = contentLookup;
         this.webhooks = webhooks;
+        this.netWatchdog = netWatchdog;
     }
 
     public boolean lookupContent(String string) {
@@ -30,8 +37,24 @@ public class PerformanceClass {
     }
 
     public void runWebhooks() {
-        HttpsURLConnection hurlc = null;
 
+        if (webhooks == null || webhooks.isEmpty())
+            return;
+
+        for (PerformanceClassWebhook pcw : webhooks) {
+            try {
+                HttpsURLConnection hurlc = RestUtils.getPostConnection(RestUtils.getPostBytes(pcw.getBody()), pcw.getAddress(), "application/json", pcw.getHeaders());
+                if (hurlc.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    netWatchdog.getLogger().info("OK from webook " + pcw.getAddress() + ".");
+                } else {
+                    netWatchdog.getLogger().error("Got non-ok status return from webhook " + pcw.getAddress() + ". (Expected " + HttpURLConnection.HTTP_OK + ", got " + hurlc.getResponseCode() + ")");
+                }
+            } catch (SocketTimeoutException e) {
+                netWatchdog.getLogger().error("Connection to webhook " + pcw.getAddress() + " failed.");
+            } catch (IOException e) {
+                netWatchdog.getLogger().error("Failed to call webhook for address " + pcw.getAddress() + ": " + e.getMessage());
+            }
+        }
     }
 
     public int getLastRecordedResponseTime() {

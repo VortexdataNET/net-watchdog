@@ -14,6 +14,10 @@ public class PerformanceClassWebhook {
         this.body = body;
     }
 
+    public String getBody() {
+        return body;
+    }
+
     public String getAddress() {
         return address;
     }

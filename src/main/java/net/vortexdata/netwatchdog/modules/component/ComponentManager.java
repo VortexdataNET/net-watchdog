@@ -201,7 +201,7 @@ public class ComponentManager {
 
         ArrayList<PerformanceClassWebhook> webhooks = getPerformanceClassWebhooksFromJSONArray(netWatchdog, componentName, name, obj.getJSONArray("webhookPosts"));
 
-        return new PerformanceClass(name, responseTimes, contentLookup, webhooks);
+        return new PerformanceClass(name, responseTimes, contentLookup, webhooks, netWatchdog);
 
     }
 

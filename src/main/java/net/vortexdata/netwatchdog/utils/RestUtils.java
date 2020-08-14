@@ -23,6 +23,7 @@ public class RestUtils {
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Content-Type", contentType);
+        connection.setConnectTimeout(5000);
 
         if (extraHeaders != null) {
             for (String key : extraHeaders.keySet()) {
