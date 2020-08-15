@@ -1,8 +1,7 @@
 package net.vortexdata.netwatchdog.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.CLI;
-import org.slf4j.Logger;
+import net.vortexdata.netwatchdog.console.cli.CLI;
 
 import java.util.HashMap;
 

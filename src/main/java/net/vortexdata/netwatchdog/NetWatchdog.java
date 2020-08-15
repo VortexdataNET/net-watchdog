@@ -1,14 +1,15 @@
 package net.vortexdata.netwatchdog;
 
 import net.vortexdata.netwatchdog.config.ConfigRegister;
-import net.vortexdata.netwatchdog.console.CLI;
-import net.vortexdata.netwatchdog.console.CommandRegister;
-import net.vortexdata.netwatchdog.console.ConsoleThread;
-import net.vortexdata.netwatchdog.console.JLineAppender;
+import net.vortexdata.netwatchdog.console.cli.CLI;
+import net.vortexdata.netwatchdog.console.cli.CommandRegister;
+import net.vortexdata.netwatchdog.console.cli.ConsoleThread;
+import net.vortexdata.netwatchdog.console.cli.JLineAppender;
 import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.query.Query;
 import net.vortexdata.netwatchdog.utils.DateUtils;
+import net.vortexdata.netwatchdog.utils.ShutdownHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class NetWatchdog {
     private ConsoleThread consoleThread;
     private ConfigRegister configRegister;
     private Query query;
+    private ShutdownHook shutdownHook;
 
     public static void main(String[] args) {
         NetWatchdog netWatchdog = new NetWatchdog();
@@ -54,8 +56,12 @@ public class NetWatchdog {
         componentManager.loadAll();
 
         query = new Query(this);
+        shutdownHook = new ShutdownHook(this);
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
+        logger.debug("Shutdown hook registered.");
 
         Boothandler.bootEnd = LocalDateTime.now();
+
         logger.info("It took " + (int) Boothandler.getBootTimeMillis() / 100000000 + " ("+Boothandler.getBootTimeMillis()+") ms to launch the app.");
 
         query.start();
@@ -76,12 +82,7 @@ public class NetWatchdog {
     }
 
     public void shutdown() {
-        logger.info("Shutting down for system halt...");
-        logger.info("Waiting for console thread to finish...");
-        consoleThread.end();
-        consoleThread.interrupt();
-        logger.info("Ending logging at " + DateUtils.getPrettyStringFromLocalDateTime(LocalDateTime.now()) + ", bye.");
-        System.exit(0);
+        shutdownHook.start();
     }
 
     public Logger getLogger() {
@@ -102,5 +103,13 @@ public class NetWatchdog {
 
     public ComponentManager getComponentManager() {
         return componentManager;
+    }
+
+    public Query getQuery() {
+        return query;
+    }
+
+    public ShutdownHook getShutdownHook() {
+        return shutdownHook;
     }
 }

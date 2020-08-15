@@ -1,4 +1,4 @@
-package net.vortexdata.netwatchdog.console;
+package net.vortexdata.netwatchdog.console.cli;
 
 public class ConsoleThread extends Thread {
 

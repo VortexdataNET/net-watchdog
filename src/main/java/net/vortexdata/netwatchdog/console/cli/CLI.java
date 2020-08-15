@@ -1,4 +1,4 @@
-package net.vortexdata.netwatchdog.console;
+package net.vortexdata.netwatchdog.console.cli;
 
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;

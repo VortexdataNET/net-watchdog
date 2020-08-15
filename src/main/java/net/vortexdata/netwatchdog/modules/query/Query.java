@@ -13,6 +13,7 @@ public class Query {
     private MainConfig mainConfig;
     private boolean hasStarted;
     private ComponentManager componentManager;
+    private Thread thread;
 
     public Query(NetWatchdog netWatchdog) {
         hasStarted = false;
@@ -25,7 +26,7 @@ public class Query {
         if (hasStarted)
             return;
         hasStarted = true;
-        new Thread(new Runnable() {
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
@@ -47,11 +48,16 @@ public class Query {
                         }
                         Thread.sleep(mainConfig.getValue().getInt("pollRate") * 1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        netWatchdog.getLogger().debug("Query got interrupted (for shutdown?).");
                     }
                 }
             }
-        }).start();
+        });
+        thread.start();
+    }
+
+    public void interrupt() {
+        thread.interrupt();
     }
 
 }

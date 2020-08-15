@@ -1,11 +1,8 @@
 package net.vortexdata.netwatchdog.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.CLI;
-import org.fusesource.jansi.Ansi;
+import net.vortexdata.netwatchdog.console.cli.CLI;
 import org.jline.utils.AttributedStringBuilder;
-import org.jline.utils.AttributedStyle;
-import org.jline.utils.Colors;
 
 public class HelpCommand extends BaseCommand {
 

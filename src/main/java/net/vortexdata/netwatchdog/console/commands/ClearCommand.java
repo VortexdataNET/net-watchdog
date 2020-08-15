@@ -1,8 +1,7 @@
 package net.vortexdata.netwatchdog.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.CLI;
-import org.jline.utils.AttributedStringBuilder;
+import net.vortexdata.netwatchdog.console.cli.CLI;
 
 public class ClearCommand extends BaseCommand {
 

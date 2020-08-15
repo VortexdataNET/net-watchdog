@@ -1,15 +1,12 @@
 package net.vortexdata.netwatchdog.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.CLI;
+import net.vortexdata.netwatchdog.console.cli.CLI;
 import net.vortexdata.netwatchdog.modules.component.BaseComponent;
-import net.vortexdata.netwatchdog.modules.component.ComponentManager;
-import net.vortexdata.netwatchdog.utils.DateUtils;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 
 import java.io.File;
-import java.util.ArrayList;
 
 public class ComponentsCommand extends BaseCommand {
 

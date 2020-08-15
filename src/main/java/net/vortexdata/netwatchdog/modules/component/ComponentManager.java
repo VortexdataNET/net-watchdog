@@ -1,7 +1,7 @@
 package net.vortexdata.netwatchdog.modules.component;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.CLI;
+import net.vortexdata.netwatchdog.console.cli.CLI;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

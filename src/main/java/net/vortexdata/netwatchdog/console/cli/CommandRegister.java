@@ -1,4 +1,4 @@
-package net.vortexdata.netwatchdog.console;
+package net.vortexdata.netwatchdog.console.cli;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.console.commands.*;

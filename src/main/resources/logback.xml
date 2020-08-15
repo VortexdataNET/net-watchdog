@@ -17,7 +17,7 @@
         </encoder>
     </appender>
 
-    <appender name="STDOUT" class="net.vortexdata.netwatchdog.console.JLineAppender">
+    <appender name="STDOUT" class="net.vortexdata.netwatchdog.console.cli.JLineAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>
                 %d{HH:mm:ss.SSS} %-5level - %msg%n

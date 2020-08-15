@@ -1,7 +1,7 @@
 package net.vortexdata.netwatchdog.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.CLI;
+import net.vortexdata.netwatchdog.console.cli.CLI;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 
 import java.io.*;
