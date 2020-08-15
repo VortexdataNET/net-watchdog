@@ -33,6 +33,8 @@ public class PerformanceClass {
     }
 
     public boolean lookupContent(String string) {
+        if (string == null || contentLookup == null)
+            return false;
         return string.contains(contentLookup);
     }
 

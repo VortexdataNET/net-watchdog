@@ -47,6 +47,7 @@ public class RestComponent extends BaseComponent {
             if (responseCode == HttpsURLConnection.HTTP_OK) {
                 String response = RestUtils.readResponseStream(new BufferedReader(
                         new InputStreamReader(hurlc.getInputStream())));
+
                 for (PerformanceClass pc : performanceClasses)
                     if (pc.lookupContent(response))
                         return pc;
@@ -95,19 +96,28 @@ public class RestComponent extends BaseComponent {
         RequestMethod rmethod = RequestMethod.valueOf(method);
         String name = obj.getString("name");
         String address = obj.getString("address");
-        String body = obj.getString("body");
+        String body = "";
+        try {
+            body = obj.getString("body");
+        } catch (JSONException e) {
+            netWatchdog.getLogger().debug("No body found for component " + name + ".");
+        }
         String filename = obj.getString("filename");
         ArrayList<PerformanceClass> pcs = ComponentManager.constructPerformanceClassesFromJSONArray(netWatchdog, name, obj.getJSONArray("performanceClasses"));
 
         HashMap<String, String> headers = new HashMap<>();
-        JSONArray headersJSON = obj.getJSONArray("headers");
-        for (int i = 0; i < headersJSON.length(); i++) {
-            String[] parts = headersJSON.getString(i).split(":");
-            if (parts.length == 2) {
-                headers.put(parts[0], parts[1]);
-            } else {
-                netWatchdog.getLogger().warn("Skipping addition of request header " + headersJSON.getString(i) + " as it's malformed. Please consult documentation.");
+        try {
+            JSONArray headersJSON = obj.getJSONArray("headers");
+            for (int i = 0; i < headersJSON.length(); i++) {
+                String[] parts = headersJSON.getString(i).split(":");
+                if (parts.length == 2) {
+                    headers.put(parts[0], parts[1]);
+                } else {
+                    netWatchdog.getLogger().warn("Skipping addition of request header " + headersJSON.getString(i) + " as it's malformed. Please consult documentation.");
+                }
             }
+        } catch (JSONException e) {
+            netWatchdog.getLogger().debug("No headers for component " + name + " found.");
         }
 
         return new RestComponent(
