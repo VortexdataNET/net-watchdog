@@ -19,6 +19,7 @@ public class ShutdownHook extends Thread {
         if (hasStarted)
             return;
 
+        hasStarted = true;
         netWatchdog.getLogger().info("Shutting down for system halt...");
         netWatchdog.getLogger().info("Waiting for console thread to finish...");
         netWatchdog.getConsoleThread().end();
