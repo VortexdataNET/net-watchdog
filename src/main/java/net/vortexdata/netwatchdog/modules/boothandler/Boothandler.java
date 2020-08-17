@@ -11,7 +11,7 @@ public class Boothandler {
     public static LocalDateTime shutdown;
 
     public static float getBootTimeMillis() {
-        return ChronoUnit.NANOS.between(bootStart, bootEnd);
+        return ChronoUnit.MILLIS.between(bootStart, bootEnd);
     }
 
     public static LocalDateTime getBootStart() {

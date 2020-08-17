@@ -58,7 +58,7 @@ public class NetWatchdog {
 
         Boothandler.bootEnd = LocalDateTime.now();
 
-        logger.info("It took " + (int) Boothandler.getBootTimeMillis() / 100000000 + " ("+Boothandler.getBootTimeMillis()+") ms to launch the app.");
+        logger.info("It took " + (int) Boothandler.getBootTimeMillis() + " ms to launch the app.");
 
         query.start();
 
