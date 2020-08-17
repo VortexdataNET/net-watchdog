@@ -9,7 +9,6 @@ import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.query.Query;
 import net.vortexdata.netwatchdog.utils.DateUtils;
-import net.vortexdata.netwatchdog.utils.ShutdownHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +25,6 @@ public class NetWatchdog {
     private ConsoleThread consoleThread;
     private ConfigRegister configRegister;
     private Query query;
-    private ShutdownHook shutdownHook;
 
     public static void main(String[] args) {
         NetWatchdog netWatchdog = new NetWatchdog();
@@ -48,7 +46,7 @@ public class NetWatchdog {
         commandRegister = new CommandRegister(this);
         CLI.init(commandRegister);
 
-        consoleThread = new ConsoleThread(commandRegister);
+        consoleThread = new ConsoleThread(commandRegister, this);
         consoleThread.start();
 
         configRegister = new ConfigRegister(this);
@@ -56,8 +54,6 @@ public class NetWatchdog {
         componentManager.loadAll();
 
         query = new Query(this);
-        shutdownHook = new ShutdownHook(this);
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
         logger.debug("Shutdown hook registered.");
 
         Boothandler.bootEnd = LocalDateTime.now();
@@ -82,7 +78,13 @@ public class NetWatchdog {
     }
 
     public void shutdown() {
-        shutdownHook.start();
+        this.getLogger().info("Shutting down for system halt...");
+        this.getLogger().info("Waiting for console thread to finish...");
+        this.getConsoleThread().end();
+        this.getConsoleThread().interrupt();
+        this.getQuery().interrupt();
+        this.getLogger().info("Ending logging at " + DateUtils.getPrettyStringFromLocalDateTime(LocalDateTime.now()) + ".");
+        System.exit(0);
     }
 
     public Logger getLogger() {
@@ -109,7 +111,4 @@ public class NetWatchdog {
         return query;
     }
 
-    public ShutdownHook getShutdownHook() {
-        return shutdownHook;
-    }
 }
