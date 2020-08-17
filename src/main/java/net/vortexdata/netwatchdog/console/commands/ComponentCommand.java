@@ -55,7 +55,14 @@ public class ComponentCommand extends BaseCommand {
                     printUsage();
                 }
             } else if (args[0].equalsIgnoreCase("disable")) {
-
+                if (args.length > 1) {
+                    if (netWatchdog.getComponentManager().disableComponent(args[1]))
+                        CLI.print("Component disabled.");
+                    else
+                        CLI.print("Component could not be disabled (is it loaded?).");
+                } else {
+                    printUsage();
+                }
             } else if (args[0].equalsIgnoreCase("enable")) {
                 if (args.length > 1) {
                     CLI.print("Trying to load component from file " + args[1] + "...");

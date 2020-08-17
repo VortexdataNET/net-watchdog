@@ -74,10 +74,10 @@ public class ComponentManager {
         }
 
         if (obj.getString("type").equalsIgnoreCase("REST")) {
-            netWatchdog.getLogger().info("Loading REST component...");
+            netWatchdog.getLogger().debug("Loading REST component...");
             return RestComponent.getRestComponentFromJSON(obj, netWatchdog);
         } else if (obj.getString("type").equalsIgnoreCase("SOCKET")) {
-            netWatchdog.getLogger().info("Loading SOCKET component...");
+            netWatchdog.getLogger().debug("Loading SOCKET component...");
             return SocketComponent.getSocketComponentFromJSON(obj, netWatchdog);
         } else if (obj.getString("type").equalsIgnoreCase("PING")) {
 
@@ -135,7 +135,7 @@ public class ComponentManager {
                 if (getComponentByName(c.getName()) != null) {
                     netWatchdog.getLogger().error("Skipping addition of component " + c.getName() + " as this name is already used by another one.");
                 } else {
-                    netWatchdog.getLogger().debug("Adding component " + c.getName() + " to component registry.");
+                    netWatchdog.getLogger().info("Adding component " + c.getName() + " to component registry.");
                     components.add(c);
                 }
             } else {
@@ -262,19 +262,26 @@ public class ComponentManager {
         }
     }
 
-    public boolean disableComponent(String name) {
-        netWatchdog.getLogger().info("Trying to disable component " + name + "...");
-        BaseComponent c = getComponentByName(name);
+    public boolean disableComponent(String filename) {
+        netWatchdog.getLogger().debug("Trying to disable component " + filename + "...");
+        BaseComponent c = getComponentByFilename(filename);
         if (c != null) {
-            netWatchdog.getLogger().info("Disabling component "+name+"...");
+            netWatchdog.getLogger().debug("Disabling component "+filename+"...");
             unloadedComponents.add(new File(ComponentManager.COMPONENTS_DIR + c.getFilename()));
             components.removeIf(x -> x.getName().equalsIgnoreCase(c.getName()));
             return true;
         } else {
-            netWatchdog.getLogger().info("Component "+name+" not found.");
-            CLI.print("Component " + name + " not found. Is it enabled?");
+            netWatchdog.getLogger().debug("Component "+filename+" not found.");
             return false;
         }
+    }
+
+    public BaseComponent getComponentByFilename(String filename) {
+        for (BaseComponent c : components) {
+            if (c.getFilename().equals(filename))
+                return c;
+        }
+        return null;
     }
 
     public ArrayList<BaseComponent> getComponents() {
