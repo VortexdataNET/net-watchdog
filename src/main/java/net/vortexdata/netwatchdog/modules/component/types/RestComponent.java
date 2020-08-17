@@ -59,7 +59,7 @@ public class RestComponent extends BaseComponent {
 
 
                 // Fallback on response time base evaluation
-                PerformanceClass pc = getPerformanceClassByResponseTime(-1);
+                PerformanceClass pc = getPerformanceClassByResponseTime(responseTime);
                 pc.setLastRecordedResponseTime(responseTime);
                 return pc;
             } else {
