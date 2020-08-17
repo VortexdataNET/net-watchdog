@@ -52,14 +52,21 @@ public class RestComponent extends BaseComponent {
                         new InputStreamReader(hurlc.getInputStream())));
 
                 for (PerformanceClass pc : performanceClasses)
-                    if (pc.lookupContent(response))
+                    if (pc.lookupContent(response)) {
+                        pc.setLastRecordedResponseTime(responseTime);
                         return pc;
+                    }
+
 
                 // Fallback on response time base evaluation
-                return getPerformanceClassByResponseTime(responseTime);
+                PerformanceClass pc = getPerformanceClassByResponseTime(-1);
+                pc.setLastRecordedResponseTime(responseTime);
+                return pc;
             } else {
                 // TODO: Give more user agency about what happens if non-ok status is returned
-                return getPerformanceClassByResponseTime(-1);
+                PerformanceClass pc = getPerformanceClassByResponseTime(-1);
+                pc.setLastRecordedResponseTime(-1);
+                return pc;
             }
         } catch (IOException e) {
             return new FallbackPerformanceClass(-1, e.getMessage());

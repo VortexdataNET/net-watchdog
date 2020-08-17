@@ -37,7 +37,7 @@ public class Query {
                                 netWatchdog.getLogger().info("Checking component " + bc.getName() + "...");
                                 PerformanceClass pc = bc.check();
                                 if (pc.getClass() != FallbackPerformanceClass.class) {
-                                    netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + ".");
+                                    netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
                                     pc.runWebhooks();
                                 } else {
                                     netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");

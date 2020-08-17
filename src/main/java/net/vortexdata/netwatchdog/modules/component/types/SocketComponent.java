@@ -32,11 +32,16 @@ public class SocketComponent extends BaseComponent {
             socket.close();
 
             for (PerformanceClass pc : performanceClasses)
-                if (pc.lookupContent(response))
+                if (pc.lookupContent(response)) {
+                    pc.setLastRecordedResponseTime((int) (end-start));
                     return pc;
+                }
+
 
             // Fallback on response time base evaluation
-            return getPerformanceClassByResponseTime((int) (end-start));
+            PerformanceClass pc = getPerformanceClassByResponseTime((int) (end-start));
+            pc.setLastRecordedResponseTime((int) (end-start));
+            return pc;
         } catch (IOException e) {
             return getPerformanceClassByResponseTime(-1);
         }
