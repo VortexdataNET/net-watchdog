@@ -1,7 +1,8 @@
 package net.vortexdata.netwatchdog.modules.component;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.cli.CLI;
+import net.vortexdata.netwatchdog.modules.component.types.RestComponent;
+import net.vortexdata.netwatchdog.modules.component.types.SocketComponent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,9 +15,9 @@ public class ComponentManager {
     public static final String COMPONENTS_DIR = "components//";
     public static final String COMPONENT_IDENTIFIER = "-component.conf";
 
-    private ArrayList<File> unloadedComponents;
-    private ArrayList<BaseComponent> components;
-    private NetWatchdog netWatchdog;
+    private final ArrayList<File> unloadedComponents;
+    private final ArrayList<BaseComponent> components;
+    private final NetWatchdog netWatchdog;
 
     public ComponentManager(NetWatchdog netWatchdog) {
         components = new ArrayList<>();
@@ -116,11 +117,7 @@ public class ComponentManager {
         FilenameFilter compFileFilter = new FilenameFilter(){
             public boolean accept(File dir, String name) {
                 String lowercaseName = name.toLowerCase();
-                if (lowercaseName.endsWith("-component.conf")) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return lowercaseName.endsWith("-component.conf");
             }
         };
         File[] fileList = file.listFiles(compFileFilter);

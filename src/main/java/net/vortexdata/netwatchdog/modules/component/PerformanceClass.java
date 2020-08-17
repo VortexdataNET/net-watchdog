@@ -16,13 +16,13 @@ import java.util.ArrayList;
 
 public class PerformanceClass {
 
-    private String name;
+    private final String name;
     // 0 = start, 1 = end value
-    private int[] responseTimeRange;
+    private final int[] responseTimeRange;
     private int lastRecordedResponseTime;
-    private String contentLookup;
-    private ArrayList<PerformanceClassWebhook> webhooks;
-    private NetWatchdog netWatchdog;
+    private final String contentLookup;
+    private final ArrayList<PerformanceClassWebhook> webhooks;
+    private final NetWatchdog netWatchdog;
 
     public PerformanceClass(String name, int[] responseTimeRange, String contentLookup, ArrayList<PerformanceClassWebhook> webhooks, NetWatchdog netWatchdog) {
         this.name = name;

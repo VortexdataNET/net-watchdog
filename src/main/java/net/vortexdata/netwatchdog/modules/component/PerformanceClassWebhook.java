@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 public class PerformanceClassWebhook {
 
-    private String address;
-    private HashMap<String, String> headers;
-    private String body;
+    private final String address;
+    private final HashMap<String, String> headers;
+    private final String body;
 
     public PerformanceClassWebhook(String address, HashMap<String, String> headers, String body) {
         this.address = address;

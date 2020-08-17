@@ -1,24 +1,19 @@
-package net.vortexdata.netwatchdog.modules.component;
+package net.vortexdata.netwatchdog.modules.component.types;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.utils.RequestMethod;
-import net.vortexdata.netwatchdog.utils.RestUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
+import net.vortexdata.netwatchdog.modules.component.BaseComponent;
+import net.vortexdata.netwatchdog.modules.component.ComponentManager;
+import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
 import org.json.JSONObject;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SocketComponent extends BaseComponent {
 
-    private int port;
+    private final int port;
 
     public SocketComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, int port) {
         super(address, name, filename, performanceClasses);

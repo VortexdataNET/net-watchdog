@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class CommandRegister {
 
     ArrayList<BaseCommand> commands;
-    private NetWatchdog netWatchdog;
+    private final NetWatchdog netWatchdog;
 
     public CommandRegister(NetWatchdog netWatchdog) {
         commands = new ArrayList<>();

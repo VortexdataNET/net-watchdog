@@ -18,8 +18,8 @@ import java.util.ArrayList;
  */
 public class FallbackPerformanceClass extends PerformanceClass {
 
-    private int responseTime;
-    private String info;
+    private final int responseTime;
+    private final String info;
 
     public FallbackPerformanceClass(int responseTime, String additionalInformation) {
         super("Fallback", null, null, null, null);

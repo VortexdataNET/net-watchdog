@@ -4,9 +4,9 @@ import net.vortexdata.netwatchdog.NetWatchdog;
 
 public class ConsoleThread extends Thread {
 
-    private CommandRegister commandRegister;
+    private final CommandRegister commandRegister;
     private boolean active;
-    private NetWatchdog netWatchdog;
+    private final NetWatchdog netWatchdog;
 
     public ConsoleThread(CommandRegister commandRegister, NetWatchdog netWatchdog) {
         active = true;

@@ -9,10 +9,10 @@ import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
 
 public class Query {
 
-    private NetWatchdog netWatchdog;
-    private MainConfig mainConfig;
+    private final NetWatchdog netWatchdog;
+    private final MainConfig mainConfig;
     private boolean hasStarted;
-    private ComponentManager componentManager;
+    private final ComponentManager componentManager;
     private Thread thread;
 
     public Query(NetWatchdog netWatchdog) {

@@ -9,8 +9,8 @@ import java.util.Stack;
 
 public class ConfigRegister {
 
-    private NetWatchdog netWatchdog;
-    private MainConfig mainConfig;
+    private final NetWatchdog netWatchdog;
+    private final MainConfig mainConfig;
 
     public ConfigRegister(NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;

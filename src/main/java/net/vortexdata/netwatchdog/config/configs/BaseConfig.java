@@ -17,7 +17,7 @@ public abstract class BaseConfig {
 
     private ConfigStatus configStatus;
     private String path = "main.cfg";
-    private JSONObject defaultValue;
+    private final JSONObject defaultValue;
     private JSONObject value;
 
     public BaseConfig(String path) {
