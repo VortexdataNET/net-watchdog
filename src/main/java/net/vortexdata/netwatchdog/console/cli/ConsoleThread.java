@@ -14,9 +14,14 @@ public class ConsoleThread extends Thread {
     public void run() {
         active = true;
         while (active) {
-            String input = CLI.readLine("> ");
-            if (!commandRegister.evaluateCommand(input))
-                CLI.print(input.split(" ")[0] + ": Command not found");
+            String input = "";
+            try {
+                input = CLI.readLine("> ");
+                if (!commandRegister.evaluateCommand(input))
+                    CLI.print(input.split(" ")[0] + ": Command not found");
+            } catch (Exception e) {
+                // Ignore
+            }
         }
     }
 
