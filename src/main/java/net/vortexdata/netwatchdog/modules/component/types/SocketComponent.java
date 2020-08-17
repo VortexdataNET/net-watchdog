@@ -26,8 +26,9 @@ public class SocketComponent extends BaseComponent {
             long start = System.currentTimeMillis();
             Socket socket = new Socket(address, port);
             socket.setSoTimeout(5000);
-            DataInputStream dis = new DataInputStream(socket.getInputStream());
-            String response = dis.readUTF();
+            //DataInputStream dis = new DataInputStream(socket.getInputStream());
+            String response = "";
+                    //dis.readUTF();
             long end = System.currentTimeMillis();
             socket.close();
 
