@@ -15,8 +15,8 @@ public class SocketComponent extends BaseComponent {
 
     private final int port;
 
-    public SocketComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, int port) {
-        super(address, name, filename, performanceClasses);
+    public SocketComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass, int port) {
+        super(address, name, filename, performanceClasses, cachePerformanceClass);
         this.port = port;
     }
 
@@ -52,6 +52,13 @@ public class SocketComponent extends BaseComponent {
         String name = obj.getString("name");
         String address = obj.getString("address");
         String filename = obj.getString("filename");
+        boolean cachePerformanceClass = true;
+        try {
+            if (obj.getString("cacheLastResult").equalsIgnoreCase("false"))
+                cachePerformanceClass = false;
+        } catch (Exception e) {
+            netWatchdog.getLogger().debug("Couldn't find cacheLastResult key, falling back to true.");
+        }
         int port = 80;
         try {
             port = Integer.parseInt(obj.getString("port"));
@@ -65,6 +72,7 @@ public class SocketComponent extends BaseComponent {
                 name,
                 filename,
                 pcs,
+                cachePerformanceClass,
                 port
         );
     }

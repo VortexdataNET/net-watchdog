@@ -10,17 +10,30 @@ public abstract class BaseComponent {
     protected String name;
     protected ArrayList<PerformanceClass> performanceClasses;
     protected String filename;
+    protected boolean cachePerformanceClass;
+    protected boolean hasPerformanceClassChanged;
+    protected PerformanceClass lastPerformanceClass;
 
-    public BaseComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses) {
+    public BaseComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass) {
         this.address = address;
         this.name = name;
         this.performanceClasses = performanceClasses;
         this.filename = filename;
+        this.hasPerformanceClassChanged = true;
+        this.cachePerformanceClass = cachePerformanceClass;
     }
 
     public PerformanceClass check() {
         lastCheck = LocalDateTime.now();
-        return runPerformanceCheck();
+        PerformanceClass pc = runPerformanceCheck();
+        if (lastPerformanceClass == null)
+            lastPerformanceClass = pc;
+        else
+            hasPerformanceClassChanged = !lastPerformanceClass.equals(pc);
+
+        if (hasPerformanceClassChanged)
+            lastPerformanceClass = pc;
+        return pc;
     }
 
     public abstract PerformanceClass runPerformanceCheck();
@@ -51,5 +64,17 @@ public abstract class BaseComponent {
 
     public String getFilename() {
         return filename;
+    }
+
+    public boolean isCachePerformanceClass() {
+        return cachePerformanceClass;
+    }
+
+    public boolean isHasPerformanceClassChanged() {
+        return hasPerformanceClassChanged;
+    }
+
+    public PerformanceClass getLastPerformanceClass() {
+        return lastPerformanceClass;
     }
 }

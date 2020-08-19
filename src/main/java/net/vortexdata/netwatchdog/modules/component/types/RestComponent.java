@@ -24,8 +24,8 @@ public class RestComponent extends BaseComponent {
     private final String body;
     private final RequestMethod requestMethod;
 
-    public RestComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, HashMap<String, String> headers, String body, RequestMethod requestMethod) {
-        super(address, name, filename, performanceClasses);
+    public RestComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass, HashMap<String, String> headers, String body, RequestMethod requestMethod) {
+        super(address, name, filename, performanceClasses, cachePerformanceClass);
         this.headers = headers;
         this.body = body;
         this.requestMethod = requestMethod;
@@ -106,6 +106,13 @@ public class RestComponent extends BaseComponent {
         RequestMethod rmethod = RequestMethod.valueOf(method);
         String name = obj.getString("name");
         String address = obj.getString("address");
+        boolean cachePerformanceClass = true;
+        try {
+            if (obj.getString("cacheLastResult").equalsIgnoreCase("false"))
+                cachePerformanceClass = false;
+        } catch (Exception e) {
+            netWatchdog.getLogger().debug("Couldn't find cacheLastResult key, falling back to true.");
+        }
         String body = "";
         try {
             body = obj.getString("body");
@@ -135,6 +142,7 @@ public class RestComponent extends BaseComponent {
                 name,
                 filename,
                 pcs,
+                cachePerformanceClass,
                 headers,
                 body,
                 rmethod

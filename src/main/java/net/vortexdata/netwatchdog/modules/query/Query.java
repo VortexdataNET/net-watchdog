@@ -38,7 +38,10 @@ public class Query {
                                 PerformanceClass pc = bc.check();
                                 if (pc.getClass() != FallbackPerformanceClass.class) {
                                     netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
-                                    pc.runWebhooks();
+                                    if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
+                                        pc.runWebhooks();
+                                    else
+                                        netWatchdog.getLogger().info("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefor skips webhooks.");
                                 } else {
                                     netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
                                 }

@@ -166,11 +166,11 @@ public class ComponentManager {
             return null;
         }
         if (!obj.has("responseTimeRange")) {
-            netWatchdog.getLogger().error("Can not construct performance class "+obj.has("name")+" for component " + componentName + " as its response time range is not configured.");
+            netWatchdog.getLogger().error("Can not construct performance class "+obj.get("name")+" for component " + componentName + " as its response time range is not configured.");
             return null;
         }
         if (!obj.has("webhookPosts")) {
-            netWatchdog.getLogger().error("Can not construct performance class "+obj.has("name")+" for component " + componentName + " as no webhooks are configured.");
+            netWatchdog.getLogger().error("Can not construct performance class "+obj.get("name")+" for component " + componentName + " as no webhooks are configured.");
             return null;
         }
 
