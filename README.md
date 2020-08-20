@@ -46,6 +46,17 @@ The NET Watchdog was created in an effort to create a scalable, light-weight, se
 * Multi-file component configuration
 * Built with Java
 
+### Libraries Used
+
+* [Jansi](https://github.com/fusesource/jansi)
+* [JLine3](https://github.com/jline/jline3)
+* [org.json](https://github.com/stleary/JSON-java)
+* [Logback](https://github.com/qos-ch/logback)
+* [slf4j](https://github.com/qos-ch/slf4j)
+* [junit](https://github.com/junit-team/junit5)
+
+
+
 ## Getting Started
 
 Simply download the latest release and unzip it in a folder you want the application to build it's directory structure in. Once unzipped, simply run the jar files by using
@@ -58,13 +69,15 @@ java -jar net-watchdog.jar
 
 ### Prerequisites
 
-For all platforms, you have to have Java 8 installed.
+You have to have Java 8 installed.
 
 For Linux users, you might want to install Screen.
 
 ```sh
 apt-get install screen
 ```
+
+
 
 ## Components
 
@@ -144,7 +157,7 @@ A REST (representational state transfer) component can be used to check websites
 
 A socket component can connect to a server socket on a specific port (eg. heartbeat port on TSQPF).
 
-```
+```json
 {
    "type":"SOCKET",
    "name":"My Database",
@@ -208,67 +221,95 @@ A socket component can connect to a server socket on a specific port (eg. heartb
 }
 ```
 
+### Keys & values
+
+The tables below gives an overview of all root component and performance class keys and values, what they do and what data they can work with.
+
+#### Root Keys
+
+| Key                	| Value                                                          	| Fallback   	| Description                                          	                | Required 	| REST 	| SOCKET 	|
+|--------------------	|----------------------------------------------------------------	|-------------  |--------------------------------------------------------------------	|----------	|------	|--------	|
+| type               	| String, "REST" / "SOCKET"                                      	| N/A           | Component type.                                                      	| Yes      	| ✔️    	| ✔️      	|
+| method             	| String, "GET" / "POST"                                         	| N/A           | Sets request method for REST component.                             	| Yes      	| ✔️    	| ❌      	|
+| name               	| String, any                                                    	| N/A           | Specifies the custom display name of the component.  	                | Yes      	| ✔️    	| ✔️      	|
+| filename           	| String, must match conf. filename (excl. -component.conf part) 	| N/A           | Helps the app find the source component config file.              	| Yes      	| ✔️    	| ✔️      	|
+| address            	| String, any                                                    	| N/A           | Defines the API / service address.                   	                | Yes      	| ✔️    	| ✔️      	|
+| cacheLastResult    	| Boolean                                                         	| true          | True if webhooks should be re-run on same Performance Class result. 	| No       	| ✔️    	| ✔️      	|
+| performanceClasses 	| Array, Performance Class configuration                         	| N/A           | Defines the Performance Classes used with component. 	                | No       	| ✔️    	| ✔️      	|
+
+#### Performance Class
+
+| Key               	| Value                                                         	| Def. Value 	| Description                                                                           	| Required 	| REST 	| SOCKET 	|
+|-------------------	|---------------------------------------------------------------	|------------	|---------------------------------------------------------------------------------------	|----------	|------	|--------	|
+| name              	| String, any                                                   	| N/A        	| Performance Class display name.                                                       	| Yes      	| ✔️    	| ✔️      	|
+| responseTimeRange 	| String, two Integers devided by "-" or "timeout" for timeout. 	| N/A        	| Sets the response time range in milliseconds (eg. "10-80" or "timeout").              	| Yes      	| ✔️    	| ✔️      	|
+| webhookPosts      	| Array, Webhooks                                               	| N/A        	| Sets the webhoks that are executed if component check returns this performance class. 	| No       	| ✔️    	| ✔️      	|
+
+#### Webhook
+
+| Key     	| Value         	| Def. Value 	| Description                                    	| Required 	| REST 	| SOCKET 	|
+|---------	|---------------	|------------	|------------------------------------------------	|----------	|------	|--------	|
+| address 	| String, any   	| N/A        	| Webhook address.                               	| Yes      	| ✔️    	| ✔️      	|
+| headers 	| Array, String 	| N/A        	| Request headers, key and value devided by ":". 	| No       	| ✔️    	| ✔️      	|
+| body    	| String, any   	| N/A        	| Request body.                                  	| No       	| ✔️    	| ✔️      	|
+
 ## Main Config
 
+The main config just tells the app basic information like how long the delay between query cycles should be in seconds.
 
-<!-- USAGE EXAMPLES -->
+```json
+{
+   "pollRate": "30",
+   "enabled": "true"
+}
+```
+
+
+
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+### Creating and loading components
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+Once you've successfully launched the app, you can use the command `component create <your-component-filename>` to create a base component template file. You'll need to edit the configs values and fill in your service details (see Components section).
+
+When the component is fully configured, you can load it via the command `component enable <your-component-filename>`. The app will try to load and enable your component. You can ensure that your component is loaded by using the `components` command.
+
+You can also reload and re-enable all component files by using the `components reload` command.
+
+### Disabling a component
+
+If you'd like to exclude a component from the query you can simply run the `component disabled <your-component-filename>` command. This will remove it from the loaded components pool.
 
 
 
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
-
-
-
-<!-- CONTRIBUTING -->
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
+2. Create your Feature Branch
+3. Commit your Changes
+4. Push to the Branch
 5. Open a Pull Request
 
 
 
-<!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+This project is distributed under the MIT License. See `LICENSE` for more information.
 
 
 
-<!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+This is a project published by VortexdataNET. If you have any questions, feel free to contact our support via support@vortexdata.net.
 
 
 
-<!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Img Shields](https://shields.io)
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Pages](https://pages.github.com)
-* [Animate.css](https://daneden.github.io/animate.css)
-* [Loaders.css](https://connoratherton.com/loaders)
-* [Slick Carousel](https://kenwheeler.github.io/slick)
-* [Smooth Scroll](https://github.com/cferdinandi/smooth-scroll)
-* [Sticky Kit](http://leafo.net/sticky-kit)
-* [JVectorMap](http://jvectormap.com)
-* [Font Awesome](https://fontawesome.com)
+
+* [Best README template by otheneildrew](https://github.com/othneildrew/Best-README-Template)
+* [contributors-img](https://contributors-img.web.app/)
 
 
 
