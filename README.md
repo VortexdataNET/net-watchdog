@@ -230,10 +230,11 @@ The tables below gives an overview of all root component and performance class k
 | Key                	| Value                                                          	| Fallback   	| Description                                          	                | Required 	| REST 	| SOCKET 	|
 |--------------------	|----------------------------------------------------------------	|-------------  |--------------------------------------------------------------------	|----------	|------	|--------	|
 | type               	| String, "REST" / "SOCKET"                                      	| N/A           | Component type.                                                      	| Yes      	| ✔️    	| ✔️      	|
-| method             	| String, "GET" / "POST"                                         	| N/A           | Sets request method for REST component.                             	| Yes      	| ✔️    	| ❌      	|
+| method             	| String, "GET" / "POST"                                         	| N/A           | Sets request method for REST component.                             	| Yes      	| ✔️    	| ❌      	    |
 | name               	| String, any                                                    	| N/A           | Specifies the custom display name of the component.  	                | Yes      	| ✔️    	| ✔️      	|
 | filename           	| String, must match conf. filename (excl. -component.conf part) 	| N/A           | Helps the app find the source component config file.              	| Yes      	| ✔️    	| ✔️      	|
 | address            	| String, any                                                    	| N/A           | Defines the API / service address.                   	                | Yes      	| ✔️    	| ✔️      	|
+| port              	| Integer, any                                                    	| 80            | Defines socket port.                                 	                | No      	| ❌️    	| ✔️      	|
 | cacheLastResult    	| Boolean                                                         	| true          | True if webhooks should be re-run on same Performance Class result. 	| No       	| ✔️    	| ✔️      	|
 | performanceClasses 	| Array, Performance Class configuration                         	| N/A           | Defines the Performance Classes used with component. 	                | No       	| ✔️    	| ✔️      	|
 
@@ -244,6 +245,7 @@ The tables below gives an overview of all root component and performance class k
 | name              	| String, any                                                   	| N/A        	| Performance Class display name.                                                       	| Yes      	| ✔️    	| ✔️      	|
 | responseTimeRange 	| String, two Integers devided by "-" or "timeout" for timeout. 	| N/A        	| Sets the response time range in milliseconds (eg. "10-80" or "timeout").              	| Yes      	| ✔️    	| ✔️      	|
 | webhookPosts      	| Array, Webhooks                                               	| N/A        	| Sets the webhoks that are executed if component check returns this performance class. 	| No       	| ✔️    	| ✔️      	|
+| contentLookup      	| String, any                                               	    | N/A        	| Lookup string in request response, overrides response time.                              	| No       	| ✔️    	| ✔️      	|
 
 #### Webhook
 
