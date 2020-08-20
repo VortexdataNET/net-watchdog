@@ -268,6 +268,22 @@ The main config just tells the app basic information like how long the delay bet
 
 
 
+## Command Line
+
+The command line gives administrators control over the app, what services it checks, and allows for creation and configuration of new components without having to exit the app, reducing downtime potential.
+
+### Commands
+
+| Name       	| Parameters                                                                  	| Description                                                	|
+|------------	|-----------------------------------------------------------------------------	|------------------------------------------------------------	|
+| exit       	| N/A                                                                         	| Stops the app.                                             	|
+| clear      	| N/A                                                                         	| Clears CLI screen.                                         	|
+| component  	| create [filename], disable [filename], enable [filename], delete [filename] 	| Manage and manipulate components.                          	|
+| components 	| (reload)                                                                    	| Shows a list of all components or reloads all.             	|
+| help       	| N/A                                                                         	| Shows a list of all commands, parameters and descriptions. 	|
+
+
+
 ## Usage
 
 ### Creating and loading components
