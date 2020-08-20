@@ -37,7 +37,7 @@
 
 ## About
 
-The NET Watchdog was created in an effort to create a scaleable, light-weight, self-sustaining system which checks for service outages or degradations. The application can then react to such events by calling webhooks which could for example message system adminstrators, update a status page (eg. Cachet), send emails or trigger internal countermeasures.
+The NET Watchdog was created in an effort to create a scalable, light-weight, self-sustaining system which checks for service outages or degradations. The application can then react to such events by calling webhooks which could for example message system adminstrators, update a status page (eg. Cachet), send emails or trigger internal countermeasures.
 
 ### Quick Facts
 
@@ -66,12 +66,149 @@ For Linux users, you might want to install Screen.
 apt-get install screen
 ```
 
-### Components
+## Components
 
 The services you want to check are called components by the app. A component is defined and configured by a JSON config files in the `components` directory. The files name must end with `-component.conf` to be recognized by the app.
 
-### Main Config
+There are currently two types of components: REST and Socket components.
 
+### REST component
+
+A REST (representational state transfer) component can be used to check websites and REST API statuses. The JSON below shows an example configuration:
+
+```json
+{
+   "type":"REST",
+   "method":"GET",
+   "name":"Example Service",
+   "filename":"example-service",
+   "address":"https://example.com/api/myapi.php",
+   "performanceClasses":[
+      {
+         "name":"Operational",
+         "responseTimeRange":"0-80",
+         "webhookPosts":[
+            {
+               "address":"https://mystatuspage.com/api/v1/components/4",
+               "headers":[
+                  "Token:MySuperSecretToken"
+               ],
+               "body":"{\"status\":\"1\"}"
+            }
+         ]
+      },
+      {
+         "name":"Performance Issues",
+         "responseTimeRange":"81-1000",
+         "webhookPosts":[
+            {
+               "address":"https://mystatuspage.com/api/v1/components/4",
+               "headers":[
+                  "Token:MySuperSecretToken"
+               ],
+               "body":"{\"status\":\"2\"}"
+            }
+         ]
+      },
+      {
+         "name":"Partial Outage",
+         "responseTimeRange":"1001-5000",
+         "webhookPosts":[
+            {
+               "address":"https://mystatuspage.com/api/v1/components/4",
+               "headers":[
+                  "Token:MySuperSecretToken"
+               ],
+               "body":"{\"status\":\"3\"}"
+            }
+         ]
+      },
+      {
+         "name":"Timeout",
+         "responseTimeRange":"timeout",
+         "webhookPosts":[
+            {
+               "address":"https://mystatuspage.com/api/v1/components/4",
+               "headers":[
+                  "Token:MySuperSecretToken"
+               ],
+               "body":"{\"status\":\"4\"}"
+            }
+         ]
+      }
+   ]
+}
+```
+
+### Socket component
+
+A socket component can connect to a server socket on a specific port (eg. heartbeat port on TSQPF).
+
+```
+{
+   "type":"SOCKET",
+   "name":"My Database",
+   "filename":"my-database",
+   "address":"192.168.0.1",
+   "port":"3306",
+   "performanceClasses":[
+      {
+         "name":"Operational",
+         "responseTimeRange":"0-80",
+         "webhookPosts":[
+            {
+               "address":"https://mystatuspage.com/api/v1/components/4",
+               "headers":[
+                  "Token:MySuperSecretToken"
+               ],
+               "body":"{\"status\":\"1\"}"
+            }
+         ]
+      },
+      {
+         "name":"Performance Issues",
+         "responseTimeRange":"81-1000",
+         "webhookPosts":[
+            {
+               "address":"https://mystatuspage.com/api/v1/components/4",
+               "headers":[
+                  "Token:MySuperSecretToken"
+               ],
+               "body":"{\"status\":\"2\"}"
+            }
+         ]
+      },
+      {
+         "name":"Partial Outage",
+         "responseTimeRange":"1001-5000",
+         "webhookPosts":[
+            {
+               "address":"https://mystatuspage.com/api/v1/components/4",
+               "headers":[
+                  "Token:MySuperSecretToken"
+               ],
+               "body":"{\"status\":\"3\"}"
+            }
+         ]
+      },
+      {
+         "name":"Timeout",
+         "responseTimeRange":"timeout",
+         "webhookPosts":[
+            {
+               "address":"https://mystatuspage.com/api/v1/components/4",
+               "headers":[
+                  "Token:MySuperSecretToken"
+               ],
+               "body":"{\"status\":\"4\"}"
+            }
+         ]
+      }
+   ]
+}
+```
+
+## Main Config
 
 
 <!-- USAGE EXAMPLES -->
