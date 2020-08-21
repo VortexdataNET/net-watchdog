@@ -22,16 +22,26 @@
 
 ## Table of Contents
 
-* [About the Project](#about-the-project)
-  * [Built With](#built-with)
+* [About](#about)
+  * [Quick-Facts](#quick-facts)
+  * [Libraries Used](#libraries-used)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
+* [Components](#components)
+  * [REST component](#rest-component)
+  * [Socket component](#socket-component)
+  * [Keys & values](#keys--values)
+* [Main Config](#main-config)
+* [Command Line](#command-line)
+  * [Commands](#commands)
 * [Usage](#usage)
-* [Roadmap](#roadmap)
+  * [Creating and loading components](#creating-and-loading-components)
+  * [Disabling a component](#disabling-a-component)
 * [Contributing](#contributing)
 * [License](#license)
+* [Creator](#creator)
 * [Contact](#contact)
+* [Acknowledgements](#acknowledgements)
 
 
 
@@ -312,9 +322,25 @@ Contributions are what make the open source community such an amazing place to b
 
 
 
+## Versioning
+
+This project is versioned using the Semantic Versioning guidelines.
+
+
+
 ## License
 
 This project is distributed under the MIT License. See `LICENSE` for more information.
+
+
+
+## Creator
+
+<h4>Sandro Kierner</h4>
+- Twitter: https://twitter.com/OfficialTAXSET<br>
+- GitHub: https://github.com/TAXSET<br>
+- Email: sandro@vortexdata.net<br>
+
 
 
 
