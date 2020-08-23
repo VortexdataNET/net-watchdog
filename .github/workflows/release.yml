@@ -10,8 +10,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Get Latest Tag
-        uses: WyriHaximus/github-action-get-previous-tag@0.2.0
+      - name: Get Latest Tag 
+        id: get_latest_tag
+        uses: oprypin/find-latest-tag@v1
+        with:
+          repository: taxset/net-watchdog  # The repository to scan.
+          releases-only: true  # We know that all relevant tags have a GitHub release for them.
       - name: Draft Release
         uses: release-drafter/release-drafter@v5
         with:
