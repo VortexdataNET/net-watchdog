@@ -1,0 +1,56 @@
+name: Release CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get Latest Tag
+        uses: WyriHaximus/github-action-get-previous-tag@0.2.0
+      - name: Draft Release
+        uses: release-drafter/release-drafter@v5
+        with:
+          name: $RESOLVED_VERSION
+          tag: $RESOLVED_VERSION
+          draft: true
+      - name: Setup Maven 3
+        uses: aahmed-se/setup-maven@v3
+      - name: Run Maven tests
+        run: mvn clean test
+      - name: String Replace
+        uses: bejoistic/str-replace@v1.0.2
+        with:
+          # The string we want to replace
+          find: ${{ steps.get_latest_tag.outputs.tag }}
+          # The new string to replace with
+          replace: ${{ steps.release.outputs.tag_name }}
+      - name: Clean, validate and compile
+        run: mvn clean validate compile
+      - name: Assembly
+        run: | 
+          mvn assembly:single
+          mv target/net-watchdog-${{ steps.draft_release.outputs.tag_name }}-jar-with-dependencies.jar target/net-watchdog.jar
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1.0.2
+        with:
+          # The URL for uploading assets to the release
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          # The path to the asset you want to upload
+          asset_path: 'target/net-watchdog.jar'
+          # The name of the asset you want to upload
+          asset_name: net-watchdog.jar
+          # The content-type of the asset you want to upload. See the supported Media Types here: https://www.iana.org/assignments/media-types/media-types.xhtml for more information
+          asset_content_type: application/jar
+      - name: Publish Release
+        # You may pin to the exact commit or the version.
+        # uses: eregon/publish-release@d6aee8c288e653387d895ee64d559fc0dd63339d
+        uses: eregon/publish-release@v1.0.3
+        with:
+          # The ID of the draft release to publish
+          release_id: ${{ steps.draft_release.outputs.id }}
+        
