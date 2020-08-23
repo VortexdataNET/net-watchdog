@@ -22,6 +22,8 @@ jobs:
           name: $RESOLVED_VERSION
           tag: $RESOLVED_VERSION
           draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Maven 3
         uses: aahmed-se/setup-maven@v3
       - name: Run Maven tests
