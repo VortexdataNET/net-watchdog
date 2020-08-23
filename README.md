@@ -1,6 +1,6 @@
 <br />
 <p align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://netwatchdog.vortexdata.net">
     <img src="https://github.com/TAXSET/net-watchdog/blob/master/media/icon-transparent.png?raw=true" alt="Logo" width="200" height="200">
   </a>
 
@@ -47,7 +47,7 @@
 
 ## About
 
-The NET Watchdog was created in an effort to create a scalable, light-weight, self-sustaining system which checks for service outages or degradations. The application can then react to such events by calling webhooks which could for example message system adminstrators, update a status page (eg. Cachet), send emails or trigger internal countermeasures.
+The NET Watchdog was created in an effort to create a scalable, light-weight, self-sustaining system which checks for service outages or degradations. The application can then react to such events by calling webhooks which could for example notify system adminstrators, update a status page (eg. Cachet), send emails or trigger internal countermeasures.
 
 ### Quick Facts
 
