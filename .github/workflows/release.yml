@@ -42,14 +42,14 @@ jobs:
           # The string we want to replace
           find: \@since\s*0\.0\.0
           # The new string to replace with
-          replace: "@since ${{ steps.draft_release.outputs.tag_name }}"
+          replace: @since ${{ steps.draft_release.outputs.tag_name }}
       - name: Javadoc Version Replace
         uses: bejoistic/str-replace@v1.0.2
         with:
           # The string we want to replace
           find: \@version.*\n
           # The new string to replace with
-          replace: "@version ${{ steps.draft_release.outputs.tag_name }}"
+          replace: @version ${{ steps.draft_release.outputs.tag_name }}
       - name: Clean, validate and compile
         run: mvn clean validate compile
       - name: Assembly
