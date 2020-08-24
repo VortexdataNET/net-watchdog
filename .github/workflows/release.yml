@@ -60,4 +60,6 @@ jobs:
         with:
           # The ID of the draft release to publish
           release_id: ${{ steps.draft_release.outputs.id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
