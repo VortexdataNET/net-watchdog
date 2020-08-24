@@ -32,8 +32,8 @@ import org.jline.utils.AttributedStringBuilder;
  * Help command listing all available commands.
  *
  * @author  Sandro Kierner
- * @since   0.0.0
- * @version 0.0.0
+ * @since 0.0.1
+ * @version 0.0.1
  */
 public class HelpCommand extends BaseCommand {
 
