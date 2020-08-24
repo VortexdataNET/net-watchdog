@@ -78,11 +78,15 @@ jobs:
           release_id: ${{ steps.draft_release.outputs.id }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Merge into develop
+      - name: Commit changes
         run: |
           git add .
           git commit -m "Release ${{ steps.draft_release.outputs.tag_name }}"
-          git checkout develop
-          git merge origin master
-          git push origin develop
+      - name: Merge changes into develop
+        uses: actions/checkout@master
+        with:
+          type: now
+          from_branch: master
+          target_branch: develop
+          github_token: ${{ secrets.GITHUB_TOKEN }}
         
