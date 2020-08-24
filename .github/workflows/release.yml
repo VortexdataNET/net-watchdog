@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: 'develop'
       - name: Get Latest Tag 
         id: get_latest_tag
         uses: oprypin/find-latest-tag@v1
