@@ -46,7 +46,7 @@ import java.time.LocalDateTime;
  *
  * @author  Sandro Kierner
  * \@since 0.0.1
- * \@version 0.0.1
+ * \\@version 0.0.2
  */
 public class NetWatchdog {
 

@@ -30,7 +30,7 @@ import java.util.Stack;
 
 /**
  * @author  Sandro Kierner
- * \@version 0.0.1
+ * \\@version 0.0.2
  * \@since 0.0.1
  */
 public class MainConfig extends BaseConfig {

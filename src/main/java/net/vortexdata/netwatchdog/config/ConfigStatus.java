@@ -29,7 +29,7 @@ package net.vortexdata.netwatchdog.config;
  *
  * @author          Sandro Kierner
  * \@since 0.0.1
- * \@version 0.0.1
+ * \\@version 0.0.2
  */
 public enum ConfigStatus {
     UNLOADED,LOADED,LOAD_FAILED

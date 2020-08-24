@@ -29,7 +29,7 @@ package net.vortexdata.netwatchdog.utils;
  *
  * @author  Sandro Kierner
  * \@since 0.0.1
- * \@version 0.0.1
+ * \\@version 0.0.2
  */
 public enum RequestMethod {
     GET, PUT, POST
