@@ -40,16 +40,16 @@ jobs:
         uses: bejoistic/str-replace@v1.0.2
         with:
           # The string we want to replace
-          find: \@since\s*0\.0\.0
+          find: '@since\s*0\.0\.0'
           # The new string to replace with
-          replace: \@since ${{ steps.draft_release.outputs.tag_name }}
+          replace: '@since ${{ steps.draft_release.outputs.tag_name }}'
       - name: Javadoc Version Replace
         uses: bejoistic/str-replace@v1.0.2
         with:
           # The string we want to replace
-          find: \@version.*\n
+          find: '@version.*\n'
           # The new string to replace with
-          replace: \@version ${{ steps.draft_release.outputs.tag_name }}
+          replace: '@version ${{ steps.draft_release.outputs.tag_name }}\n'
       - name: Clean, validate and compile
         run: mvn clean validate compile
       - name: Assembly
@@ -86,11 +86,8 @@ jobs:
           git commit -m "Release ${{ steps.draft_release.outputs.tag_name }}"
           git push
       - name: Merge master into develop
-        # You may pin to the exact commit or the version.
-        # uses: devmasx/merge-branch@f469882817d277403efcfba82a62fe96a61a6805
-        uses: devmasx/merge-branch@v1.3.0
-        with:
-          target_branch: develop
-          from_branch: master
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git checkout develop
+          git merge master
+          git push
         
