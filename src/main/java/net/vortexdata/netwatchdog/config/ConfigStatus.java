@@ -28,8 +28,8 @@ package net.vortexdata.netwatchdog.config;
  * Config Status enum, used in the components command.
  *
  * @author          Sandro Kierner
- * @since           0.0.0
- * @version         0.0.0
+ * \@since 0.0.1
+ * \@version 0.0.1
  */
 public enum ConfigStatus {
     UNLOADED,LOADED,LOAD_FAILED

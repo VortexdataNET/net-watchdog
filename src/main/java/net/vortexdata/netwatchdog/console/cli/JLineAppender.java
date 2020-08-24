@@ -37,8 +37,8 @@ import ch.qos.logback.core.util.CachingDateFormatter;
  * Logging interface which uses JLine for async. CLI write / read.
  *
  * @author  Sandro Kierner
- * @since   0.0.0
- * @version 0.0.0
+ * \@since 0.0.1
+ * \@version 0.0.1
  */
 public final class JLineAppender extends AppenderBase<ILoggingEvent> {
 

@@ -32,8 +32,8 @@ import java.time.temporal.ChronoUnit;
  * Primitive utility class used to store system event timestamps.
  *
  * @author  Sandro Kierner
- * @since   0.0.0
- * @version 0.0.0
+ * \@since 0.0.1
+ * \@version 0.0.1
  */
 public class Boothandler {
 

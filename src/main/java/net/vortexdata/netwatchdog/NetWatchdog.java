@@ -45,8 +45,8 @@ import java.time.LocalDateTime;
  * Main class of NET Watchdog app.
  *
  * @author  Sandro Kierner
- * @since   0.0.0
- * @version 0.0.0
+ * \@since 0.0.1
+ * \@version 0.0.1
  */
 public class NetWatchdog {
 

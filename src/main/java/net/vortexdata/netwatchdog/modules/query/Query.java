@@ -35,8 +35,8 @@ import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
  * Query thread responsible for periodically checking all components.
  *
  * @author  Sandro Kierner
- * @since   0.0.0
- * @version 0.0.0
+ * \@since 0.0.1
+ * \@version 0.0.1
  */
 public class Query {
 
