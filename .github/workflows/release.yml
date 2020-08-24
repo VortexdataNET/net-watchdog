@@ -88,7 +88,6 @@ jobs:
       - name: Merge master into develop
         run: |
           git pull --allow-unrelated-histories
-          git checkout develop
-          git merge master --allow-unrelated-histories
+          git merge -s ours develop --allow-unrelated-histories
           git push
         
