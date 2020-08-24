@@ -38,7 +38,7 @@ import java.util.Arrays;
  *
  * @author  Sandro Kierner
  * \@since 0.0.1
- * \\@version 0.0.2
+ * \\\@version 0.0.3
  */
 public class CommandRegister {
 
