@@ -33,7 +33,7 @@ import org.jline.utils.AttributedStringBuilder;
  *
  * @author  Sandro Kierner
  * \@since 0.0.1
- * \\\@version 0.0.3
+ * \\\@version 0.0.4
  */
 public class HelpCommand extends BaseCommand {
 

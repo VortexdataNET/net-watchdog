@@ -33,7 +33,7 @@ import org.jline.reader.impl.completer.ArgumentCompleter;
  *
  * @author  Sandro Kierner
  * \@since 0.0.1
- * \\\@version 0.0.3
+ * \\\@version 0.0.4
  */
 public class ExitCommand extends BaseCommand {
 

@@ -34,7 +34,7 @@ import java.util.HashMap;
  *
  * @author  Sandro Kierner
  * \@since 0.0.1
- * \\\@version 0.0.3
+ * \\\@version 0.0.4
  */
 public abstract class BaseCommand {
 
