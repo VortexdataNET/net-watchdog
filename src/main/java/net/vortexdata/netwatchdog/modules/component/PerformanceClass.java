@@ -42,8 +42,8 @@ import java.util.ArrayList;
  * Base class for performance classes.
  *
  * @author  Sandro Kierner
- * @since   0.0.0
- * @version 0.0.0
+ * @since 0.0.1
+ * @version 0.0.1
  */
 public class PerformanceClass {
 
