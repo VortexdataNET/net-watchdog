@@ -47,7 +47,7 @@ jobs:
         uses: bejoistic/str-replace@v1.0.2
         with:
           # The string we want to replace
-          find: \@version.*\n
+          find: \@version.*.\..\..
           # The new string to replace with
           replace: \@version ${{ steps.draft_release.outputs.tag_name }}
       - name: Clean, validate and compile
