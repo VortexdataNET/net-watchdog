@@ -32,7 +32,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @author          Sandro Kierner
  * \@since 0.0.1
- * \\\@version 0.0.4
+ * \\\@version 0.0.5
  */
 public class DateUtils {
 
