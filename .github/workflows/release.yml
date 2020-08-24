@@ -31,9 +31,9 @@ jobs:
         uses: bejoistic/str-replace@v1.0.2
         with:
           # The string we want to replace
-          find: (?<=(<version>)).*(?=(<\/version>))
+          find: <version>.*<\/version>
           # The new string to replace with
-          replace: ${{ steps.draft_release.outputs.tag_name }}
+          replace: <version>${{ steps.draft_release.outputs.tag_name }}</version>
       - name: Clean, validate and compile
         run: mvn clean validate compile
       - name: Assembly
