@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-	    with:
-			ref: 'develop'
       - name: Checkout Master
         run: git checkout master
       - name: Get Latest Tag 
