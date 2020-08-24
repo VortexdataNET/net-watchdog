@@ -344,12 +344,6 @@ This project is distributed under the MIT License. See `LICENSE` for more inform
 
 
 
-## Contact
-
-This is a project published by VortexdataNET. If you have any questions, feel free to contact our support via support@vortexdata.net.
-
-
-
 ## Acknowledgements
 
 * [Best README template by otheneildrew](https://github.com/othneildrew/Best-README-Template)
