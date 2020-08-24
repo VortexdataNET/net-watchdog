@@ -38,7 +38,7 @@ import ch.qos.logback.core.util.CachingDateFormatter;
  *
  * @author  Sandro Kierner
  * @since 0.0.6
- * @version 0.0.6
+ * @version 0.0.7
  */
 public final class JLineAppender extends AppenderBase<ILoggingEvent> {
 

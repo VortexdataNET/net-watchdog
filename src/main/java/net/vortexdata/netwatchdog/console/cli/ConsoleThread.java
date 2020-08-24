@@ -31,7 +31,7 @@ import net.vortexdata.netwatchdog.NetWatchdog;
  *
  * @author  Sandro Kierner
  * @since 0.0.6
- * @version 0.0.6
+ * @version 0.0.7
  */
 public class ConsoleThread extends Thread {
 

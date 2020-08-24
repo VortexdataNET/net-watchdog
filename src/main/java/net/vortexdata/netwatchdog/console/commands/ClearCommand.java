@@ -32,7 +32,7 @@ import net.vortexdata.netwatchdog.console.cli.CLI;
  *
  * @author  Sandro Kierner
  * @since 0.0.6
- * @version 0.0.6
+ * @version 0.0.7
  */
 public class ClearCommand extends BaseCommand {
 
