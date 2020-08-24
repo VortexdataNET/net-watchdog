@@ -80,6 +80,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Commit changes
         run: |
+          git config user.email "administration@vortexdata.net"
+          git config user.name "Release CI/CD"
           git add .
           git commit -m "Release ${{ steps.draft_release.outputs.tag_name }}"
       - name: Merge changes into develop
