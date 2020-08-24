@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Checkout Master
-        run: git checkout master
       - name: Get Latest Tag 
         id: get_latest_tag
         uses: oprypin/find-latest-tag@v1
@@ -85,10 +83,9 @@ jobs:
           git add .
           git commit -m "Release ${{ steps.draft_release.outputs.tag_name }}"
           git push
-      - name: Merge master into develop
+      - name: Merge develop into master
         run: |
-          git pull --allow-unrelated-histories
-          git merge -s ours origin/develop --allow-unrelated-histories
-          git commit -m "Merging back into develop"
+          git pull
+          git merge -s ours origin/master --allow-unrelated-histories
           git push
         
