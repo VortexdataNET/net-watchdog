@@ -46,11 +46,13 @@ jobs:
           # The URL for uploading assets to the release
           upload_url: ${{ steps.draft_release.outputs.upload_url }}
           # The path to the asset you want to upload
-          asset_path: 'target/net-watchdog.jar'
+          asset_path: target/net-watchdog.jar
           # The name of the asset you want to upload
           asset_name: net-watchdog.jar
           # The content-type of the asset you want to upload. See the supported Media Types here: https://www.iana.org/assignments/media-types/media-types.xhtml for more information
           asset_content_type: application/jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish Release
         # You may pin to the exact commit or the version.
         # uses: eregon/publish-release@d6aee8c288e653387d895ee64d559fc0dd63339d
