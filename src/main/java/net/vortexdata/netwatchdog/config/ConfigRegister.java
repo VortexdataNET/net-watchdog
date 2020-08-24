@@ -33,8 +33,8 @@ import java.util.Stack;
  * Class used to load, store and evaluate all system configs in.
  *
  * @author  Sandro Kierner
- * @version 0.0.0
- * @since   0.0.0
+ * @version 0.0.6
+ * @since 0.0.6
  */
 public class ConfigRegister {
 

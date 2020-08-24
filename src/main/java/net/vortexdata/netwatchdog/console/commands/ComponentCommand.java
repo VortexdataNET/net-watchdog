@@ -36,8 +36,8 @@ import java.nio.file.Paths;
  * Component modifier command.
  *
  * @author  Sandro Kierner
- * @since   0.0.0
- * @version 0.0.0
+ * @since 0.0.6
+ * @version 0.0.6
  */
 public class ComponentCommand extends BaseCommand {
 

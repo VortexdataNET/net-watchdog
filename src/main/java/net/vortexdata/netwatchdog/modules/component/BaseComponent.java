@@ -31,8 +31,8 @@ import java.util.ArrayList;
  * Base class used by all sub-components.
  *
  * @author  Sandro Kierner
- * @since   0.0.0
- * @version 0.0.0
+ * @since 0.0.6
+ * @version 0.0.6
  */
 public abstract class BaseComponent {
 

@@ -39,8 +39,8 @@ import java.util.HashMap;
  * REST utils class used in REST components and performance class webhooks.
  *
  * @author  Sandro Kierner
- * @since   0.0.0
- * @version 0.0.0
+ * @since 0.0.6
+ * @version 0.0.6
  */
 public class RestUtils {
 

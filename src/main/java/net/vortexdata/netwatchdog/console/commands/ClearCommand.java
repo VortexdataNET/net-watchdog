@@ -31,8 +31,8 @@ import net.vortexdata.netwatchdog.console.cli.CLI;
  * Clear the CLI screen.
  *
  * @author  Sandro Kierner
- * @since   0.0.0
- * @version 0.0.0
+ * @since 0.0.6
+ * @version 0.0.6
  */
 public class ClearCommand extends BaseCommand {
 
