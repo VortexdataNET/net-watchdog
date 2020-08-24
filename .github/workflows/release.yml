@@ -84,11 +84,13 @@ jobs:
           git config user.name "Release CI/CD"
           git add .
           git commit -m "Release ${{ steps.draft_release.outputs.tag_name }}"
-      - name: Merge changes into develop
-        uses: actions/checkout@master
+          git push
+      - name: Merge master into develop
+        # You may pin to the exact commit or the version.
+        # uses: devmasx/merge-branch@f469882817d277403efcfba82a62fe96a61a6805
+        uses: devmasx/merge-branch@v1.3.0
         with:
-          type: now
-          from_branch: master
           target_branch: develop
+          from_branch: master
           github_token: ${{ secrets.GITHUB_TOKEN }}
         
