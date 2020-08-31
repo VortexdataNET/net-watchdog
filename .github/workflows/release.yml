@@ -16,7 +16,7 @@ jobs:
       id: get_latest_tag
       uses: oprypin/find-latest-tag@v1
       with:
-        repository: taxset/net-watchdog  # The repository to scan.
+        repository: vortexdatanet/net-watchdog  # The repository to scan.
         releases-only: true  # We know that all relevant tags have a GitHub release for them.
     - name: Draft Release
       id: draft_release
