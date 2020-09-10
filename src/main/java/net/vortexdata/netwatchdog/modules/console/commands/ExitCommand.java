@@ -22,54 +22,31 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.console.cli;
+package net.vortexdata.netwatchdog.modules.console.commands;
 
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
+
+import net.vortexdata.netwatchdog.NetWatchdog;
 import org.jline.reader.impl.completer.ArgumentCompleter;
-import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
-
-import java.io.IOException;
 
 /**
- * CLI JLine utility class used to asynchronously print to and read
- * from command line.
+ * Application halt command.
  *
  * @author  Sandro Kierner
  * @since 0.0.1
  * @version 0.0.1
  */
-public class CLI {
+public class ExitCommand extends BaseCommand {
 
-    public static LineReader lineReader;
-
-    public static void init(CommandRegister register) {
-        Terminal terminal = null;
-
-        try {
-            terminal = TerminalBuilder
-                    .builder()
-                    .build();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ArgumentCompleter ac = register.getCommandNameArgumentCompleter();
-        ac.setStrict(true);
-
-        lineReader = LineReaderBuilder.builder()
-                .terminal(terminal)
-                .completer(ac)
-                .build();
+    public ExitCommand(NetWatchdog netWatchdog) {
+        super(netWatchdog, "exit", "Exit and close the app.");
     }
 
-    public static void print(String msg) {
-        lineReader.printAbove(msg);
+    protected ArgumentCompleter populateArgumentCompleter() {
+        return null;
     }
 
-    public static String readLine(String prefix) {
-        return lineReader.readLine(prefix);
+    @Override
+    public void call(String[] args) {
+        netWatchdog.shutdown();
     }
-
 }
