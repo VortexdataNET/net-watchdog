@@ -25,10 +25,10 @@
 package net.vortexdata.netwatchdog;
 
 import net.vortexdata.netwatchdog.config.ConfigRegister;
-import net.vortexdata.netwatchdog.console.cli.CLI;
-import net.vortexdata.netwatchdog.console.cli.CommandRegister;
-import net.vortexdata.netwatchdog.console.cli.ConsoleThread;
-import net.vortexdata.netwatchdog.console.cli.JLineAppender;
+import net.vortexdata.netwatchdog.modules.console.cli.CLI;
+import net.vortexdata.netwatchdog.modules.console.cli.CommandRegister;
+import net.vortexdata.netwatchdog.modules.console.cli.ConsoleThread;
+import net.vortexdata.netwatchdog.modules.console.cli.JLineAppender;
 import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.query.Query;

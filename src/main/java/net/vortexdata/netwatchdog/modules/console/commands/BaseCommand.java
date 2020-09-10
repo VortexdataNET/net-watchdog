@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.console.commands;
+package net.vortexdata.netwatchdog.modules.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.cli.CLI;
+import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 
 import java.util.HashMap;
 

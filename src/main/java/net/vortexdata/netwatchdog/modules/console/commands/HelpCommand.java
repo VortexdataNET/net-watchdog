@@ -22,31 +22,46 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.console.commands;
-
+package net.vortexdata.netwatchdog.modules.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import org.jline.reader.impl.completer.ArgumentCompleter;
+import net.vortexdata.netwatchdog.modules.console.cli.CLI;
+import org.jline.utils.AttributedStringBuilder;
 
 /**
- * Application halt command.
+ * Help command listing all available commands.
  *
  * @author  Sandro Kierner
  * @since 0.0.1
  * @version 0.0.1
  */
-public class ExitCommand extends BaseCommand {
+public class HelpCommand extends BaseCommand {
 
-    public ExitCommand(NetWatchdog netWatchdog) {
-        super(netWatchdog, "exit", "Exit and close the app.");
-    }
-
-    protected ArgumentCompleter populateArgumentCompleter() {
-        return null;
+    public HelpCommand(NetWatchdog netWatchdog) {
+        super(netWatchdog, "help", "Get a list of all commands.");
+        this.args.put("command", "Creates a new target.");
     }
 
     @Override
     public void call(String[] args) {
-        netWatchdog.shutdown();
+        if (args.length > 0) {
+            BaseCommand c = netWatchdog.getCommandRegister().getCommandByName(args[0]);
+            if (c != null) {
+                c.printUsage();
+            } else {
+                CLI.print("Unknown command.");
+            }
+        } else {
+            AttributedStringBuilder builder = new AttributedStringBuilder();
+            builder.append("The following commands are supported at the moment:\n\n");
+            StringBuilder sb = new StringBuilder();
+            for (BaseCommand c : netWatchdog.getCommandRegister().getCommands()) {
+                sb.append(String.format("%-32s%-32s", c.getName(), c.getDescription()) + "\n");
+            }
+
+            CLI.print(builder.toAnsi());
+            CLI.print(sb.toString());
+        }
     }
+
 }

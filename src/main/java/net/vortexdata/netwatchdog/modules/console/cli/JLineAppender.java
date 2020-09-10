@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.console.cli;
+package net.vortexdata.netwatchdog.modules.console.cli;
 
 import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
