@@ -22,15 +22,46 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.config;
+package net.vortexdata.netwatchdog.modules.config.configs;
+
+import org.json.JSONObject;
+
+import java.util.Stack;
 
 /**
- * Config Status enum, used in the components command.
- *
- * @author          Sandro Kierner
- * @since 0.0.1
+ * @author  Sandro Kierner
  * @version 0.0.1
+ * @since 0.0.1
  */
-public enum ConfigStatus {
-    UNLOADED,LOADED,LOAD_FAILED
+public class MainConfig extends BaseConfig {
+
+    public static final String CONFIG_PATH = "main.conf";
+
+    public MainConfig() {
+        super(CONFIG_PATH);
+    }
+
+    @Override
+    public Stack<String> checkIntegrity() {
+
+        Stack<String> errorStack = new Stack<>();
+
+        JSONObject value = getValue();
+        try {
+            value.getBoolean("enabled");
+        } catch (Exception e) {
+            errorStack.push("Invalid value for key 'enabled', value must be a boolean.");
+        }
+
+        return errorStack;
+    }
+
+    @Override
+    public JSONObject populateDefaultValue() {
+        JSONObject obj = new JSONObject();
+        obj.put("enabled", "true");
+        obj.put("pollRate", "30");
+        return obj;
+    }
+
 }

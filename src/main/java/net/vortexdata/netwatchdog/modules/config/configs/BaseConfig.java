@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.config.configs;
+package net.vortexdata.netwatchdog.modules.config.configs;
 
-import net.vortexdata.netwatchdog.config.ConfigStatus;
+import net.vortexdata.netwatchdog.modules.config.ConfigStatus;
 import org.json.JSONObject;
 
 import java.io.*;

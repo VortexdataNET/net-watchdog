@@ -25,7 +25,7 @@
 package net.vortexdata.netwatchdog.modules.query;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.config.configs.MainConfig;
+import net.vortexdata.netwatchdog.modules.config.configs.MainConfig;
 import net.vortexdata.netwatchdog.modules.component.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.component.FallbackPerformanceClass;

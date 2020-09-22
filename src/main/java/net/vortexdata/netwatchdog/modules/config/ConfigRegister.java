@@ -22,11 +22,14 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.config;
+package net.vortexdata.netwatchdog.modules.config;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.config.configs.MainConfig;
+import net.vortexdata.netwatchdog.modules.config.configs.BaseConfig;
+import net.vortexdata.netwatchdog.modules.config.configs.MainConfig;
+import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 /**
@@ -38,39 +41,50 @@ import java.util.Stack;
  */
 public class ConfigRegister {
 
+    ArrayList<BaseConfig> configs;
+
     private final NetWatchdog netWatchdog;
-    private final MainConfig mainConfig;
 
     public ConfigRegister(NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;
-        mainConfig = new MainConfig();
+        configs = new ArrayList<>();
+        configs.add(new MainConfig());
+        configs.add(new NorthstarConfig());
         loadAll();
     }
 
     public boolean loadAll() {
-        loadMainConfig();
-        return true;
-    }
 
-    public boolean loadMainConfig() {
-        mainConfig.load();
-        Stack<String> errors = mainConfig.checkIntegrity();
-        if (mainConfig.checkIntegrity() != null && !mainConfig.checkIntegrity().isEmpty()) {
-            netWatchdog.getLogger().error("Integrity check for main config failed, logging error stack:");
-            for (String s : errors) {
-                netWatchdog.getLogger().error(s);
+        boolean didNoErrorOccur = true;
+
+        for (BaseConfig config : configs) {
+            config.load();
+            Stack<String> errors = config.checkIntegrity();
+            if (errors != null && !errors.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (String s : errors) {
+                    sb.append(s).append("\n");
+                }
+                netWatchdog.getLogger().error("Integrity check for config " + config.getPath() + " failed, logging error stack: \n" + sb.toString());
+                didNoErrorOccur = false;
             }
-            netWatchdog.getLogger().info("Check check your main configuration for the above mentions error(s) and try again.");
-            return false;
         }
-        return true;
+
+        return didNoErrorOccur;
     }
 
     public NetWatchdog getNetWatchdog() {
         return netWatchdog;
     }
 
+    public BaseConfig getConfigByPath(String path) {
+        for (BaseConfig config : configs)
+            if (config.getPath().equals(path))
+                return config;
+        return null;
+    }
+
     public MainConfig getMainConfig() {
-        return mainConfig;
+        return (MainConfig) getConfigByPath(MainConfig.CONFIG_PATH);
     }
 }

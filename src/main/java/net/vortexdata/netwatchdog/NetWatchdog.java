@@ -24,7 +24,7 @@
 
 package net.vortexdata.netwatchdog;
 
-import net.vortexdata.netwatchdog.config.ConfigRegister;
+import net.vortexdata.netwatchdog.modules.config.ConfigRegister;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 import net.vortexdata.netwatchdog.modules.console.cli.CommandRegister;
 import net.vortexdata.netwatchdog.modules.console.cli.ConsoleThread;
@@ -33,6 +33,7 @@ import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.query.Query;
 import net.vortexdata.netwatchdog.utils.DateUtils;
+import net.vortexdata.netwatchdog.utils.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,7 @@ import java.time.LocalDateTime;
  */
 public class NetWatchdog {
 
+    private Platform platform;
     private ComponentManager componentManager;
     private Logger logger;
     private CommandRegister commandRegister;
@@ -76,10 +78,15 @@ public class NetWatchdog {
         logger.info("App starting... Please wait.");
         commandRegister = new CommandRegister(this);
         CLI.init(commandRegister);
-
         consoleThread = new ConsoleThread(commandRegister, this);
         consoleThread.start();
 
+        // Check platform compatibility
+        platform = Platform.getPlatformFromString(System.getProperty("os.name"));
+        if (platform == null)
+            logger.warn("Looks like your operating system is not supported. This may cause issues with some of the apps systems. Please either use Windows, Linux or macOS.");
+
+        // configs
         configRegister = new ConfigRegister(this);
         componentManager = new ComponentManager(this);
         componentManager.loadAll();
@@ -116,6 +123,10 @@ public class NetWatchdog {
         this.getQuery().interrupt();
         this.getLogger().info("Ending logging at " + DateUtils.getPrettyStringFromLocalDateTime(LocalDateTime.now()) + ".");
         System.exit(0);
+    }
+
+    public Platform getPlatform() {
+        return platform;
     }
 
     public Logger getLogger() {
