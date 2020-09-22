@@ -7,8 +7,10 @@ import java.util.Stack;
 
 public class NorthstarConfig extends BaseConfig {
 
+    public static final String CONFIG_PATH = "northstar.conf";
+
     public NorthstarConfig() {
-        super("northstar.conf");
+        super(CONFIG_PATH);
     }
 
     @Override

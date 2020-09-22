@@ -5,6 +5,14 @@ import net.vortexdata.netwatchdog.utils.Platform;
 
 import java.net.Socket;
 
+/**
+ * Wrapper class used to store Northstar information.
+ *
+ * @author Sandro Kierner
+ * @author Michael Wiesinger
+ * @version 0.0.0
+ * @since 0.0.0
+ */
 public class Northstar {
 
     public Northstar(NorthstarRegister northstarRegister, String address) {
@@ -17,28 +25,10 @@ public class Northstar {
 
     public boolean isAvailable() {
 
-        Platform platform = Platform.getPlatformFromString(System.getProperty("os.name"));
+        // TODO: Implement os ping system
 
-        if (platform != null) {
+        return false;
 
-        } else {
-            netWatchdog.getLogger().warn("");
-        }
-
-        try {
-            Process p = Runtime.getRuntime().exec(command);
-            BufferedReader inputStream = new BufferedReader(
-                    new InputStreamReader(p.getInputStream()));
-
-            String s = "";
-            // reading output stream of the command
-            while ((s = inputStream.readLine()) != null) {
-                System.out.println(s);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 }

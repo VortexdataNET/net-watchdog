@@ -53,6 +53,25 @@ public class Query {
         this.componentManager = netWatchdog.getComponentManager();
     }
 
+    private void runChecks() {
+        netWatchdog.getLogger().debug("Running check cycle...");
+        for (BaseComponent bc : componentManager.getComponents()) {
+            netWatchdog.getLogger().info("Checking component " + bc.getName() + "...");
+            PerformanceClass pc = bc.check();
+            if (pc.getClass() != FallbackPerformanceClass.class) {
+                netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
+                if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
+                    pc.runWebhooks();
+                else
+                    netWatchdog.getLogger().info("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefor skips webhooks.");
+            } else {
+                netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
+            }
+
+        }
+        netWatchdog.getLogger().debug("Check cycle finished, going to sleep.");
+    }
+
     public void start() {
         if (hasStarted)
             return;
@@ -63,22 +82,16 @@ public class Query {
                 while (true) {
                     try {
                         if (!componentManager.getComponents().isEmpty()) {
-                            netWatchdog.getLogger().debug("Running check cycle...");
-                            for (BaseComponent bc : componentManager.getComponents()) {
-                                netWatchdog.getLogger().info("Checking component " + bc.getName() + "...");
-                                PerformanceClass pc = bc.check();
-                                if (pc.getClass() != FallbackPerformanceClass.class) {
-                                    netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
-                                    if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
-                                        pc.runWebhooks();
-                                    else
-                                        netWatchdog.getLogger().info("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefor skips webhooks.");
+                            if (netWatchdog.getPlatform() != null) {
+                                // TODO: Evaluate Northstar check results and either skip check cycle or run it.
+                                if (0 < 1) {
+                                    runChecks();
                                 } else {
-                                    netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
+                                    netWatchdog.getLogger().error("Northstar results insufficient for check cycle, skipping.");
                                 }
-
+                            } else {
+                                runChecks();
                             }
-                            netWatchdog.getLogger().debug("Check cycle finished, going to sleep.");
                         }
                         Thread.sleep(mainConfig.getValue().getInt("pollRate") * 1000);
                     } catch (InterruptedException e) {
