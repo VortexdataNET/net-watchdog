@@ -30,6 +30,7 @@ import net.vortexdata.netwatchdog.modules.component.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.component.FallbackPerformanceClass;
 import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
+import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 
 /**
  * Query thread responsible for periodically checking all components.
@@ -79,15 +80,18 @@ public class Query {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getPlatform() == null)
+                    netWatchdog.getLogger().warn("The Northstar system has been disabled as it is not supported on your operating system.");
                 while (true) {
                     try {
                         if (!componentManager.getComponents().isEmpty()) {
-                            if (netWatchdog.getPlatform() != null) {
-                                // TODO: Evaluate Northstar check results and either skip check cycle or run it.
-                                if (0 < 1) {
+                            if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getPlatform() != null) {
+                                int neededPercent = netWatchdog.getConfigRegister().getConfigByPath(NorthstarConfig.CONFIG_PATH).getValue().getInt("availPercentMin");
+                                int actualPercent = netWatchdog.getNorthstarRegister().getAvailabilityPercentage();
+                                if (actualPercent >= neededPercent) {
                                     runChecks();
                                 } else {
-                                    netWatchdog.getLogger().error("Northstar results insufficient for check cycle, skipping.");
+                                    netWatchdog.getLogger().warn("Northstar results insufficient to run check cycle (got "+actualPercent+", expecting "+neededPercent+"), skipping.");
                                 }
                             } else {
                                 runChecks();

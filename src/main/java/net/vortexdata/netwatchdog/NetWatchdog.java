@@ -31,6 +31,7 @@ import net.vortexdata.netwatchdog.modules.console.cli.ConsoleThread;
 import net.vortexdata.netwatchdog.modules.console.cli.JLineAppender;
 import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
+import net.vortexdata.netwatchdog.modules.northstar.NorthstarRegister;
 import net.vortexdata.netwatchdog.modules.query.Query;
 import net.vortexdata.netwatchdog.utils.DateUtils;
 import net.vortexdata.netwatchdog.utils.Platform;
@@ -53,6 +54,7 @@ public class NetWatchdog {
 
     private Platform platform;
     private ComponentManager componentManager;
+    private NorthstarRegister northstarRegister;
     private Logger logger;
     private CommandRegister commandRegister;
     private ConsoleThread consoleThread;
@@ -85,11 +87,19 @@ public class NetWatchdog {
         platform = Platform.getPlatformFromString(System.getProperty("os.name"));
         if (platform == null)
             logger.warn("Looks like your operating system is not supported ("+System.getProperty("os.name")+"). This may cause issues with some of the apps systems. Please either use Windows, Linux or macOS.");
+        else
+            logger.debug("Platform " + platform + " detected.");
 
         // configs
         configRegister = new ConfigRegister(this);
         componentManager = new ComponentManager(this);
         componentManager.loadAll();
+
+        // Northstar register
+        if (configRegister.getMainConfig().getValue().has("enableNorthstars") && configRegister.getMainConfig().getValue().getString("enableNorthstars").equalsIgnoreCase("true")) {
+            logger.info("Enabling Northstar system.");
+            northstarRegister = new NorthstarRegister(this);
+        }
 
         query = new Query(this);
         logger.debug("Shutdown hook registered.");
@@ -153,4 +163,7 @@ public class NetWatchdog {
         return query;
     }
 
+    public NorthstarRegister getNorthstarRegister() {
+        return northstarRegister;
+    }
 }

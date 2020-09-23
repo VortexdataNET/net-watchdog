@@ -11,33 +11,55 @@ public class NorthstarFactory {
         int samples = 0;
         int timeout = -1;
 
-        String type = jsonObject.getString("type");
-        if (!type.equalsIgnoreCase("ICMP") && !type.equalsIgnoreCase("SOCKET")) {
+        if (jsonObject.has("address")) {
+            address = jsonObject.getString("address");
+        } else {
+            nr.getNetWatchdog().getLogger().error("Can not construct Northstar as no address is defined.");
             return null;
         }
 
+        String type = jsonObject.getString("type");
+        if (!type.equalsIgnoreCase("ICMP") && !type.equalsIgnoreCase("SOCKET")) {
+            nr.getNetWatchdog().getLogger().error("Can not construct Northstar with address "+address+". Type must either be SOCKET or ICMP.");
+            return null;
+        }
+
+
         if (type.equalsIgnoreCase("SOCKET")) {
-            port = jsonObject.getInt("port");
-            timeout = jsonObject.getInt("timeout");
+            if (jsonObject.has("port"))
+                port = jsonObject.getInt("port");
+            else {
+                nr.getNetWatchdog().getLogger().error("Can not construct Northstar with address "+address+". Port is missing.");
+                return null;
+            }
+
+
+            if (jsonObject.has("timeout"))
+                timeout = jsonObject.getInt("timeout");
+            else
+                timeout = 5000;
         }
 
         if (type.equalsIgnoreCase("ICMP")) {
-            samples = jsonObject.getInt("samples");
+            if (jsonObject.has("samples"))
+                samples = jsonObject.getInt("samples");
+            else
+                samples = 1;
         }
 
         if (type.equalsIgnoreCase("ICMP")) {
             return new ICMPNorthstar(
                 nr,
                 address,
-                samples,
-                timeout
+                timeout,
+                samples
             );
         } else if (type.equalsIgnoreCase("SOCKET")) {
             return new SocketNorthstar(
-                    nr,
-                    address,
-                    timeout,
-                    port
+                nr,
+                address,
+                timeout,
+                port
             );
         }
         return null;

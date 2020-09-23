@@ -21,7 +21,7 @@ public class NorthstarRegister {
     private NetWatchdog netWatchdog;
 
     public NorthstarRegister(NetWatchdog netWatchdog) {
-        this.netWatchdog = new NetWatchdog();
+        this.netWatchdog = netWatchdog;
         northstars = new ArrayList<>();
         NorthstarConfig northstarConfig = (NorthstarConfig) netWatchdog.getConfigRegister().getConfigByPath(NorthstarConfig.CONFIG_PATH);
         JSONArray array = northstarConfig.getValue().getJSONArray("northstars");
@@ -33,9 +33,9 @@ public class NorthstarRegister {
         }
     }
 
-    public int getAvailabilityPercentage() throws PlatformNotSupportedException {
+    public int getAvailabilityPercentage() {
         if (netWatchdog.getPlatform() == null)
-            throw new PlatformNotSupportedException("Your operating systems ping program is not supported by the app.");
+            return 0;
 
         double successful = 0;
         for (NorthstarBase n : northstars) {
@@ -53,4 +53,9 @@ public class NorthstarRegister {
     public NetWatchdog getNetWatchdog() {
         return netWatchdog;
     }
+
+    public NetWatchdog getNetwatchdog() {
+        return netWatchdog;
+    }
+
 }

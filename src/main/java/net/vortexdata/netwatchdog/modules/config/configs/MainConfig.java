@@ -59,7 +59,7 @@ public class MainConfig extends BaseConfig {
     @Override
     public JSONObject populateDefaultValue() {
         JSONObject obj = new JSONObject();
-        obj.put("enabled", "true");
+        obj.put("enableNorthstars", "true");
         obj.put("pollRate", "30");
         return obj;
     }
