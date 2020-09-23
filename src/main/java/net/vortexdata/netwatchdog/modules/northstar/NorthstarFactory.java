@@ -40,6 +40,7 @@ public class NorthstarFactory {
                     port
             );
         }
+        return null;
     }
 
 }

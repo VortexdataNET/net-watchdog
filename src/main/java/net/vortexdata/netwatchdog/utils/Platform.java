@@ -1,12 +1,21 @@
 package net.vortexdata.netwatchdog.utils;
 
 public enum Platform {
-    WINDOWS("WINDOWS"),
+    WINDOWS("WIN"),
     LINUX("LINUX"),
-    MAC("MACOS");
+    MAC("MAC");
 
     public static Platform getPlatformFromString(String platformRaw) {
-        // Do regex magic
+        platformRaw = platformRaw.toUpperCase();
+        if (platformRaw.contains(WINDOWS.regex)) {
+            return Platform.WINDOWS;
+        } else if (platformRaw.contains(LINUX.regex)) {
+            return Platform.LINUX;
+        } else if (platformRaw.contains(MAC.regex)) {
+            return Platform.MAC;
+        } else {
+            return null;
+        }
     }
 
     private final String regex;

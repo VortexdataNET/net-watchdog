@@ -84,7 +84,7 @@ public class NetWatchdog {
         // Check platform compatibility
         platform = Platform.getPlatformFromString(System.getProperty("os.name"));
         if (platform == null)
-            logger.warn("Looks like your operating system is not supported. This may cause issues with some of the apps systems. Please either use Windows, Linux or macOS.");
+            logger.warn("Looks like your operating system is not supported ("+System.getProperty("os.name")+"). This may cause issues with some of the apps systems. Please either use Windows, Linux or macOS.");
 
         // configs
         configRegister = new ConfigRegister(this);
