@@ -13,22 +13,20 @@ import java.net.Socket;
  * @version 0.0.0
  * @since 0.0.0
  */
-public class Northstar {
+public abstract class NorthstarBase {
 
-    public Northstar(NorthstarRegister northstarRegister, String address) {
+    public NorthstarBase(NorthstarRegister northstarRegister, String address, int timeout, int samples) {
+        this.timeout = timeout;
         this.northstarRegister = northstarRegister;
         this.address = address;
+        this.samples = samples;
     }
 
-    private NorthstarRegister northstarRegister;
-    private String address;
+    protected int samples;
+    protected int timeout;
+    protected NorthstarRegister northstarRegister;
+    protected String address;
 
-    public boolean isAvailable() {
-
-        // TODO: Implement os ping system
-
-        return false;
-
-    }
+    public abstract boolean isAvailable();
 
 }
