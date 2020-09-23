@@ -1,9 +1,9 @@
 package net.vortexdata.netwatchdog.utils;
 
 public enum Platform {
-    WINDOWS("REGEX"),
-    LINUX("REGEX"),
-    MAC("REGEX");
+    WINDOWS("WINDOWS"),
+    LINUX("LINUX"),
+    MAC("MACOS");
 
     public static Platform getPlatformFromString(String platformRaw) {
         // Do regex magic

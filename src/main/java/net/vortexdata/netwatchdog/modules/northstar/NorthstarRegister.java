@@ -3,6 +3,8 @@ package net.vortexdata.netwatchdog.modules.northstar;
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -22,9 +24,12 @@ public class NorthstarRegister {
         this.netWatchdog = new NetWatchdog();
         northstars = new ArrayList<>();
         NorthstarConfig northstarConfig = (NorthstarConfig) netWatchdog.getConfigRegister().getConfigByPath(NorthstarConfig.CONFIG_PATH);
-        JSONArray array = northstarConfig.getValue().getJSONArray("addresses");
+        JSONArray array = northstarConfig.getValue().getJSONArray("northstars");
         for (int i = 0; i < array.length(); i++) {
-            northstars.add(new NorthstarBase(this, array.getString(i)));
+            JSONObject ns = array.getJSONObject(i);
+            NorthstarBase nb = NorthstarFactory.getNorthstarFromJSON(ns, this);
+            if (nb != null)
+                northstars.add(nb);
         }
     }
 

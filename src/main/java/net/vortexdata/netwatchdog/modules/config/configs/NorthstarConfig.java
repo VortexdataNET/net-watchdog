@@ -18,11 +18,8 @@ public class NorthstarConfig extends BaseConfig {
         Stack<String> errorStack = new Stack<>();
 
         JSONObject value = getValue();
-        try {
-            value.getBoolean("enabled");
-        } catch (Exception e) {
-            errorStack.push("Invalid value for key 'enabled', value must be a boolean.");
-        }
+
+
 
         return errorStack;
     }
@@ -30,11 +27,24 @@ public class NorthstarConfig extends BaseConfig {
     @Override
     public JSONObject populateDefaultValue() {
         JSONObject obj = new JSONObject();
-        JSONArray addressArray = new JSONArray();
-        addressArray.put("1.1.1.1");
-        addressArray.put("8.8.8.8");
-        addressArray.put("8.8.4.4");
-        obj.put("addresses", addressArray);
+
+        JSONArray northstars = new JSONArray();
+
+        JSONObject northstar1 = new JSONObject();
+        northstar1.put("type", "ICMP");
+        northstar1.put("samples", "1");
+        northstar1.put("address", "1.1.1.1");
+
+        JSONObject northstar2 = new JSONObject();
+        northstar2.put("type", "SOCKET");
+        northstar2.put("timeout", "6000");
+        northstar2.put("address", "8.8.8.8");
+        northstar2.put("port", "80");
+
+        northstars.put(northstar1);
+        northstars.put(northstar2);
+
+        obj.put("northstars", northstars);
         obj.put("availPercentMin", "100");
         return obj;
     }
