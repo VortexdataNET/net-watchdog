@@ -7,10 +7,12 @@ import java.util.Stack;
 
 public class NorthstarConfig extends BaseConfig {
 
+    private boolean canNorthstarsBeUsed;
     public static final String CONFIG_PATH = "northstar.conf";
 
     public NorthstarConfig() {
         super(CONFIG_PATH);
+        canNorthstarsBeUsed = false;
     }
 
     @Override
@@ -19,6 +21,10 @@ public class NorthstarConfig extends BaseConfig {
 
         JSONObject value = getValue();
 
+        if (!value.has("availPercentMin")) {
+            errorStack.add("Minimum availability percentage is not set.");
+            canNorthstarsBeUsed = false;
+        }
 
 
         return errorStack;

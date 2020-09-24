@@ -48,9 +48,20 @@ public class MainConfig extends BaseConfig {
 
         JSONObject value = getValue();
         try {
-            value.getBoolean("enabled");
+            value.getBoolean("enableNorthstars");
         } catch (Exception e) {
-            errorStack.push("Invalid value for key 'enabled', value must be a boolean.");
+            errorStack.push("Invalid value for key 'enableNorthstars', value must be a boolean.");
+        }
+
+        if (value.has("pollRate")) {
+            String pollRateS = value.getString("pollRate");
+            int pollRate = -1;
+            try {
+                if (Integer.parseInt(pollRateS) < 0)
+                    errorStack.push("The 'pollRate' value must be higher than 0.");
+            } catch (Exception e) {
+                errorStack.push("Failed to parse 'pollRate' to an integer.");
+            }
         }
 
         return errorStack;

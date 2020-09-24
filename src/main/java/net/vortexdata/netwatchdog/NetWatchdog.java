@@ -52,6 +52,7 @@ import java.time.LocalDateTime;
  */
 public class NetWatchdog {
 
+    private boolean isShuttingDown;
     private Platform platform;
     private ComponentManager componentManager;
     private NorthstarRegister northstarRegister;
@@ -69,6 +70,7 @@ public class NetWatchdog {
     public void launch() {
 
         Boothandler.bootStart = LocalDateTime.now();
+        isShuttingDown = false;
 
         // Display start screen
         printCopyHeader();
@@ -101,14 +103,20 @@ public class NetWatchdog {
             northstarRegister = new NorthstarRegister(this);
         }
 
+        // Boot-wrapup checks
+        logger.debug("Starting boot-wrapup checks.");
+        if (configRegister.didCriticalConfigFail()) {
+            logger.error("Encountered a critical configuration error during boot which may cause issues at runtime.");
+            shutdown();
+        }
+
+        // Init query
         query = new Query(this);
-        logger.debug("Shutdown hook registered.");
-
-        Boothandler.bootEnd = LocalDateTime.now();
-
-        logger.info("It took " + (int) Boothandler.getBootTimeMillis() + " ms to launch the app.");
-
         query.start();
+
+        // End boot sequence
+        Boothandler.bootEnd = LocalDateTime.now();
+        logger.info("It took " + (int) Boothandler.getBootTimeMillis() + " ms to launch the app.");
 
     }
 
@@ -126,11 +134,18 @@ public class NetWatchdog {
     }
 
     public void shutdown() {
+        if (isShuttingDown)
+            return;
+        isShuttingDown = true;
         this.getLogger().info("Shutting down for system halt...");
         this.getLogger().info("Waiting for console thread to finish...");
-        this.getConsoleThread().end();
-        this.getConsoleThread().interrupt();
-        this.getQuery().interrupt();
+        if (getConsoleThread() != null) {
+            this.getConsoleThread().end();
+            this.getConsoleThread().interrupt();
+        }
+        if (getQuery() != null) {
+            this.getQuery().interrupt();
+        }
         this.getLogger().info("Ending logging at " + DateUtils.getPrettyStringFromLocalDateTime(LocalDateTime.now()) + ".");
         System.exit(0);
     }

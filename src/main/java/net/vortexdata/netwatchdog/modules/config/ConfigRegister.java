@@ -44,12 +44,14 @@ public class ConfigRegister {
     ArrayList<BaseConfig> configs;
 
     private final NetWatchdog netWatchdog;
+    private boolean didCriticalConfigFail;
 
     public ConfigRegister(NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;
         configs = new ArrayList<>();
         configs.add(new MainConfig());
         configs.add(new NorthstarConfig());
+        didCriticalConfigFail = false;
         loadAll();
     }
 
@@ -63,11 +65,15 @@ public class ConfigRegister {
             if (errors != null && !errors.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
                 for (String s : errors) {
+                    if (s == null)
+                        break;
                     sb.append(s).append("\n");
                 }
                 netWatchdog.getLogger().error("Integrity check for config " + config.getPath() + " failed, logging error stack: \n" + sb.toString());
                 didNoErrorOccur = false;
             }
+            if (!didNoErrorOccur && config.isCritical())
+                didCriticalConfigFail = true;
         }
 
         return didNoErrorOccur;
@@ -86,5 +92,9 @@ public class ConfigRegister {
 
     public MainConfig getMainConfig() {
         return (MainConfig) getConfigByPath(MainConfig.CONFIG_PATH);
+    }
+
+    public boolean didCriticalConfigFail() {
+        return didCriticalConfigFail;
     }
 }
