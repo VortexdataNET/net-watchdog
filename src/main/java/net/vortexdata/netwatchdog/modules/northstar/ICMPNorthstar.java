@@ -27,9 +27,8 @@ public class ICMPNorthstar extends NorthstarBase {
         if (northstarRegister.getNetWatchdog().getPlatform() == null) {
             return false;
         } else if (northstarRegister.getNetWatchdog().getPlatform() == Platform.LINUX || northstarRegister.getNetWatchdog().getPlatform() == Platform.MAC) {
-            processBuilder.command(("ping -t "+address+" " + samples).split(" "));
+            processBuilder.command(("ping -c 1 -t "+address+" " + samples).split(" "));
         } else if (northstarRegister.getNetWatchdog().getPlatform() == Platform.WINDOWS) {
-            northstarRegister.getNetWatchdog().getLogger().debug("Sending "+ ("ping "+address+" -n "+ samples));
             processBuilder.command(("ping "+address+" -n "+ samples).split(" "));
         }
 
@@ -46,6 +45,14 @@ public class ICMPNorthstar extends NorthstarBase {
                     } else {
                         pingResults.add(-1);
                     }
+                } else if (line.toUpperCase().contains("TIMED OUT") ||
+                        line.toUpperCase().contains("UNREACHABLE") ||
+                        line.toUpperCase().contains("FAILURE") ||
+                        line.toUpperCase().contains("FAILED") ||
+                        line.toUpperCase().contains("INVALID") ||
+                        line.toUpperCase().contains("ERROR")
+                ) {
+                    return false;
                 }
             }
         } catch (IOException e) {

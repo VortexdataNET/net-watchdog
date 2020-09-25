@@ -58,17 +58,20 @@ public class Query {
         netWatchdog.getLogger().debug("Running check cycle...");
         for (BaseComponent bc : componentManager.getComponents()) {
             netWatchdog.getLogger().info("Checking component " + bc.getName() + "...");
-            PerformanceClass pc = bc.check();
-            if (pc.getClass() != FallbackPerformanceClass.class) {
-                netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
-                if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
-                    pc.runWebhooks();
-                else
-                    netWatchdog.getLogger().info("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefor skips webhooks.");
-            } else {
-                netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
+            try {
+                PerformanceClass pc = bc.check();
+                if (pc.getClass() != FallbackPerformanceClass.class) {
+                    netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
+                    if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
+                        pc.runWebhooks();
+                    else
+                        netWatchdog.getLogger().info("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefor skips webhooks.");
+                } else {
+                    netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
+                }
+            } catch (Exception e) {
+                netWatchdog.getLogger().error("Failed to check component " + bc.getName() + ": " + e.getMessage());
             }
-
         }
         netWatchdog.getLogger().debug("Check cycle finished, going to sleep.");
     }

@@ -25,6 +25,7 @@
 package net.vortexdata.netwatchdog;
 
 import net.vortexdata.netwatchdog.modules.config.ConfigRegister;
+import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 import net.vortexdata.netwatchdog.modules.console.cli.CommandRegister;
 import net.vortexdata.netwatchdog.modules.console.cli.ConsoleThread;
@@ -99,8 +100,12 @@ public class NetWatchdog {
 
         // Northstar register
         if (configRegister.getMainConfig().getValue().has("enableNorthstars") && configRegister.getMainConfig().getValue().getString("enableNorthstars").equalsIgnoreCase("true")) {
-            logger.info("Enabling Northstar system.");
-            northstarRegister = new NorthstarRegister(this);
+            if (((NorthstarConfig) configRegister.getConfigByPath(NorthstarConfig.CONFIG_PATH)).isCanNorthstarsBeUsed()) {
+                logger.info("Enabling Northstar system.");
+                northstarRegister = new NorthstarRegister(this);
+            } else {
+                logger.warn("Can not start Northstar system due to configuration errors.");
+            }
         }
 
         // Boot-wrapup checks

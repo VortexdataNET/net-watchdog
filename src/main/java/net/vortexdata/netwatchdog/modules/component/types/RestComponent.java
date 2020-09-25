@@ -59,11 +59,16 @@ public class RestComponent extends BaseComponent {
     public PerformanceClass runPerformanceCheck() {
 
         HttpsURLConnection hurlc = null;
-        if (requestMethod == RequestMethod.POST)
-            hurlc = post(body, address, headers);
-        else if (requestMethod == RequestMethod.GET) {
-            hurlc = get(address, headers);
+        try {
+            if (requestMethod == RequestMethod.POST)
+                hurlc = post(body, address, headers);
+            else if (requestMethod == RequestMethod.GET) {
+                hurlc = get(address, headers);
+            }
+        } catch (Exception e) {
+            return new FallbackPerformanceClass(-1, e.getMessage());
         }
+
 
         // Get server response and check which performance class has matching content lookup
         // Content lookup overrules ping check
@@ -112,12 +117,9 @@ public class RestComponent extends BaseComponent {
             return null;
         try {
             return RestUtils.getPostConnection(RestUtils.getPostBytes(body), url, "application/json", extraHeaders);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (JSONException | IOException e) {
+            return null;
         }
-        return null;
     }
 
     public static RestComponent getRestComponentFromJSON(JSONObject obj, NetWatchdog netWatchdog) {

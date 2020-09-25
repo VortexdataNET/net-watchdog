@@ -12,7 +12,7 @@ public class NorthstarConfig extends BaseConfig {
 
     public NorthstarConfig() {
         super(CONFIG_PATH);
-        canNorthstarsBeUsed = false;
+        canNorthstarsBeUsed = true;
     }
 
     @Override
@@ -21,11 +21,21 @@ public class NorthstarConfig extends BaseConfig {
 
         JSONObject value = getValue();
 
-        if (!value.has("availPercentMin")) {
-            errorStack.add("Minimum availability percentage is not set.");
+        if (value.has("availPercentMin")) {
+            try {
+                int percent = value.getInt("availPercentMin");
+                if (percent > 100 || percent < 0) {
+                    canNorthstarsBeUsed = false;
+                    errorStack.push(percent + " is not a valid percentage.");
+                }
+            } catch (Exception e) {
+                canNorthstarsBeUsed = false;
+                errorStack.push("Can not parse availPercentMin value to an integer.");
+            }
+        } else {
             canNorthstarsBeUsed = false;
+            errorStack.add("Minimum availability percentage is not set.");
         }
-
 
         return errorStack;
     }
@@ -38,7 +48,6 @@ public class NorthstarConfig extends BaseConfig {
 
         JSONObject northstar1 = new JSONObject();
         northstar1.put("type", "ICMP");
-        northstar1.put("samples", "1");
         northstar1.put("address", "1.1.1.1");
 
         JSONObject northstar2 = new JSONObject();
@@ -55,4 +64,7 @@ public class NorthstarConfig extends BaseConfig {
         return obj;
     }
 
+    public boolean isCanNorthstarsBeUsed() {
+        return canNorthstarsBeUsed;
+    }
 }
