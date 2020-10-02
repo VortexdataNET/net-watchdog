@@ -9,6 +9,13 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * ICMP Northstar class.
+ *
+ * @author Sandro Kierner
+ * @version 0.0.0
+ * @since 0.0.0
+ */
 public class ICMPNorthstar extends NorthstarBase {
 
     public ICMPNorthstar(NorthstarRegister northstarRegister, String address, int timeout, int samples) {

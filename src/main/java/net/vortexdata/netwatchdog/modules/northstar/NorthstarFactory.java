@@ -2,6 +2,13 @@ package net.vortexdata.netwatchdog.modules.northstar;
 
 import org.json.JSONObject;
 
+/**
+ * Logic wrapper used to construct Northstar instances.
+ *
+ * @author Sandro Kierner
+ * @version 0.0.0
+ * @since 0.0.0
+ */
 public class NorthstarFactory {
 
     public static NorthstarBase getNorthstarFromJSON(JSONObject jsonObject, NorthstarRegister nr) {

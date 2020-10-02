@@ -3,6 +3,13 @@ package net.vortexdata.netwatchdog.modules.northstar;
 import java.io.IOException;
 import java.net.Socket;
 
+/**
+ * Socket Northstar class.
+ *
+ * @author Sandro Kierner
+ * @version 0.0.0
+ * @since 0.0.0
+ */
 public class SocketNorthstar extends NorthstarBase {
 
     private int port;
