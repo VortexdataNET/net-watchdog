@@ -64,7 +64,7 @@ public class NorthstarConfig extends BaseConfig {
         return obj;
     }
 
-    public boolean isCanNorthstarsBeUsed() {
+    public boolean canNorthstarsBeUsed() {
         return canNorthstarsBeUsed;
     }
 }

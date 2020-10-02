@@ -94,7 +94,7 @@ public class Query {
                                 if (actualPercent >= neededPercent) {
                                     runChecks();
                                 } else {
-                                    netWatchdog.getLogger().warn("Northstar results insufficient to run check cycle (got "+actualPercent+", expecting "+neededPercent+"), skipping.");
+                                    netWatchdog.getLogger().warn("Northstar results insufficient to run check cycle (got "+actualPercent+"%, expecting "+neededPercent+"%), skipping.");
                                 }
                             } else {
                                 runChecks();

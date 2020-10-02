@@ -43,7 +43,7 @@ public class NorthstarRegister {
                 successful++;
         }
 
-        return (int) (successful / northstars.size()) * 100;
+        return (int) ((successful / (double) northstars.size()) * 100);
     }
 
     public ArrayList<NorthstarBase> getNorthstars() {

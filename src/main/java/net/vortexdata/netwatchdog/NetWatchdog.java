@@ -100,7 +100,7 @@ public class NetWatchdog {
 
         // Northstar register
         if (configRegister.getMainConfig().getValue().has("enableNorthstars") && configRegister.getMainConfig().getValue().getString("enableNorthstars").equalsIgnoreCase("true")) {
-            if (((NorthstarConfig) configRegister.getConfigByPath(NorthstarConfig.CONFIG_PATH)).isCanNorthstarsBeUsed()) {
+            if (((NorthstarConfig) configRegister.getConfigByPath(NorthstarConfig.CONFIG_PATH)).canNorthstarsBeUsed()) {
                 logger.info("Enabling Northstar system.");
                 northstarRegister = new NorthstarRegister(this);
             } else {
