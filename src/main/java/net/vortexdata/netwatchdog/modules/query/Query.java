@@ -25,11 +25,12 @@
 package net.vortexdata.netwatchdog.modules.query;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.config.configs.MainConfig;
+import net.vortexdata.netwatchdog.modules.config.configs.MainConfig;
 import net.vortexdata.netwatchdog.modules.component.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.component.FallbackPerformanceClass;
 import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
+import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 
 /**
  * Query thread responsible for periodically checking all components.
@@ -53,6 +54,28 @@ public class Query {
         this.componentManager = netWatchdog.getComponentManager();
     }
 
+    private void runChecks() {
+        netWatchdog.getLogger().debug("Running check cycle...");
+        for (BaseComponent bc : componentManager.getComponents()) {
+            netWatchdog.getLogger().info("Checking component " + bc.getName() + "...");
+            try {
+                PerformanceClass pc = bc.check();
+                if (pc.getClass() != FallbackPerformanceClass.class) {
+                    netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
+                    if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
+                        pc.runWebhooks();
+                    else
+                        netWatchdog.getLogger().info("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefor skips webhooks.");
+                } else {
+                    netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
+                }
+            } catch (Exception e) {
+                netWatchdog.getLogger().error("Failed to check component " + bc.getName() + ": " + e.getMessage());
+            }
+        }
+        netWatchdog.getLogger().debug("Check cycle finished, going to sleep.");
+    }
+
     public void start() {
         if (hasStarted)
             return;
@@ -60,25 +83,22 @@ public class Query {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getPlatform() == null)
+                    netWatchdog.getLogger().warn("The Northstar system has been disabled as it is not supported on your operating system.");
                 while (true) {
                     try {
                         if (!componentManager.getComponents().isEmpty()) {
-                            netWatchdog.getLogger().debug("Running check cycle...");
-                            for (BaseComponent bc : componentManager.getComponents()) {
-                                netWatchdog.getLogger().info("Checking component " + bc.getName() + "...");
-                                PerformanceClass pc = bc.check();
-                                if (pc.getClass() != FallbackPerformanceClass.class) {
-                                    netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
-                                    if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
-                                        pc.runWebhooks();
-                                    else
-                                        netWatchdog.getLogger().info("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefor skips webhooks.");
+                            if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getPlatform() != null) {
+                                int neededPercent = netWatchdog.getConfigRegister().getConfigByPath(NorthstarConfig.CONFIG_PATH).getValue().getInt("availPercentMin");
+                                int actualPercent = netWatchdog.getNorthstarRegister().getAvailabilityPercentage();
+                                if (actualPercent >= neededPercent) {
+                                    runChecks();
                                 } else {
-                                    netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
+                                    netWatchdog.getLogger().warn("Northstar results insufficient to run check cycle (got "+actualPercent+"%, expecting "+neededPercent+"%), skipping.");
                                 }
-
+                            } else {
+                                runChecks();
                             }
-                            netWatchdog.getLogger().debug("Check cycle finished, going to sleep.");
                         }
                         Thread.sleep(mainConfig.getValue().getInt("pollRate") * 1000);
                     } catch (InterruptedException e) {

@@ -24,15 +24,18 @@
 
 package net.vortexdata.netwatchdog;
 
-import net.vortexdata.netwatchdog.config.ConfigRegister;
+import net.vortexdata.netwatchdog.modules.config.ConfigRegister;
+import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 import net.vortexdata.netwatchdog.modules.console.cli.CommandRegister;
 import net.vortexdata.netwatchdog.modules.console.cli.ConsoleThread;
 import net.vortexdata.netwatchdog.modules.console.cli.JLineAppender;
 import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
+import net.vortexdata.netwatchdog.modules.northstar.NorthstarRegister;
 import net.vortexdata.netwatchdog.modules.query.Query;
 import net.vortexdata.netwatchdog.utils.DateUtils;
+import net.vortexdata.netwatchdog.utils.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +53,10 @@ import java.time.LocalDateTime;
  */
 public class NetWatchdog {
 
+    private boolean isShuttingDown;
+    private Platform platform;
     private ComponentManager componentManager;
+    private NorthstarRegister northstarRegister;
     private Logger logger;
     private CommandRegister commandRegister;
     private ConsoleThread consoleThread;
@@ -65,6 +71,7 @@ public class NetWatchdog {
     public void launch() {
 
         Boothandler.bootStart = LocalDateTime.now();
+        isShuttingDown = false;
 
         // Display start screen
         printCopyHeader();
@@ -76,22 +83,45 @@ public class NetWatchdog {
         logger.info("App starting... Please wait.");
         commandRegister = new CommandRegister(this);
         CLI.init(commandRegister);
-
         consoleThread = new ConsoleThread(commandRegister, this);
         consoleThread.start();
 
+        // Check platform compatibility
+        platform = Platform.getPlatformFromString(System.getProperty("os.name"));
+        if (platform == null)
+            logger.warn("Looks like your operating system is not supported ("+System.getProperty("os.name")+"). This may cause issues with some of the apps systems. Please either use Windows, Linux or macOS.");
+        else
+            logger.debug("Platform " + platform + " detected.");
+
+        // configs
         configRegister = new ConfigRegister(this);
         componentManager = new ComponentManager(this);
         componentManager.loadAll();
 
+        // Northstar register
+        if (configRegister.getMainConfig().getValue().has("enableNorthstars") && configRegister.getMainConfig().getValue().getString("enableNorthstars").equalsIgnoreCase("true")) {
+            if (((NorthstarConfig) configRegister.getConfigByPath(NorthstarConfig.CONFIG_PATH)).canNorthstarsBeUsed()) {
+                logger.info("Enabling Northstar system.");
+                northstarRegister = new NorthstarRegister(this);
+            } else {
+                logger.warn("Can not start Northstar system due to configuration errors.");
+            }
+        }
+
+        // Boot-wrapup checks
+        logger.debug("Starting boot-wrapup checks.");
+        if (configRegister.didCriticalConfigFail()) {
+            logger.error("Encountered a critical configuration error during boot which may cause issues at runtime.");
+            shutdown();
+        }
+
+        // Init query
         query = new Query(this);
-        logger.debug("Shutdown hook registered.");
-
-        Boothandler.bootEnd = LocalDateTime.now();
-
-        logger.info("It took " + (int) Boothandler.getBootTimeMillis() + " ms to launch the app.");
-
         query.start();
+
+        // End boot sequence
+        Boothandler.bootEnd = LocalDateTime.now();
+        logger.info("It took " + (int) Boothandler.getBootTimeMillis() + " ms to launch the app.");
 
     }
 
@@ -109,13 +139,24 @@ public class NetWatchdog {
     }
 
     public void shutdown() {
+        if (isShuttingDown)
+            return;
+        isShuttingDown = true;
         this.getLogger().info("Shutting down for system halt...");
         this.getLogger().info("Waiting for console thread to finish...");
-        this.getConsoleThread().end();
-        this.getConsoleThread().interrupt();
-        this.getQuery().interrupt();
+        if (getConsoleThread() != null) {
+            this.getConsoleThread().end();
+            this.getConsoleThread().interrupt();
+        }
+        if (getQuery() != null) {
+            this.getQuery().interrupt();
+        }
         this.getLogger().info("Ending logging at " + DateUtils.getPrettyStringFromLocalDateTime(LocalDateTime.now()) + ".");
         System.exit(0);
+    }
+
+    public Platform getPlatform() {
+        return platform;
     }
 
     public Logger getLogger() {
@@ -142,4 +183,7 @@ public class NetWatchdog {
         return query;
     }
 
+    public NorthstarRegister getNorthstarRegister() {
+        return northstarRegister;
+    }
 }
