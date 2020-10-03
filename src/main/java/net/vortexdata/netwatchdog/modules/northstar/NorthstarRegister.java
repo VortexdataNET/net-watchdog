@@ -34,6 +34,9 @@ public class NorthstarRegister {
     }
 
     public int getAvailabilityPercentage() {
+
+        netWatchdog.getLogger().debug("Determining Northstar availability...");
+
         if (netWatchdog.getPlatform() == null)
             return 0;
 

@@ -53,14 +53,14 @@ public class MainConfig extends BaseConfig {
             errorStack.push("Invalid value for key 'enableNorthstars', value must be a boolean.");
         }
 
-        if (value.has("pollRate")) {
-            String pollRateS = value.getString("pollRate");
-            int pollRate = -1;
+        if (value.has("pollDelay")) {
+            String pollDelayS = value.getString("pollDelay");
+            int pollDelay = -1;
             try {
-                if (Integer.parseInt(pollRateS) < 0)
-                    errorStack.push("The 'pollRate' value must be higher than 0.");
+                if (Integer.parseInt(pollDelayS) < 0)
+                    errorStack.push("The 'pollDelay' value must be higher than 0.");
             } catch (Exception e) {
-                errorStack.push("Failed to parse 'pollRate' to an integer.");
+                errorStack.push("Failed to parse 'pollDelay' to an integer.");
             }
         }
 
@@ -71,7 +71,7 @@ public class MainConfig extends BaseConfig {
     public JSONObject populateDefaultValue() {
         JSONObject obj = new JSONObject();
         obj.put("enableNorthstars", "true");
-        obj.put("pollRate", "30");
+        obj.put("pollDelay", "30");
         return obj;
     }
 

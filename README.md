@@ -271,7 +271,7 @@ The main config just tells the app basic information like how long the delay bet
 
 ```json
 {
-   "pollRate": "30",
+   "pollDelay": "30",
    "enabled": "true"
 }
 ```
