@@ -100,7 +100,7 @@ public class Query {
                                 runChecks();
                             }
                         }
-                        Thread.sleep(mainConfig.getValue().getInt("pollRate") * 1000);
+                        Thread.sleep(mainConfig.getValue().getInt("pollDelay") * 1000);
                     } catch (InterruptedException e) {
                         netWatchdog.getLogger().debug("Query got interrupted (for shutdown?).");
                     }
