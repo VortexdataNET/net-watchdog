@@ -31,11 +31,11 @@ public class ICMPNorthstar extends NorthstarBase {
         ArrayList<Integer> pingResults = new ArrayList<>();
 
         ProcessBuilder processBuilder = new ProcessBuilder();
-        if (northstarRegister.getNetWatchdog().getPlatform() == null) {
+        if (northstarRegister.getNetWatchdog().getAppInfo().getPlatform() == null) {
             return false;
-        } else if (northstarRegister.getNetWatchdog().getPlatform() == Platform.LINUX || northstarRegister.getNetWatchdog().getPlatform() == Platform.MAC) {
+        } else if (northstarRegister.getNetWatchdog().getAppInfo().getPlatform() == Platform.LINUX || northstarRegister.getNetWatchdog().getAppInfo().getPlatform() == Platform.MAC) {
             processBuilder.command(("ping -c 1 -t "+address+" " + samples).split(" "));
-        } else if (northstarRegister.getNetWatchdog().getPlatform() == Platform.WINDOWS) {
+        } else if (northstarRegister.getNetWatchdog().getAppInfo().getPlatform() == Platform.WINDOWS) {
             processBuilder.command(("ping "+address+" -n "+ samples).split(" "));
         }
 

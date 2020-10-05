@@ -37,7 +37,7 @@ public class NorthstarRegister {
 
         netWatchdog.getLogger().debug("Determining Northstar availability...");
 
-        if (netWatchdog.getPlatform() == null)
+        if (netWatchdog.getAppInfo().getPlatform() == null)
             return 0;
 
         double successful = 0;

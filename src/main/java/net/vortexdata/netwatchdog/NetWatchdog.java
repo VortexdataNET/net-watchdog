@@ -34,8 +34,10 @@ import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.northstar.NorthstarRegister;
 import net.vortexdata.netwatchdog.modules.query.Query;
+import net.vortexdata.netwatchdog.utils.AppInfo;
 import net.vortexdata.netwatchdog.utils.DateUtils;
 import net.vortexdata.netwatchdog.utils.Platform;
+import net.vortexdata.netwatchdog.utils.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +56,6 @@ import java.time.LocalDateTime;
 public class NetWatchdog {
 
     private boolean isShuttingDown;
-    private Platform platform;
     private ComponentManager componentManager;
     private NorthstarRegister northstarRegister;
     private Logger logger;
@@ -62,6 +63,7 @@ public class NetWatchdog {
     private ConsoleThread consoleThread;
     private ConfigRegister configRegister;
     private Query query;
+    private AppInfo appInfo;
 
     public static void main(String[] args) {
         NetWatchdog netWatchdog = new NetWatchdog();
@@ -86,12 +88,21 @@ public class NetWatchdog {
         consoleThread = new ConsoleThread(commandRegister, this);
         consoleThread.start();
 
-        // Check platform compatibility
-        platform = Platform.getPlatformFromString(System.getProperty("os.name"));
-        if (platform == null)
+        // Load project info
+        logger.debug("Loading project info...");
+        appInfo = new AppInfo();
+        if (appInfo.loadProjectConfig()) {
+            logger.debug("Project info loaded successfully.");
+        } else {
+            logger.warn("Failed to load project info! This may cause issues during runtime. Is the jar file valid? Are read and write permissions set? Please check for solution and retry.");
+        }
+        logger.debug("You are running version " + appInfo.getVersionName() + ".");
+
+        // Inform user about platform
+        if (appInfo.getPlatform() == null)
             logger.warn("Looks like your operating system is not supported ("+System.getProperty("os.name")+"). This may cause issues with some of the apps systems. Please either use Windows, Linux or macOS.");
         else
-            logger.debug("Platform " + platform + " detected.");
+            logger.debug("Platform " + appInfo.getPlatform() + " detected.");
 
         // configs
         configRegister = new ConfigRegister(this);
@@ -122,7 +133,6 @@ public class NetWatchdog {
         // End boot sequence
         Boothandler.bootEnd = LocalDateTime.now();
         logger.info("It took " + (int) Boothandler.getBootTimeMillis() + " ms to launch the app.");
-
     }
 
     public void printCopyHeader() {
@@ -155,10 +165,6 @@ public class NetWatchdog {
         System.exit(0);
     }
 
-    public Platform getPlatform() {
-        return platform;
-    }
-
     public Logger getLogger() {
         return logger;
     }
@@ -185,5 +191,9 @@ public class NetWatchdog {
 
     public NorthstarRegister getNorthstarRegister() {
         return northstarRegister;
+    }
+
+    public AppInfo getAppInfo() {
+        return appInfo;
     }
 }
