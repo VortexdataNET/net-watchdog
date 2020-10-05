@@ -83,12 +83,12 @@ public class Query {
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getPlatform() == null)
+                if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getAppInfo().getPlatform() == null)
                     netWatchdog.getLogger().warn("The Northstar system has been disabled as it is not supported on your operating system.");
                 while (true) {
                     try {
                         if (!componentManager.getComponents().isEmpty()) {
-                            if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getPlatform() != null) {
+                            if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getAppInfo().getPlatform() != null) {
                                 int neededPercent = netWatchdog.getConfigRegister().getConfigByPath(NorthstarConfig.CONFIG_PATH).getValue().getInt("availPercentMin");
                                 int actualPercent = netWatchdog.getNorthstarRegister().getAvailabilityPercentage();
                                 if (actualPercent >= neededPercent) {

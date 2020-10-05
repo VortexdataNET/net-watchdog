@@ -107,7 +107,7 @@ public class ComponentManager {
 
         if (obj.getString("type").equalsIgnoreCase("REST")) {
             netWatchdog.getLogger().debug("Loading REST component...");
-            return RestComponent.getRestComponentFromJSON(obj, netWatchdog);
+            return RestComponent.getRestComponentFromJSON(netWatchdog.getAppInfo(), obj, netWatchdog);
         } else if (obj.getString("type").equalsIgnoreCase("SOCKET")) {
             netWatchdog.getLogger().debug("Loading SOCKET component...");
             return SocketComponent.getSocketComponentFromJSON(obj, netWatchdog);

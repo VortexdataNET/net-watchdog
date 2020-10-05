@@ -49,13 +49,13 @@ public class RestUtils {
         return body.getBytes(StandardCharsets.UTF_8);
     }
 
-    public static HttpsURLConnection getPostConnection(byte[] data, String url, String contentType, HashMap<String, String> extraHeaders) throws IOException {
+    public static HttpsURLConnection getPostConnection(AppInfo appInfo, byte[] data, String url, String contentType, HashMap<String, String> extraHeaders) throws IOException {
         HttpsURLConnection connection =
                 (HttpsURLConnection) new URL(url).openConnection();
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Content-Type", contentType);
-        connection.setRequestProperty("User-Agent", "NETWatchdog/");
+        connection.setRequestProperty("User-Agent", getUserAgentContent(appInfo));
         connection.setConnectTimeout(5000);
 
         if (extraHeaders != null) {
@@ -71,44 +71,11 @@ public class RestUtils {
         return connection;
     }
 
-    public static HttpsURLConnection getGetConnection(String url) throws IOException {
+    public static HttpsURLConnection getGetConnection(AppInfo appInfo, String url) throws IOException {
         HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-Type", "application/json");
-        return connection;
-    }
-
-    public static HttpURLConnection getDeleteConnection(String url, String contentType) throws IOException {
-        HttpURLConnection connection =
-                (HttpURLConnection) new URL(url).openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestMethod("DELETE");
-        connection.setRequestProperty("Content-Type", contentType);
-        connection.getOutputStream().flush();
-        return connection;
-    }
-
-    public static HttpURLConnection getDeleteConnection(byte[] data, String url, String contentType) throws IOException {
-        HttpURLConnection connection =
-                (HttpURLConnection) new URL(url).openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestMethod("DELETE");
-        connection.setRequestProperty("Content-Type", contentType);
-        connection.setFixedLengthStreamingMode(data.length);
-        connection.getOutputStream().write(data);
-        connection.getOutputStream().flush();
-        return connection;
-    }
-
-    public static HttpURLConnection getPutConnection(byte[] data, String url, String contentType) throws IOException {
-        HttpURLConnection connection =
-                (HttpURLConnection) new URL(url).openConnection();
-        connection.setDoOutput(true);
-        connection.setRequestMethod("PUT");
-        connection.setRequestProperty("Content-Type", contentType);
-        connection.setFixedLengthStreamingMode(data.length);
-        connection.getOutputStream().write(data);
-        connection.getOutputStream().flush();
+        connection.setRequestProperty("User-Agent", getUserAgentContent(appInfo));
         return connection;
     }
 
@@ -121,5 +88,8 @@ public class RestUtils {
         return stringBuilder.toString();
     }
 
+    public static String getUserAgentContent(AppInfo appInfo) {
+        return "NETWatchdog/" + appInfo.getVersionName() + " ()";
+    }
 
 }

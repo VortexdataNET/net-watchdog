@@ -16,12 +16,14 @@ import java.io.InputStreamReader;
 public class AppInfo {
 
     private JSONObject values;
+    private Platform platform;
 
     public AppInfo() {
         values = new JSONObject();
+        platform = Platform.getPlatformFromString(System.getProperty("os.name"));
     }
 
-    public boolean load() {
+    public boolean loadProjectConfig() {
 
         StringBuffer sb = new StringBuffer();
         BufferedReader headBr = null;
@@ -48,5 +50,13 @@ public class AppInfo {
             return values.getString("versionName");
         else
             return "0.0.0";
+    }
+
+    public String getArch() {
+        return System.getProperty("os.arch");
+    }
+
+    public Platform getPlatform() {
+        return platform;
     }
 }
