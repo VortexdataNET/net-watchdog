@@ -41,13 +41,14 @@ import java.util.Stack;
  */
 public class ConfigRegister {
 
-    ArrayList<BaseConfig> configs;
-
+    private ArrayList<BaseConfig> configs;
+    private boolean ignoreCriticalConfig;
     private final NetWatchdog netWatchdog;
     private boolean didCriticalConfigFail;
 
     public ConfigRegister(NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;
+        this.ignoreCriticalConfig = false;
         configs = new ArrayList<>();
         configs.add(new MainConfig());
         configs.add(new NorthstarConfig());
@@ -90,8 +91,16 @@ public class ConfigRegister {
         return null;
     }
 
+    public void setIgnoreCriticalConfig() {
+        this.ignoreCriticalConfig = true;
+    }
+
     public MainConfig getMainConfig() {
         return (MainConfig) getConfigByPath(MainConfig.CONFIG_PATH);
+    }
+
+    public boolean ignoringCriticalConfigFail() {
+        return ignoreCriticalConfig;
     }
 
     public boolean didCriticalConfigFail() {

@@ -24,6 +24,9 @@
 
 package net.vortexdata.netwatchdog;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import net.vortexdata.netwatchdog.modules.arguments.ParameterRegister;
 import net.vortexdata.netwatchdog.modules.config.ConfigRegister;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
@@ -36,8 +39,6 @@ import net.vortexdata.netwatchdog.modules.northstar.NorthstarRegister;
 import net.vortexdata.netwatchdog.modules.query.Query;
 import net.vortexdata.netwatchdog.utils.AppInfo;
 import net.vortexdata.netwatchdog.utils.DateUtils;
-import net.vortexdata.netwatchdog.utils.Platform;
-import net.vortexdata.netwatchdog.utils.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,19 +59,20 @@ public class NetWatchdog {
     private boolean isShuttingDown;
     private ComponentManager componentManager;
     private NorthstarRegister northstarRegister;
-    private Logger logger;
+    private ch.qos.logback.classic.Logger logger;
     private CommandRegister commandRegister;
     private ConsoleThread consoleThread;
     private ConfigRegister configRegister;
     private Query query;
     private AppInfo appInfo;
+    private ParameterRegister paramRegister;
 
     public static void main(String[] args) {
         NetWatchdog netWatchdog = new NetWatchdog();
-        netWatchdog.launch();
+        netWatchdog.launch(args);
     }
 
-    public void launch() {
+    public void launch(String[] args) {
 
         Boothandler.bootStart = LocalDateTime.now();
         isShuttingDown = false;
@@ -81,8 +83,13 @@ public class NetWatchdog {
         // Init. loggers and console
         JLineAppender jLineAppender = new JLineAppender();
         jLineAppender.start();
-        logger = LoggerFactory.getLogger("Main");
+
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        logger = loggerContext.getLogger("net.vortexdata.netwatchdog");
+        logger.setLevel(Level.DEBUG);
+
         logger.info("App starting... Please wait.");
+
         commandRegister = new CommandRegister(this);
         CLI.init(commandRegister);
         consoleThread = new ConsoleThread(commandRegister, this);
@@ -118,6 +125,10 @@ public class NetWatchdog {
                 logger.warn("Can not start Northstar system due to configuration errors.");
             }
         }
+
+        // Check start parameters
+        paramRegister = new ParameterRegister(args, this);
+        paramRegister.evaluateArguments();
 
         // Boot-wrapup checks
         logger.debug("Starting boot-wrapup checks.");
@@ -163,6 +174,10 @@ public class NetWatchdog {
         }
         this.getLogger().info("Ending logging at " + DateUtils.getPrettyStringFromLocalDateTime(LocalDateTime.now()) + ".");
         System.exit(0);
+    }
+
+    public ch.qos.logback.classic.Logger getLogbackLogger() {
+        return logger;
     }
 
     public Logger getLogger() {
