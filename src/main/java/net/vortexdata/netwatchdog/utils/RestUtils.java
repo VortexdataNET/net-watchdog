@@ -55,6 +55,7 @@ public class RestUtils {
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Content-Type", contentType);
+        connection.setRequestProperty("User-Agent", "NETWatchdog/");
         connection.setConnectTimeout(5000);
 
         if (extraHeaders != null) {
