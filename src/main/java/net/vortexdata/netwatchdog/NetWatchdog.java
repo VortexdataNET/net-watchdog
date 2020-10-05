@@ -126,6 +126,10 @@ public class NetWatchdog {
             }
         }
 
+        // Check start parameters
+        paramRegister = new ParameterRegister(args, this);
+        paramRegister.evaluateArguments();
+
         // Boot-wrapup checks
         logger.debug("Starting boot-wrapup checks.");
         if (configRegister.didCriticalConfigFail()) {
@@ -136,10 +140,6 @@ public class NetWatchdog {
         // Init query
         query = new Query(this);
         query.start();
-
-        // Check start parameters
-        paramRegister = new ParameterRegister(args, this);
-        paramRegister.evaluateArguments();
 
         // End boot sequence
         Boothandler.bootEnd = LocalDateTime.now();

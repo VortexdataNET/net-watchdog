@@ -2,6 +2,7 @@ package net.vortexdata.netwatchdog.modules.arguments;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.arguments.args.ParamBase;
+import net.vortexdata.netwatchdog.modules.arguments.args.ParamIgnoreCriticalConfig;
 import net.vortexdata.netwatchdog.modules.arguments.args.ParamLoglevel;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class ParameterRegister {
         this.params = new ArrayList<>();
 
         params.add(new ParamLoglevel());
+        params.add(new ParamIgnoreCriticalConfig());
     }
 
     public void evaluateArguments() {
