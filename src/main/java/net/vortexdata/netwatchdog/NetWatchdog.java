@@ -37,6 +37,7 @@ import net.vortexdata.netwatchdog.modules.query.Query;
 import net.vortexdata.netwatchdog.utils.AppInfo;
 import net.vortexdata.netwatchdog.utils.DateUtils;
 import net.vortexdata.netwatchdog.utils.Platform;
+import net.vortexdata.netwatchdog.utils.RestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +133,6 @@ public class NetWatchdog {
         // End boot sequence
         Boothandler.bootEnd = LocalDateTime.now();
         logger.info("It took " + (int) Boothandler.getBootTimeMillis() + " ms to launch the app.");
-
     }
 
     public void printCopyHeader() {

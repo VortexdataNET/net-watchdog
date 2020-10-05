@@ -89,7 +89,7 @@ public class RestUtils {
     }
 
     public static String getUserAgentContent(AppInfo appInfo) {
-        return "NETWatchdog/" + appInfo.getVersionName() + " ()";
+        return "NETWatchdog/" + appInfo.getVersionName() + " ("+appInfo.getPlatform()+"; "+appInfo.getPlatform()+" "+appInfo.getArch()+")";
     }
 
 }
