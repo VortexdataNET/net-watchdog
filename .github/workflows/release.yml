@@ -32,7 +32,7 @@ jobs:
       
     - name: Run Maven tests
       run: mvn clean test
-´
+
     - name: Clean, validate and compile
       run: mvn clean validate compile
       
