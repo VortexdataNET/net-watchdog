@@ -24,15 +24,21 @@
 
 package net.vortexdata.netwatchdog;
 
-import net.vortexdata.netwatchdog.modules.component.ComponentManager;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import net.vortexdata.netwatchdog.modules.updater.UpdateManager;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class RestComponentTest {
+public class UpdateManagerTest {
 
+    @Test
+    public void testForNewUpdate() {
+        // Note that for this test to work one must manually set the version name in the project.json to a lower version tag.
+        NetWatchdog netWatchdog = new NetWatchdog();
+        netWatchdog.launch(new String[] {});
+        UpdateManager updateManager = new UpdateManager(netWatchdog);
+        assertEquals(true, updateManager.areUpdatesAvailable());
+    }
 
 }
