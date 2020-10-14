@@ -70,5 +70,5 @@ jobs:
         git config user.email "administration@vortexdata.net"
         git config user.name "Release CI/CD"
         git pull --allow-unrelated-histories
-        git merge -s ours develop
+        git merge -s ours origin/develop
         git push
