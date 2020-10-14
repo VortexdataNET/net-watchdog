@@ -7,8 +7,8 @@ import java.net.Socket;
  * Socket Northstar class.
  *
  * @author Sandro Kierner
- * @version 0.0.0
- * @since 0.0.0
+ * @version 0.1.0
+ * @since 0.1.0
  */
 public class SocketNorthstar extends NorthstarBase {
 
