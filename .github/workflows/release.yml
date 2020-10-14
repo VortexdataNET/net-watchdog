@@ -11,51 +11,36 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        ref: 'develop'
+        ref: 'master'
     - name: Get Latest Tag 
       id: get_latest_tag
       uses: oprypin/find-latest-tag@v1
       with:
         repository: vortexdatanet/net-watchdog  # The repository to scan.
         releases-only: true  # We know that all relevant tags have a GitHub release for them.
+        
     - name: Draft Release
       id: draft_release
       uses: release-drafter/release-drafter@v5
       with:
-        draft: true
+        publish: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Setup Maven 3
       uses: aahmed-se/setup-maven@v3
+      
     - name: Run Maven tests
       run: mvn clean test
-    - name: Maven Version Replace
-      uses: bejoistic/str-replace@v1.0.2
-      with:
-        # The string we want to replace
-        find: <version>.*<\/version><!-- APP_VERSION -->
-        # The new string to replace with
-        replace: <version>${{ steps.draft_release.outputs.tag_name }}</version><!-- APP_VERSION -->
-    - name: Javadoc Since Replace
-      uses: bejoistic/str-replace@v1.0.2
-      with:
-        # The string we want to replace
-        find: \@since\s*0\.0\.0
-        # The new string to replace with
-        replace: "@since ${{ steps.draft_release.outputs.tag_name }}"
-    - name: Javadoc Version Replace
-      uses: bejoistic/str-replace@v1.0.2
-      with:
-        # The string we want to replace
-        find: \@version.*.\..\..
-        # The new string to replace with
-        replace: "@version ${{ steps.draft_release.outputs.tag_name }}"
+´
     - name: Clean, validate and compile
       run: mvn clean validate compile
+      
     - name: Assembly
       run: | 
         mvn assembly:single
         mv target/net-watchdog-${{ steps.draft_release.outputs.tag_name }}-jar-with-dependencies.jar target/net-watchdog.jar
+        
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1.0.2
       with:
@@ -69,6 +54,7 @@ jobs:
         asset_content_type: application/jar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Publish Release
       # You may pin to the exact commit or the version.
       # uses: eregon/publish-release@d6aee8c288e653387d895ee64d559fc0dd63339d
@@ -78,6 +64,7 @@ jobs:
         release_id: ${{ steps.draft_release.outputs.id }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Commit changes
       run: |
         git config user.email "administration@vortexdata.net"
