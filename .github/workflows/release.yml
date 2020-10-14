@@ -65,13 +65,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-    - name: Merge master into develop
-      run: |
-        git config user.email "administration@vortexdata.net"
-        git config user.name "Release CI/CD"
-        git pull
-        git checkout origin/master
-        git merge -s ours origin/develop --allow-unrelated-histories
-        git checkout origin/develop
-        git merge origin/master --allow-unrelated-histories
-        git push
+    - name: Create pull request back to develop
+      uses: peter-evans/create-pull-request@v3.4.1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        title: Back-Merge release from master into develop
+        reviewers: TAXSET,Varchar42
+        body: This pull request has been created by the release CICD to bring changes from the release branch into develop.
+        branch: develop
+        base: master
