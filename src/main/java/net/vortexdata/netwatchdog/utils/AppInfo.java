@@ -10,8 +10,8 @@ import java.io.InputStreamReader;
  * Wrapper class holding project information such as version tag, build date, etc.
  *
  * @author          Sandro Kierner
- * @since 0.0.0
- * @version 0.0.0
+ * @since 0.1.0
+ * @version 0.1.0
  */
 public class AppInfo {
 

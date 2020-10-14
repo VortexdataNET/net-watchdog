@@ -10,8 +10,8 @@ import java.net.Socket;
  *
  * @author Sandro Kierner
  * @author Michael Wiesinger
- * @version 0.0.0
- * @since 0.0.0
+ * @version 0.1.0
+ * @since 0.1.0
  */
 public abstract class NorthstarBase {
 
