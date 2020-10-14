@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.console.cli;
+package net.vortexdata.netwatchdog.modules.console.cli;
 
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;

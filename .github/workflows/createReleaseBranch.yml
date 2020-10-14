@@ -1,0 +1,68 @@
+name: Create Release Branch
+
+on:
+  push:
+    branches: 
+      - release
+
+jobs:
+
+  prepare:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: 'develop'
+
+      - name: Draft release
+        id: draft_release
+        uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release branch
+        run: |
+          git checkout -b release-${{ steps.draft_release.outputs.tag_name }}
+          git checkout release-${{ steps.draft_release.outputs.tag_name }}
+          git push --set-upstream origin release-${{ steps.draft_release.outputs.tag_name }}
+
+      - name: Maven Version Replace
+        uses: bejoistic/str-replace@v1.0.2
+        with:
+          # The string we want to replace
+          find: <version>.*<\/version><!-- APP_VERSION -->
+          # The new string to replace with
+          replace: <version>${{ steps.draft_release.outputs.tag_name }}</version><!-- APP_VERSION -->
+
+      - name: Replace ProjectJSON Version Name
+        id: replacePVersionName
+        uses: bejoistic/str-replace@v1.0.2
+        with:
+          find: "\"versionName\": \"*.*\""
+          replace: "\"versionName\": \"${{ steps.draft_release.outputs.tag_name }}\""
+
+      - name: Javadoc Since Replace
+        uses: bejoistic/str-replace@v1.0.2
+        with:
+          # The string we want to replace
+          find: \@since\s*0\.0\.0
+          # The new string to replace with
+          replace: "@since ${{ steps.draft_release.outputs.tag_name }}"
+          
+      - name: Javadoc Version Replace
+        uses: bejoistic/str-replace@v1.0.2
+        with:
+          # The string we want to replace
+          find: \@version.*.\..\..
+          # The new string to replace with
+          replace: "@version ${{ steps.draft_release.outputs.tag_name }}"
+    
+      - name: Commit changes
+        run: |
+          git config user.name "Release CI/CD"
+          git add .
+          git commit -m "Preparing branch for release ${{ steps.draft_release.outputs.tag_name }}"
+          git push

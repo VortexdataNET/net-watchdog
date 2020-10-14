@@ -22,44 +22,31 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.config.configs;
+package net.vortexdata.netwatchdog.modules.console.commands;
 
-import org.json.JSONObject;
 
-import java.util.Stack;
+import net.vortexdata.netwatchdog.NetWatchdog;
+import org.jline.reader.impl.completer.ArgumentCompleter;
 
 /**
+ * Application halt command.
+ *
  * @author  Sandro Kierner
- * @version 0.0.1
  * @since 0.0.1
+ * @version 0.0.1
  */
-public class MainConfig extends BaseConfig {
+public class ExitCommand extends BaseCommand {
 
-    public MainConfig() {
-        super("main.conf");
+    public ExitCommand(NetWatchdog netWatchdog) {
+        super(netWatchdog, "exit", "Exit and close the app.");
+    }
+
+    protected ArgumentCompleter populateArgumentCompleter() {
+        return null;
     }
 
     @Override
-    public Stack<String> checkIntegrity() {
-
-        Stack<String> errorStack = new Stack<>();
-
-        JSONObject value = getValue();
-        try {
-            value.getBoolean("enabled");
-        } catch (Exception e) {
-            errorStack.push("Invalid value for key 'enabled', value must be a boolean.");
-        }
-
-        return errorStack;
+    public void call(String[] args) {
+        netWatchdog.shutdown();
     }
-
-    @Override
-    public JSONObject populateDefaultValue() {
-        JSONObject obj = new JSONObject();
-        obj.put("enabled", "true");
-        obj.put("pollRate", "30");
-        return obj;
-    }
-
 }

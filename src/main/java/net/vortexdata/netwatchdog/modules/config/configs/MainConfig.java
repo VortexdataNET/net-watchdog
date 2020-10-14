@@ -22,46 +22,57 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.console.cli;
+package net.vortexdata.netwatchdog.modules.config.configs;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
+import org.json.JSONObject;
+
+import java.util.Stack;
 
 /**
- * Input reader CLI component.
- *
  * @author  Sandro Kierner
- * @since 0.0.1
  * @version 0.0.1
+ * @since 0.0.1
  */
-public class ConsoleThread extends Thread {
+public class MainConfig extends BaseConfig {
 
-    private final CommandRegister commandRegister;
-    private boolean active;
-    private final NetWatchdog netWatchdog;
+    public static final String CONFIG_PATH = "main.conf";
 
-    public ConsoleThread(CommandRegister commandRegister, NetWatchdog netWatchdog) {
-        active = true;
-        this.commandRegister = commandRegister;
-        this.netWatchdog = netWatchdog;
+    public MainConfig() {
+        super(CONFIG_PATH);
     }
 
     @Override
-    public void run() {
-        active = true;
-        while (active) {
-            String input = "";
+    public Stack<String> checkIntegrity() {
+
+        Stack<String> errorStack = new Stack<>();
+
+        JSONObject value = getValue();
+        try {
+            value.getBoolean("enableNorthstars");
+        } catch (Exception e) {
+            errorStack.push("Invalid value for key 'enableNorthstars', value must be a boolean.");
+        }
+
+        if (value.has("pollDelay")) {
+            String pollDelayS = value.getString("pollDelay");
+            int pollDelay = -1;
             try {
-                input = CLI.readLine("> ");
-                if (!commandRegister.evaluateCommand(input))
-                    CLI.print(input.split(" ")[0] + ": Command not found");
+                if (Integer.parseInt(pollDelayS) < 0)
+                    errorStack.push("The 'pollDelay' value must be higher than 0.");
             } catch (Exception e) {
-                netWatchdog.shutdown();
+                errorStack.push("Failed to parse 'pollDelay' to an integer.");
             }
         }
+
+        return errorStack;
     }
 
-    public void end() {
-        active = false;
+    @Override
+    public JSONObject populateDefaultValue() {
+        JSONObject obj = new JSONObject();
+        obj.put("enableNorthstars", "true");
+        obj.put("pollDelay", "30");
+        return obj;
     }
 
 }

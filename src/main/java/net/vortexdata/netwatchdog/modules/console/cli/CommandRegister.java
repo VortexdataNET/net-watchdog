@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.console.cli;
+package net.vortexdata.netwatchdog.modules.console.cli;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.commands.*;
+import net.vortexdata.netwatchdog.modules.console.commands.*;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
 

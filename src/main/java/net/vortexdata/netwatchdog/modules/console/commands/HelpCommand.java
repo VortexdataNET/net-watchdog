@@ -22,30 +22,46 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.console.commands;
+package net.vortexdata.netwatchdog.modules.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.console.cli.CLI;
+import net.vortexdata.netwatchdog.modules.console.cli.CLI;
+import org.jline.utils.AttributedStringBuilder;
 
 /**
- * Clear the CLI screen.
+ * Help command listing all available commands.
  *
  * @author  Sandro Kierner
  * @since 0.0.1
  * @version 0.0.1
  */
-public class ClearCommand extends BaseCommand {
+public class HelpCommand extends BaseCommand {
 
-    public ClearCommand(NetWatchdog netWatchdog) {
-        super(netWatchdog, "clear", "Clears the console screen.");
+    public HelpCommand(NetWatchdog netWatchdog) {
+        super(netWatchdog, "help", "Get a list of all commands.");
+        this.args.put("command", "Creates a new target.");
     }
 
     @Override
     public void call(String[] args) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 200; i++)
-            sb.append("\n");
-        CLI.print(sb.toString());
+        if (args.length > 0) {
+            BaseCommand c = netWatchdog.getCommandRegister().getCommandByName(args[0]);
+            if (c != null) {
+                c.printUsage();
+            } else {
+                CLI.print("Unknown command.");
+            }
+        } else {
+            AttributedStringBuilder builder = new AttributedStringBuilder();
+            builder.append("The following commands are supported at the moment:\n\n");
+            StringBuilder sb = new StringBuilder();
+            for (BaseCommand c : netWatchdog.getCommandRegister().getCommands()) {
+                sb.append(String.format("%-32s%-32s", c.getName(), c.getDescription()) + "\n");
+            }
+
+            CLI.print(builder.toAnsi());
+            CLI.print(sb.toString());
+        }
     }
 
 }

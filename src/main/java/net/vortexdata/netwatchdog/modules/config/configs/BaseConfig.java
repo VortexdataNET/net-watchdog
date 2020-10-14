@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.config.configs;
+package net.vortexdata.netwatchdog.modules.config.configs;
 
-import net.vortexdata.netwatchdog.config.ConfigStatus;
+import net.vortexdata.netwatchdog.modules.config.ConfigStatus;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -43,11 +43,17 @@ public abstract class BaseConfig {
     private String path = "main.cfg";
     private final JSONObject defaultValue;
     private JSONObject value;
+    private boolean isCritical;
 
-    public BaseConfig(String path) {
+    public BaseConfig(String path, boolean isCritical) {
         this.path = path;
+        this.isCritical = isCritical;
         configStatus = ConfigStatus.UNLOADED;
         defaultValue = populateDefaultValue();
+    }
+
+    public BaseConfig(String path) {
+        this(path, true);
     }
 
     public boolean load() {
@@ -114,5 +120,9 @@ public abstract class BaseConfig {
     public abstract Stack<String> checkIntegrity();
 
     public abstract JSONObject populateDefaultValue();
+
+    public boolean isCritical() {
+        return isCritical;
+    }
 
 }

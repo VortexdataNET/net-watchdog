@@ -29,6 +29,7 @@ import net.vortexdata.netwatchdog.modules.component.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.component.FallbackPerformanceClass;
 import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
+import net.vortexdata.netwatchdog.utils.AppInfo;
 import net.vortexdata.netwatchdog.utils.RequestMethod;
 import net.vortexdata.netwatchdog.utils.RestUtils;
 import org.json.JSONArray;
@@ -47,9 +48,11 @@ public class RestComponent extends BaseComponent {
     private final HashMap<String, String> headers;
     private final String body;
     private final RequestMethod requestMethod;
+    private final AppInfo appInfo;
 
-    public RestComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass, HashMap<String, String> headers, String body, RequestMethod requestMethod) {
+    public RestComponent(AppInfo appInfo, String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass, HashMap<String, String> headers, String body, RequestMethod requestMethod) {
         super(address, name, filename, performanceClasses, cachePerformanceClass);
+        this.appInfo = appInfo;
         this.headers = headers;
         this.body = body;
         this.requestMethod = requestMethod;
@@ -59,11 +62,16 @@ public class RestComponent extends BaseComponent {
     public PerformanceClass runPerformanceCheck() {
 
         HttpsURLConnection hurlc = null;
-        if (requestMethod == RequestMethod.POST)
-            hurlc = post(body, address, headers);
-        else if (requestMethod == RequestMethod.GET) {
-            hurlc = get(address, headers);
+        try {
+            if (requestMethod == RequestMethod.POST)
+                hurlc = post(body, address, headers);
+            else if (requestMethod == RequestMethod.GET) {
+                hurlc = get(address, headers);
+            }
+        } catch (Exception e) {
+            return new FallbackPerformanceClass(-1, e.getMessage());
         }
+
 
         // Get server response and check which performance class has matching content lookup
         // Content lookup overrules ping check
@@ -100,7 +108,7 @@ public class RestComponent extends BaseComponent {
     // TODO: Add parameter support
     private HttpsURLConnection get(String url, HashMap<String, String> extraHeaders) {
         try {
-            return RestUtils.getGetConnection(address);
+            return RestUtils.getGetConnection(appInfo, address);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -111,16 +119,13 @@ public class RestComponent extends BaseComponent {
         if (url == null || url.isEmpty() || body == null || body.isEmpty())
             return null;
         try {
-            return RestUtils.getPostConnection(RestUtils.getPostBytes(body), url, "application/json", extraHeaders);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            return RestUtils.getPostConnection(appInfo, RestUtils.getPostBytes(body), url, "application/json", extraHeaders);
+        } catch (JSONException | IOException e) {
+            return null;
         }
-        return null;
     }
 
-    public static RestComponent getRestComponentFromJSON(JSONObject obj, NetWatchdog netWatchdog) {
+    public static RestComponent getRestComponentFromJSON(AppInfo appInfo, JSONObject obj, NetWatchdog netWatchdog) {
         String method = obj.getString("method");
         method = method.toUpperCase();
         if (!method.equalsIgnoreCase("POST") && !method.equalsIgnoreCase("GET") && !method.equalsIgnoreCase("PUT")) {
@@ -162,6 +167,7 @@ public class RestComponent extends BaseComponent {
         }
 
         return new RestComponent(
+                appInfo,
                 address,
                 name,
                 filename,

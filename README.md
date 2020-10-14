@@ -31,7 +31,9 @@
   * [REST component](#rest-component)
   * [Socket component](#socket-component)
   * [Keys & values](#keys--values)
-* [Main Config](#main-config)
+* [Configs](#configs)
+  * [Main Config](#main-config)
+  * [Northstar Config](#northstar-config)
 * [Command Line](#command-line)
   * [Commands](#commands)
 * [Usage](#usage)
@@ -40,7 +42,6 @@
 * [Contributing](#contributing)
 * [License](#license)
 * [Creator](#creator)
-* [Contact](#contact)
 * [Acknowledgements](#acknowledgements)
 
 
@@ -265,18 +266,49 @@ The tables below gives an overview of all root component and performance class k
 | headers 	| Array, String 	| N/A        	| Request headers, key and value devided by ":". 	| No       	| ✔️    	| ✔️      	|
 | body    	| String, any   	| N/A        	| Request body.                                  	| No       	| ✔️    	| ✔️      	|
 
-## Main Config
+## Configs
+
+### Main Config
 
 The main config just tells the app basic information like how long the delay between query cycles should be in seconds.
 
 ```json
 {
-   "pollRate": "30",
-   "enabled": "true"
+   "pollDelay": "30",
+   "enableNorthstars": "true"
 }
 ```
 
+| Key     	        | Value         	| Def. Value 	| Description                                    	     |
+|------------------	|---------------	|------------	|----------------------------------------------------- |
+| pollDelay	        | Int, x > 0   	  | N/A        	| Delay of component scan cycles in seconds.     	     |
+| enableNorthstars 	| Boolean        	| N/A        	| Specifies if Northstar system should be initiated.   |
 
+### Northstar Config
+
+In the Northstar config (northstar.conf) the user specifies which addresses and/or sockets are used as Northstar refference points.
+
+```json
+{
+   "availPercentMin": "100",
+   "northstars": [
+      {
+         "address": "1.1.1.1",
+         "type": "ICMP"
+      },
+      {
+         "address": "8.8.8.8",
+         "type": "SOCKET",
+         "port": "80"
+      }
+   ]
+}
+```
+
+| Key     	        | Value         	            | Def. Value 	| Description                                    	                                                             |
+|------------------	|---------------------------	|------------	|------------------------------------------------------------------------------------------------------------- |
+| availPercentMin   | Int, x >= 0 & x <= 100   	  | N/A        	| Minimum required percentage of refference points that have to be reached for check cycle to start.     	     |
+| northstars       	| Array of Northstars         | N/A        	| Specifies Northstar refference points.                                                                       |
 
 ## Command Line
 

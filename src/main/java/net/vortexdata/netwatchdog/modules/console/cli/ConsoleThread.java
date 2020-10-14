@@ -22,15 +22,46 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.config;
+package net.vortexdata.netwatchdog.modules.console.cli;
+
+import net.vortexdata.netwatchdog.NetWatchdog;
 
 /**
- * Config Status enum, used in the components command.
+ * Input reader CLI component.
  *
- * @author          Sandro Kierner
+ * @author  Sandro Kierner
  * @since 0.0.1
  * @version 0.0.1
  */
-public enum ConfigStatus {
-    UNLOADED,LOADED,LOAD_FAILED
+public class ConsoleThread extends Thread {
+
+    private final CommandRegister commandRegister;
+    private boolean active;
+    private final NetWatchdog netWatchdog;
+
+    public ConsoleThread(CommandRegister commandRegister, NetWatchdog netWatchdog) {
+        active = true;
+        this.commandRegister = commandRegister;
+        this.netWatchdog = netWatchdog;
+    }
+
+    @Override
+    public void run() {
+        active = true;
+        while (active) {
+            String input = "";
+            try {
+                input = CLI.readLine("> ");
+                if (!commandRegister.evaluateCommand(input))
+                    CLI.print(input.split(" ")[0] + ": Command not found");
+            } catch (Exception e) {
+                netWatchdog.shutdown();
+            }
+        }
+    }
+
+    public void end() {
+        active = false;
+    }
+
 }

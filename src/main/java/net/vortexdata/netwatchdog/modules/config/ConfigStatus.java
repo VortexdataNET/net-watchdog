@@ -22,31 +22,15 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.console.commands;
-
-
-import net.vortexdata.netwatchdog.NetWatchdog;
-import org.jline.reader.impl.completer.ArgumentCompleter;
+package net.vortexdata.netwatchdog.modules.config;
 
 /**
- * Application halt command.
+ * Config Status enum, used in the components command.
  *
- * @author  Sandro Kierner
+ * @author          Sandro Kierner
  * @since 0.0.1
  * @version 0.0.1
  */
-public class ExitCommand extends BaseCommand {
-
-    public ExitCommand(NetWatchdog netWatchdog) {
-        super(netWatchdog, "exit", "Exit and close the app.");
-    }
-
-    protected ArgumentCompleter populateArgumentCompleter() {
-        return null;
-    }
-
-    @Override
-    public void call(String[] args) {
-        netWatchdog.shutdown();
-    }
+public enum ConfigStatus {
+    UNLOADED,LOADED,LOAD_FAILED
 }
