@@ -72,9 +72,9 @@ jobs:
         git add .
         git commit -m "Release ${{ steps.draft_release.outputs.tag_name }}"
         git push
-    - name: Merge develop into master
+    - name: Merge master into develop
       run: |
         git pull
-        git checkout master
-        git merge develop
+        git checkout develop
+        git merge master
         git push
