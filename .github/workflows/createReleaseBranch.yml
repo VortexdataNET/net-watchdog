@@ -41,8 +41,8 @@ jobs:
         id: replacePVersionName
         uses: bejoistic/str-replace@v1.0.2
         with:
-          find: \"versionName\": \"*.*\"
-          replace: \"versionName\": \"${{ steps.draft_release.outputs.tag_name }}\"
+          find: "\"versionName\": \"*.*\""
+          replace: "\"versionName\": \"${{ steps.draft_release.outputs.tag_name }}\""
 
       - name: Javadoc Since Replace
         uses: bejoistic/str-replace@v1.0.2
