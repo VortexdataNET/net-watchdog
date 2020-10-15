@@ -221,7 +221,7 @@ public class NetWatchdog {
         return updateManager;
     }
 
-    public String getSysPath() {
+    public static String getSysPath() {
         return "sys//";
     }
 }

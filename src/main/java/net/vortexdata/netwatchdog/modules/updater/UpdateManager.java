@@ -26,27 +26,36 @@ public class UpdateManager {
 
 
     public boolean downloadRelease(String tag) {
+        netWatchdog.getLogger().debug("Trying to download release...");
         File sysDirectory = new File("sys//"+SYS_PATH+"//releases");
         if (!sysDirectory.exists() || !sysDirectory.isDirectory())
-            if (!sysDirectory.mkdirs())
+            if (!sysDirectory.mkdirs()) {
+                netWatchdog.getLogger().error("Failed to create download manager system directory.");
                 return false;
+            }
 
         JSONObject jsonObject = getReleaseInfo(tag);
-        if (jsonObject == null)
+        if (jsonObject == null) {
+            netWatchdog.getLogger().error("Failed to fetch release info ("+tag+").");
             return false;
+        }
+
 
         JSONObject releaseInfo = GithubAPIUtils.getJarAssetInfo(jsonObject.getJSONArray("assets"));
-        if (releaseInfo == null)
+        if (releaseInfo == null) {
+            netWatchdog.getLogger().error("Got invalid release info from API endpoint.");
             return false;
+        }
 
         try (BufferedInputStream in = new BufferedInputStream(new URL(releaseInfo.getString("browser_download_url")).openStream());
-            FileOutputStream fileOutputStream = new FileOutputStream(netWatchdog.getSysPath() + SYS_PATH + "//releases//"+tag+".jar")) {
+            FileOutputStream fileOutputStream = new FileOutputStream(netWatchdog.getSysPath() + SYS_PATH + "//releases//"+tag+".jar", false)) {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
             }
         } catch (IOException e) {
+            netWatchdog.getLogger().error("Download of release asset failed: " + e.getMessage());
             return false;
         }
         return true;
@@ -122,6 +131,10 @@ public class UpdateManager {
             netWatchdog.getLogger().debug("Failed to fetch available releases: " + e.getMessage());
             return null;
         }
+    }
+
+    public static String getDownloadedReleasePath(String tag) {
+        return NetWatchdog.getSysPath() + SYS_PATH + "//releases//"+tag+".jar";
     }
 
 }
