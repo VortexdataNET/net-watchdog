@@ -107,6 +107,9 @@ public class NetWatchdog {
         }
         logger.debug("You are running version " + appInfo.getVersionName() + ".");
 
+        // Init Update Manager
+        updateManager = new UpdateManager(this);
+
         // Inform user about platform
         if (appInfo.getPlatform() == null)
             logger.warn("Looks like your operating system is not supported ("+System.getProperty("os.name")+"). This may cause issues with some of the apps systems. Please either use Windows, Linux or macOS.");
@@ -216,5 +219,9 @@ public class NetWatchdog {
 
     public UpdateManager getUpdateManager() {
         return updateManager;
+    }
+
+    public String getSysPath() {
+        return "sys//";
     }
 }

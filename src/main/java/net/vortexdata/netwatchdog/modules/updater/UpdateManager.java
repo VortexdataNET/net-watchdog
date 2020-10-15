@@ -2,24 +2,70 @@ package net.vortexdata.netwatchdog.modules.updater;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
+import net.vortexdata.netwatchdog.utils.GithubAPIUtils;
 import net.vortexdata.netwatchdog.utils.RestUtils;
 import net.vortexdata.netwatchdog.utils.VersionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URL;
 
 public class UpdateManager {
 
+    public static final String API_URL = "https://api.github.com/repos/VortexdataNET/net-watchdog";
+    public static final String SYS_PATH = "dnldmng";
     public static final String UPDATE_AVAILABLE_MESSAGE = "There is a new update available for download! Please use the command 'app upgrade' to get more information.";
     private static int UPDATE_AVAILABLE_PAUSE = 5000;
     private NetWatchdog netWatchdog;
 
     public UpdateManager(NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;
+    }
+
+
+    public boolean downloadRelease(String tag) {
+        File sysDirectory = new File("sys//"+SYS_PATH+"//releases");
+        if (!sysDirectory.exists() || !sysDirectory.isDirectory())
+            if (!sysDirectory.mkdirs())
+                return false;
+
+        JSONObject jsonObject = getReleaseInfo(tag);
+        if (jsonObject == null)
+            return false;
+
+        JSONObject releaseInfo = GithubAPIUtils.getJarAssetInfo(jsonObject.getJSONArray("assets"));
+        if (releaseInfo == null)
+            return false;
+
+        try (BufferedInputStream in = new BufferedInputStream(new URL(releaseInfo.getString("browser_download_url")).openStream());
+            FileOutputStream fileOutputStream = new FileOutputStream(netWatchdog.getSysPath() + SYS_PATH + "//releases//"+tag+".jar")) {
+            byte[] dataBuffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+                fileOutputStream.write(dataBuffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public JSONObject getReleaseInfo(String tag) {
+        try {
+            HttpsURLConnection hurlc = RestUtils.getGetConnection(netWatchdog.getAppInfo(), API_URL + "/releases/tags/"+tag);
+            if (hurlc.getResponseCode() != HttpsURLConnection.HTTP_OK)
+                return null;
+
+            String response = RestUtils.readResponseStream(new BufferedReader(
+                    new InputStreamReader(hurlc.getInputStream())));
+
+            return new JSONObject(response);
+        } catch (Exception e) {
+            netWatchdog.getLogger().error("Failed to fetch release "+tag+": " + e.getMessage());
+            return null;
+        }
     }
 
     public void promptUpdateAvailable() {
@@ -64,7 +110,7 @@ public class UpdateManager {
 
     public JSONArray fetchAvailableReleases() {
         try {
-            HttpsURLConnection hurlc = RestUtils.getGetConnection(netWatchdog.getAppInfo(), "https://api.github.com/repos/VortexdataNET/net-watchdog/git/refs/tags");
+            HttpsURLConnection hurlc = RestUtils.getGetConnection(netWatchdog.getAppInfo(), API_URL + "/git/refs/tags");
             if (hurlc.getResponseCode() != HttpsURLConnection.HTTP_OK)
                 return null;
 

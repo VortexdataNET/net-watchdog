@@ -72,4 +72,13 @@ public class CLI {
         return lineReader.readLine(prefix);
     }
 
+    /**
+     * Promps the user with a Yes/No dialogue.
+     * @return true if the user entered YES or Y
+     */
+    public static boolean promptYesNo(String message) {
+        String input = CLI.readLine(message + " [y/n]: ");
+        return (input.equalsIgnoreCase("YES") || input.equalsIgnoreCase("Y"));
+    }
+
 }
