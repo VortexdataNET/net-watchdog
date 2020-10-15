@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 /**
  * @author  Sandro Kierner
- * @version 0.1.0
+ * @version 0.1.1
  * @since 0.0.1
  *
  * This performance class is a placeholder / dummy class which is
