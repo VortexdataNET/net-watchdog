@@ -72,4 +72,26 @@ public class CLI {
         return lineReader.readLine(prefix);
     }
 
+    /**
+     * Promps the user with a Yes/No dialogue.
+     * @return true if the user entered YES or Y
+     */
+    public static boolean promptYesNo(String message) {
+        String input = CLI.readLine(message + " [y/n]: ");
+        return (input.equalsIgnoreCase("YES") || input.equalsIgnoreCase("Y"));
+    }
+
+    /**
+     * Promps the user with a question.
+     * @return true if the user entered the i-know-what-i-am-doing check correctly.
+     */
+    public static boolean promptDangerous(String message) {
+        String input = CLI.readLine(message + " [type \"i-know-what-i-am-doing\"]: ");
+        return (input.equalsIgnoreCase("i-know-what-i-am-doing"));
+    }
+
+    public static void promptInfo(String message) {
+        CLI.readLine(message );
+    }
+
 }

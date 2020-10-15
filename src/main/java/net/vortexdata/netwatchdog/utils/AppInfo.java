@@ -59,4 +59,5 @@ public class AppInfo {
     public Platform getPlatform() {
         return platform;
     }
+
 }

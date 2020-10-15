@@ -37,6 +37,7 @@ import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.northstar.NorthstarRegister;
 import net.vortexdata.netwatchdog.modules.query.Query;
+import net.vortexdata.netwatchdog.modules.updater.UpdateManager;
 import net.vortexdata.netwatchdog.utils.AppInfo;
 import net.vortexdata.netwatchdog.utils.DateUtils;
 import org.slf4j.Logger;
@@ -66,6 +67,7 @@ public class NetWatchdog {
     private Query query;
     private AppInfo appInfo;
     private ParameterRegister paramRegister;
+    private UpdateManager updateManager;
 
     public static void main(String[] args) {
         NetWatchdog netWatchdog = new NetWatchdog();
@@ -104,6 +106,9 @@ public class NetWatchdog {
             logger.warn("Failed to load project info! This may cause issues during runtime. Is the jar file valid? Are read and write permissions set? Please check for solution and retry.");
         }
         logger.debug("You are running version " + appInfo.getVersionName() + ".");
+
+        // Init Update Manager
+        updateManager = new UpdateManager(this);
 
         // Inform user about platform
         if (appInfo.getPlatform() == null)
@@ -210,5 +215,13 @@ public class NetWatchdog {
 
     public AppInfo getAppInfo() {
         return appInfo;
+    }
+
+    public UpdateManager getUpdateManager() {
+        return updateManager;
+    }
+
+    public static String getSysPath() {
+        return "sys//";
     }
 }

@@ -67,6 +67,7 @@ public class CommandRegister {
         registerCommand(new ComponentsCommand(netWatchdog));
         registerCommand(new HelpCommand(netWatchdog));
         registerCommand(new ClearCommand(netWatchdog));
+        registerCommand(new AppCommand(netWatchdog));
     }
 
     public boolean registerCommand(BaseCommand command) {

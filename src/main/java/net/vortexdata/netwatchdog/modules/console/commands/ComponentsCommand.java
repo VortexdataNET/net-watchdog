@@ -61,8 +61,6 @@ public class ComponentsCommand extends BaseCommand {
                 return;
             }
 
-
-            StringBuilder sb = new StringBuilder();
             AttributedStringBuilder builder = new AttributedStringBuilder();
             builder.append(String.format("%-32s%-32s%-32s", "Filename", "Custom Name", "Status") + "\n")
             .append("----------------------------------------------------------------------------\n\n");
