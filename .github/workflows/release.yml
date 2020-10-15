@@ -72,5 +72,5 @@ jobs:
         title: Back-Merge release from master into develop
         reviewers: TAXSET,Varchar42
         body: This pull request has been created by the release CICD to bring changes from the release branch into develop.
-        branch: develop
-        base: master
+        branch: master
+        base: develop
