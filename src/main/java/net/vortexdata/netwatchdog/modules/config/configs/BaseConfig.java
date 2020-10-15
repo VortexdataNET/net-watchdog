@@ -35,7 +35,7 @@ import java.util.Stack;
  *
  * @author          Sandro Kierner
  * @since 0.0.1
- * @version 0.1.0
+ * @version 0.1.1
  */
 public abstract class BaseConfig {
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * Class managing Northstar systems.
  *
  * @author Sandro Kierner
- * @version 0.1.0
+ * @version 0.1.1
  * @since 0.1.0
  */
 public class NorthstarRegister {
