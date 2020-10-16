@@ -122,7 +122,15 @@ public abstract class BaseConfig {
                 Object value = currentJsonObject.get(pathSegment);
                 if (isLast && value == null) {
                     currentJsonObject.put(pathSegment, keyValueMap.get(s));
-                } else if (!isLast && value instanceof  JSONObject) {
+                    continue;
+                }
+
+                if (!isLast && value == null) {
+                    value = new JSONObject();
+                    currentJsonObject.put(pathSegment, value);
+                }
+
+                if (!isLast && value instanceof  JSONObject) {
                     currentJsonObject = (JSONObject) value;
                 }
             }
