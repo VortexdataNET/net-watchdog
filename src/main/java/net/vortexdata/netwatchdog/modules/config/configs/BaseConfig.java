@@ -61,31 +61,35 @@ public abstract class BaseConfig {
     }
 
     public boolean load(boolean createIfNonExistent) {
+
+        // Quickly check if the config actually exists
+        File configFile = new File(path);
+        if (createIfNonExistent && (!configFile.exists() || configFile.isDirectory()))
+            create();
+
+        JSONObject loadedValue = null;
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
-
-            StringBuilder sb = new StringBuilder();
-            while (br.ready()) {
-                sb.append(br.readLine());
-            }
-            try {
-                value = new JSONObject(sb.toString());
-            } catch (Exception e) {
-                create();
-            }
-
-
-            configStatus = ConfigStatus.LOADED;
+            StringBuilder configContent = new StringBuilder();
+            while (br.ready())
+                configContent.append(br.readLine());
+            loadedValue = new JSONObject(br.toString());
         } catch (FileNotFoundException e) {
-            if (createIfNonExistent)
-                create();
-            return false;
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
 
+        // TODO: Run recursive insert task
+        // TODO: If any keys were missing, inform user about regneration.
+
+
+        configStatus = ConfigStatus.LOADED;
         return false;
+    }
+
+    private boolean regenerateMissingKeys() {
+        return true;
     }
 
     public boolean create() {
