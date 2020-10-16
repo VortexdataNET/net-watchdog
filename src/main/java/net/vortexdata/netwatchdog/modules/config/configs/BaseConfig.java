@@ -28,6 +28,8 @@ import net.vortexdata.netwatchdog.modules.config.ConfigStatus;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Stack;
 
 /**
@@ -71,9 +73,15 @@ public abstract class BaseConfig {
         try {
             BufferedReader br = new BufferedReader(new FileReader(path));
             StringBuilder configContent = new StringBuilder();
+
             while (br.ready())
                 configContent.append(br.readLine());
+            br.close();
+
             loadedValue = new JSONObject(br.toString());
+
+
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -88,8 +96,37 @@ public abstract class BaseConfig {
         return false;
     }
 
-    private boolean regenerateMissingKeys() {
-        return true;
+    private void indexJsonObject(JSONObject jsonObject, String path, HashMap<String, String> outputMap) {
+
+        Iterator<String> keys = jsonObject.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            Object value = jsonObject.get(key);
+            if (value instanceof JSONObject) {
+                JSONObject jsonValue = (JSONObject) value;
+                indexJsonObject(jsonValue, path+".", outputMap);
+            } else if (value instanceof String) {
+                outputMap.put(path + "." + key, (String) value);
+            }
+        }
+    }
+
+    private void regenerateMissingKeys(HashMap<String, String> keyValueMap, JSONObject jsonObject) {
+
+        for (String s : keyValueMap.keySet()) {
+            JSONObject currentJsonObject = jsonObject;
+            String[] path = s.split(".");
+            for (int i = 0; i < path.length; i++) {
+                String pathSegment = path[i];
+                boolean isLast = path.length - i == 1;
+                Object value = currentJsonObject.get(pathSegment);
+                if (isLast && value == null) {
+                    currentJsonObject.put(pathSegment, keyValueMap.get(s));
+                } else if (!isLast && value instanceof  JSONObject) {
+                    currentJsonObject = (JSONObject) value;
+                }
+            }
+        }
     }
 
     public boolean create() {
