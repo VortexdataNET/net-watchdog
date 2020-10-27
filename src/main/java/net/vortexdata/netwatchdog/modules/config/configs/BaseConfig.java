@@ -25,6 +25,8 @@
 package net.vortexdata.netwatchdog.modules.config.configs;
 
 import net.vortexdata.netwatchdog.modules.config.ConfigStatus;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -78,19 +80,35 @@ public abstract class BaseConfig {
                 configContent.append(br.readLine());
             br.close();
 
-            loadedValue = new JSONObject(br.toString());
+            loadedValue = new JSONObject(configContent.toString());
+
+            JSONObject defaultValue = getDefaultValue();
+
+            HashMap<String, String> keyMap = new HashMap<>();
+
+            indexJsonObject(defaultValue, "", keyMap);
 
 
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            boolean updatedConfig = regenerateMissingKeys(keyMap, loadedValue);
+
+            if (updatedConfig) {
+                // TODO: Save the config  in order to persist generated values
+            }
+
+            System.out.println(loadedValue.toString());
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        // TODO: Run recursive insert task
+
+        // DONE: Run recursive insert task
         // TODO: If any keys were missing, inform user about regneration.
 
+
+        value = loadedValue;
 
         configStatus = ConfigStatus.LOADED;
         return false;
@@ -105,36 +123,57 @@ public abstract class BaseConfig {
             if (value instanceof JSONObject) {
                 JSONObject jsonValue = (JSONObject) value;
                 indexJsonObject(jsonValue, path+".", outputMap);
+            } else if (value instanceof JSONArray) {
+                outputMap.put(path + "." + key, "[JSONArray]");
             } else if (value instanceof String) {
                 outputMap.put(path + "." + key, (String) value);
             }
         }
     }
 
-    private void regenerateMissingKeys(HashMap<String, String> keyValueMap, JSONObject jsonObject) {
-
-        for (String s : keyValueMap.keySet()) {
+    private boolean regenerateMissingKeys(HashMap<String, String> keyValueMap, JSONObject jsonObject) {
+        boolean updatedConfig = false;
+        for (String currentPath : keyValueMap.keySet()) {
             JSONObject currentJsonObject = jsonObject;
-            String[] path = s.split(".");
+            String[] path = currentPath.split("\\.");
             for (int i = 0; i < path.length; i++) {
                 String pathSegment = path[i];
+                if (pathSegment.length() < 1) continue;
+
                 boolean isLast = path.length - i == 1;
-                Object value = currentJsonObject.get(pathSegment);
+
+                Object value = null;
+                if(currentJsonObject.has(pathSegment))
+                    value = currentJsonObject.get(pathSegment);
+
                 if (isLast && value == null) {
-                    currentJsonObject.put(pathSegment, keyValueMap.get(s));
+                    String defaultValue = keyValueMap.get(currentPath);
+
+                    if (defaultValue.equals("[JSONArray]")) {
+                        currentJsonObject.put(pathSegment, new JSONArray());
+                    } else {
+                        currentJsonObject.put(pathSegment, defaultValue);
+                    }
+
+                    updatedConfig = true;
                     continue;
                 }
 
                 if (!isLast && value == null) {
                     value = new JSONObject();
                     currentJsonObject.put(pathSegment, value);
+                    updatedConfig = true;
+                    continue;
                 }
 
-                if (!isLast && value instanceof  JSONObject) {
+                if (!isLast && value instanceof JSONObject) {
                     currentJsonObject = (JSONObject) value;
+                    updatedConfig = true;
                 }
             }
         }
+
+        return updatedConfig;
     }
 
     public boolean create() {
