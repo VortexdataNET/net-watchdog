@@ -93,13 +93,11 @@ public abstract class BaseConfig {
             boolean updatedConfig = regenerateMissingKeys(keyMap, loadedValue);
 
             if (updatedConfig) {
-                // TODO: Save the config  in order to persist generated values
+                create(loadedValue);
             }
 
             System.out.println(loadedValue.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
 
@@ -177,9 +175,13 @@ public abstract class BaseConfig {
     }
 
     public boolean create() {
+        return create(defaultValue);
+    }
+
+    public boolean create(JSONObject newObj) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(path, false));
-            bw.write(defaultValue.toString(3));
+            bw.write(newObj.toString(3));
             bw.flush();
             bw.close();
             return load(false);
