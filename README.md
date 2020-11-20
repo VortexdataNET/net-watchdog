@@ -286,7 +286,7 @@ The main config just tells the app basic information like how long the delay bet
 
 ### Northstar Config
 
-In the Northstar config (northstar.conf) the user specifies which addresses and/or sockets are used as Northstar refference points.
+In the Northstar config (northstar.conf) specifies which addresses and/or sockets are used as Northstar refference points.
 
 ```json
 {
@@ -312,7 +312,7 @@ In the Northstar config (northstar.conf) the user specifies which addresses and/
 
 ## Command Line
 
-The command line gives administrators control over the app, what services it checks, and allows for creation and configuration of new components without having to exit the app, reducing downtime potential.
+The command line gives administrators control over the app, what services it checks, and allows for creation and manipulation of components at runtime.
 
 ### Commands
 
@@ -332,13 +332,13 @@ The command line gives administrators control over the app, what services it che
 
 Once you've successfully launched the app, you can use the command `component create <your-component-filename>` to create a base component template file. You'll need to edit the configs values and fill in your service details (see Components section).
 
-When the component is fully configured, you can load it via the command `component enable <your-component-filename>`. The app will try to load and enable your component. You can ensure that your component is loaded by using the `components` command.
+When the component is fully configured, you can load it via the command `component enable <your-component-filename>`. The app will try to load and enable your component. You can check if your component is loaded by using the `components` command.
 
 You can also reload and re-enable all component files by using the `components reload` command.
 
 ### Disabling a component
 
-If you'd like to exclude a component from the query you can simply run the `component disabled <your-component-filename>` command. This will remove it from the loaded components pool.
+If you'd like to exclude a component from the query you can simply run the `component disable <your-component-filename>` command. This will remove it from the loaded components pool.
 
 
 
@@ -356,7 +356,7 @@ Contributions are what make the open source community such an amazing place to b
 
 ## Versioning
 
-This project is versioned using the Semantic Versioning guidelines.
+This project is versioned using the Semantic Versioning 2.0 guidelines.
 
 
 
@@ -366,37 +366,20 @@ This project is distributed under the MIT License. See `LICENSE` for more inform
 
 
 
-## Creator
+## Authors
 
 <h4>Sandro Kierner</h4>
 - Twitter: https://twitter.com/OfficialTAXSET<br>
 - GitHub: https://github.com/TAXSET<br>
 - Email: sandro@vortexdata.net<br>
 
-
+<h4>Michael Wiesinger</h4>
+- Twitter: https://twitter.com/Varchar42<br>
+- GitHub: https://github.com/Varchar42<br>
+- Email: michael@vortexdata.net<br>
 
 
 ## Acknowledgements
 
 * [Best README template by otheneildrew](https://github.com/othneildrew/Best-README-Template)
 * [contributors-img](https://contributors-img.web.app/)
-
-
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=flat-square
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=flat-square
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=flat-square
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=flat-square
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
