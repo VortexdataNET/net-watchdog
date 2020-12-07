@@ -48,12 +48,14 @@ public abstract class BaseConfig {
     private final JSONObject defaultValue;
     private JSONObject value;
     private boolean isCritical;
+    private boolean hasBeenUpdated;
 
     public BaseConfig(String path, boolean isCritical) {
         this.path = path;
         this.isCritical = isCritical;
         configStatus = ConfigStatus.UNLOADED;
         defaultValue = populateDefaultValue();
+        hasBeenUpdated = false;
     }
 
     public BaseConfig(String path) {
@@ -88,22 +90,15 @@ public abstract class BaseConfig {
 
             indexJsonObject(defaultValue, "", keyMap);
 
+            boolean updated = regenerateMissingKeys(keyMap, loadedValue);
 
-
-            boolean updatedConfig = regenerateMissingKeys(keyMap, loadedValue);
-
-            if (updatedConfig) {
+            if (updated) {
                 create(loadedValue);
+                hasBeenUpdated = true;
             }
-
-            System.out.println(loadedValue.toString());
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
-
-
-        // DONE: Run recursive insert task
-        // TODO: If any keys were missing, inform user about regneration.
 
 
         value = loadedValue;
@@ -213,6 +208,10 @@ public abstract class BaseConfig {
 
     public boolean isCritical() {
         return isCritical;
+    }
+
+    public boolean hasBeenUpdated() {
+        return hasBeenUpdated;
     }
 
 }
