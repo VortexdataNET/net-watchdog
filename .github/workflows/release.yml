@@ -29,6 +29,8 @@ jobs:
         
     - name: Setup Maven 3
       uses: aahmed-se/setup-maven@v3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
     - name: Run Maven tests
       run: mvn clean test
