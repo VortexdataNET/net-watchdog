@@ -28,6 +28,7 @@ import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.config.configs.BaseConfig;
 import net.vortexdata.netwatchdog.modules.config.configs.MainConfig;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
+import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -36,7 +37,7 @@ import java.util.Stack;
  * Class used to load, store and evaluate all system configs in.
  *
  * @author  Sandro Kierner
- * @version 0.1.1
+ * @version 0.2.0
  * @since 0.0.1
  */
 public class ConfigRegister {
@@ -45,6 +46,7 @@ public class ConfigRegister {
     private boolean ignoreCriticalConfig;
     private final NetWatchdog netWatchdog;
     private boolean didCriticalConfigFail;
+    private boolean wereConfigsUpdated;
 
     public ConfigRegister(NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;
@@ -53,6 +55,7 @@ public class ConfigRegister {
         configs.add(new MainConfig());
         configs.add(new NorthstarConfig());
         didCriticalConfigFail = false;
+        wereConfigsUpdated = false;
         loadAll();
     }
 
@@ -75,7 +78,11 @@ public class ConfigRegister {
             }
             if (!didNoErrorOccur && config.isCritical())
                 didCriticalConfigFail = true;
+            if (config.hasBeenUpdated())
+                wereConfigsUpdated = true;
         }
+
+
 
         return didNoErrorOccur;
     }
@@ -106,4 +113,17 @@ public class ConfigRegister {
     public boolean didCriticalConfigFail() {
         return didCriticalConfigFail;
     }
+
+    public boolean wereConfigsUpdated() {
+        return wereConfigsUpdated;
+    }
+
+    public ArrayList<BaseConfig> getUpdatedConfigs() {
+        ArrayList<BaseConfig> updatedConfigs = new ArrayList<>();
+        for (BaseConfig c : configs)
+            if (c.hasBeenUpdated())
+                updatedConfigs.add(c);
+        return updatedConfigs;
+    }
+
 }

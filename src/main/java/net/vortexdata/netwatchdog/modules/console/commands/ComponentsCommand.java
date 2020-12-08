@@ -37,7 +37,7 @@ import java.io.File;
  *
  * @author  Sandro Kierner
  * @since 0.0.1
- * @version 0.1.1
+ * @version 0.2.0
  */
 public class ComponentsCommand extends BaseCommand {
 
@@ -61,8 +61,6 @@ public class ComponentsCommand extends BaseCommand {
                 return;
             }
 
-
-            StringBuilder sb = new StringBuilder();
             AttributedStringBuilder builder = new AttributedStringBuilder();
             builder.append(String.format("%-32s%-32s%-32s", "Filename", "Custom Name", "Status") + "\n")
             .append("----------------------------------------------------------------------------\n\n");
