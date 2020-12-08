@@ -28,6 +28,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import net.vortexdata.netwatchdog.modules.arguments.ParameterRegister;
 import net.vortexdata.netwatchdog.modules.config.ConfigRegister;
+import net.vortexdata.netwatchdog.modules.config.configs.BaseConfig;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 import net.vortexdata.netwatchdog.modules.console.cli.CommandRegister;
@@ -37,6 +38,7 @@ import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.northstar.NorthstarRegister;
 import net.vortexdata.netwatchdog.modules.query.Query;
+import net.vortexdata.netwatchdog.modules.updater.UpdateManager;
 import net.vortexdata.netwatchdog.utils.AppInfo;
 import net.vortexdata.netwatchdog.utils.DateUtils;
 import org.slf4j.Logger;
@@ -52,7 +54,7 @@ import java.time.LocalDateTime;
  *
  * @author  Sandro Kierner
  * @since 0.0.1
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class NetWatchdog {
 
@@ -66,6 +68,7 @@ public class NetWatchdog {
     private Query query;
     private AppInfo appInfo;
     private ParameterRegister paramRegister;
+    private UpdateManager updateManager;
 
     public static void main(String[] args) {
         NetWatchdog netWatchdog = new NetWatchdog();
@@ -93,7 +96,6 @@ public class NetWatchdog {
         commandRegister = new CommandRegister(this);
         CLI.init(commandRegister);
         consoleThread = new ConsoleThread(commandRegister, this);
-        consoleThread.start();
 
         // Load project info
         logger.debug("Loading project info...");
@@ -104,6 +106,9 @@ public class NetWatchdog {
             logger.warn("Failed to load project info! This may cause issues during runtime. Is the jar file valid? Are read and write permissions set? Please check for solution and retry.");
         }
         logger.debug("You are running version " + appInfo.getVersionName() + ".");
+
+        // Init Update Manager
+        updateManager = new UpdateManager(this);
 
         // Inform user about platform
         if (appInfo.getPlatform() == null)
@@ -131,10 +136,21 @@ public class NetWatchdog {
         paramRegister.evaluateArguments();
 
         // Boot-wrapup checks
-        logger.debug("Starting boot-wrapup checks.");
+        logger.debug("Starting boot-wrapup checks...");
         if (configRegister.didCriticalConfigFail()) {
             logger.error("Encountered a critical configuration error during boot which may cause issues at runtime.");
             shutdown();
+        }
+
+        // Warn user if any configs have been updated
+        if (configRegister.wereConfigsUpdated()) {
+            logger.debug("Detected updated configs.");
+            for (BaseConfig c : configRegister.getUpdatedConfigs()) {
+                logger.warn("Config " + c.getPath() + " has been updated.");
+            }
+            if (CLI.promptYesNo("Some configs have been updated (may be a result of updating the app). It is highly advised to check configs before further use. " +
+                    "\n\nDo you want to stop the app?"))
+                shutdown();
         }
 
         // Init query
@@ -144,6 +160,8 @@ public class NetWatchdog {
         // End boot sequence
         Boothandler.bootEnd = LocalDateTime.now();
         logger.info("It took " + (int) Boothandler.getBootTimeMillis() + " ms to launch the app.");
+
+        consoleThread.start();
     }
 
     public void printCopyHeader() {
@@ -210,5 +228,13 @@ public class NetWatchdog {
 
     public AppInfo getAppInfo() {
         return appInfo;
+    }
+
+    public UpdateManager getUpdateManager() {
+        return updateManager;
+    }
+
+    public static String getSysPath() {
+        return "sys//";
     }
 }

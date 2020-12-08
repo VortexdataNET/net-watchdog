@@ -38,7 +38,7 @@ import java.util.Arrays;
  *
  * @author  Sandro Kierner
  * @since 0.0.1
- * @version 0.1.0
+ * @version 0.1.1
  */
 public class CommandRegister {
 
@@ -67,6 +67,7 @@ public class CommandRegister {
         registerCommand(new ComponentsCommand(netWatchdog));
         registerCommand(new HelpCommand(netWatchdog));
         registerCommand(new ClearCommand(netWatchdog));
+        registerCommand(new AppCommand(netWatchdog));
     }
 
     public boolean registerCommand(BaseCommand command) {
