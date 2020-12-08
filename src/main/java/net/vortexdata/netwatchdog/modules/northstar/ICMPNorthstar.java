@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * ICMP Northstar class.
  *
  * @author Sandro Kierner
- * @version 0.1.1
+ * @version 0.2.0
  * @since 0.1.0
  */
 public class ICMPNorthstar extends NorthstarBase {
