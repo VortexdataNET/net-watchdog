@@ -36,6 +36,7 @@
   * [Northstar Config](#northstar-config)
 * [Command Line](#command-line)
   * [Commands](#commands)
+* [Launch Parameters](#launch-parameters)
 * [Usage](#usage)
   * [Creating and loading components](#creating-and-loading-components)
   * [Disabling a component](#disabling-a-component)
@@ -324,6 +325,43 @@ The command line gives administrators control over the app, what services it che
 | components 	| (reload)                                                                    	| Shows a list of all components or reloads all.             	|
 | help       	| N/A                                                                         	| Shows a list of all commands, parameters and descriptions. 	|
 
+
+## Launch Parameters
+
+You can use a set of launch parameters to start the app in spezial modi.
+
+### Usage
+
+There are two forms of a launch parameter: Short and long form. The short form has a single "-" as prefix when used while the long form has "--".
+
+Simply append the launch parameters after the jar name as shown in the examples below.
+
+Setting ignore critical config using long form:
+´´´bash
+java -jar net-watchdog.jar --ignoreCriticalConfig
+´´´
+
+Setting log level using long form:
+´´´bash
+java -jar net-watchdog.jar --logLevel DEBUG
+´´´
+
+Setting log level using short form:
+´´´bash
+java -jar net-watchdog.jar -lL DEBUG
+´´´
+
+Setting log level and ignore critical config using short form:
+´´´bash
+java -jar net-watchdog.jar -lL DEBUG -iCC
+´´´
+
+### Available Parameters
+
+| Short | Long                 | Options                                     | Description                                 |
+|-------|----------------------|---------------------------------------------|---------------------------------------------|
+| iCC   | ignoreCriticalConfig | N/A                                         | Any errors during config check are ignored. |
+| ll    | logLevel             | String, "DEBUG" / "INFO" / "WARN" / "ERROR" | Sets the log level.                         |
 
 
 ## Usage
