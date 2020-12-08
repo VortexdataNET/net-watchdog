@@ -73,7 +73,7 @@ public class CLI {
     }
 
     /**
-     * Promps the user with a Yes/No dialogue.
+     * Prompts the user with a Yes/No dialogue.
      * @return true if the user entered YES or Y
      */
     public static boolean promptYesNo(String message) {
@@ -82,7 +82,7 @@ public class CLI {
     }
 
     /**
-     * Promps the user with a question.
+     * Prompts the user with a question.
      * @return true if the user entered the i-know-what-i-am-doing check correctly.
      */
     public static boolean promptDangerous(String message) {

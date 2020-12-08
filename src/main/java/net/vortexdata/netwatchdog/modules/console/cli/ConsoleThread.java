@@ -52,7 +52,7 @@ public class ConsoleThread extends Thread {
             String input = "";
             try {
                 input = CLI.readLine("> ");
-                if (!commandRegister.evaluateCommand(input))
+                if (input.length() > 0 && !commandRegister.evaluateCommand(input))
                     CLI.print(input.split(" ")[0] + ": Command not found");
             } catch (Exception e) {
                 netWatchdog.shutdown();
