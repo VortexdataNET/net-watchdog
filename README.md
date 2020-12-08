@@ -337,24 +337,24 @@ There are two forms of a launch parameter: Short and long form. The short form h
 Simply append the launch parameters after the jar name as shown in the examples below.
 
 Setting ignore critical config using long form:
-´´´bash
+```bash
 java -jar net-watchdog.jar --ignoreCriticalConfig
-´´´
+```
 
 Setting log level using long form:
-´´´bash
+```bash
 java -jar net-watchdog.jar --logLevel DEBUG
-´´´
+```
 
 Setting log level using short form:
-´´´bash
+```bash
 java -jar net-watchdog.jar -lL DEBUG
-´´´
+```
 
 Setting log level and ignore critical config using short form:
-´´´bash
+```bash
 java -jar net-watchdog.jar -lL DEBUG -iCC
-´´´
+```
 
 ### Available Parameters
 
