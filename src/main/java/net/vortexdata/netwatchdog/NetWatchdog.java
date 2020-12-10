@@ -234,6 +234,14 @@ public class NetWatchdog {
         return updateManager;
     }
 
+    public boolean isShuttingDown() {
+        return isShuttingDown;
+    }
+
+    public ParameterRegister getParamRegister() {
+        return paramRegister;
+    }
+
     public static String getSysPath() {
         return "sys//";
     }
