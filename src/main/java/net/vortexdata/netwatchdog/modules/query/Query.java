@@ -105,7 +105,7 @@ public class Query {
                 if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
                     pc.runWebhooks();
                 else
-                    netWatchdog.getLogger().info("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefor skips webhooks.");
+                    netWatchdog.getLogger().debug("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefore skips webhooks.");
             } else {
                 netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
             }
