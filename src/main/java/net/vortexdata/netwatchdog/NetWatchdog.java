@@ -54,7 +54,7 @@ import java.time.LocalDateTime;
  *
  * @author  Sandro Kierner
  * @since 0.0.1
- * @version 0.1.1
+ * @version 0.2.0
  */
 public class NetWatchdog {
 
@@ -232,6 +232,14 @@ public class NetWatchdog {
 
     public UpdateManager getUpdateManager() {
         return updateManager;
+    }
+
+    public boolean isShuttingDown() {
+        return isShuttingDown;
+    }
+
+    public ParameterRegister getParamRegister() {
+        return paramRegister;
     }
 
     public static String getSysPath() {

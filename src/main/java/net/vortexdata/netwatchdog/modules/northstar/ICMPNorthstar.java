@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * ICMP Northstar class.
  *
  * @author Sandro Kierner
- * @version 0.1.1
+ * @version 0.2.0
  * @since 0.1.0
  */
 public class ICMPNorthstar extends NorthstarBase {
@@ -32,6 +32,7 @@ public class ICMPNorthstar extends NorthstarBase {
 
         ProcessBuilder processBuilder = new ProcessBuilder();
         if (northstarRegister.getNetWatchdog().getAppInfo().getPlatform() == null) {
+            wasLastAttemptSuccessful = false;
             return false;
         } else if (northstarRegister.getNetWatchdog().getAppInfo().getPlatform() == Platform.LINUX || northstarRegister.getNetWatchdog().getAppInfo().getPlatform() == Platform.MAC) {
             processBuilder.command(("ping -c 1 -t "+address+" " + samples).split(" "));
@@ -59,19 +60,24 @@ public class ICMPNorthstar extends NorthstarBase {
                         line.toUpperCase().contains("INVALID") ||
                         line.toUpperCase().contains("ERROR")
                 ) {
+                    wasLastAttemptSuccessful = false;
                     return false;
                 }
             }
         } catch (IOException e) {
             northstarRegister.getNetWatchdog().getLogger().debug(e.getMessage());
+            wasLastAttemptSuccessful = false;
             return false;
         }
 
         for (Integer i : pingResults) {
-            if (i == -1 || i > timeout)
+            if (i == -1 || i > timeout) {
+                wasLastAttemptSuccessful = false;
                 return false;
+            }
         }
 
+        wasLastAttemptSuccessful = true;
         return true;
     }
 

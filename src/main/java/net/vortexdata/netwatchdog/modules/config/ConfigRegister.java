@@ -37,7 +37,7 @@ import java.util.Stack;
  * Class used to load, store and evaluate all system configs in.
  *
  * @author  Sandro Kierner
- * @version 0.1.1
+ * @version 0.2.0
  * @since 0.0.1
  */
 public class ConfigRegister {
@@ -104,6 +104,10 @@ public class ConfigRegister {
 
     public MainConfig getMainConfig() {
         return (MainConfig) getConfigByPath(MainConfig.CONFIG_PATH);
+    }
+
+    public NorthstarConfig getNorthstarConfig() {
+        return (NorthstarConfig) getConfigByPath(NorthstarConfig.CONFIG_PATH);
     }
 
     public boolean ignoringCriticalConfigFail() {

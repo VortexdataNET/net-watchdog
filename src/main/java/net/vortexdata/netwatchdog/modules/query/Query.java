@@ -31,13 +31,17 @@ import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.component.FallbackPerformanceClass;
 import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
+import net.vortexdata.netwatchdog.modules.northstar.NorthstarBase;
+
+import java.util.ArrayList;
+import java.util.concurrent.*;
 
 /**
  * Query thread responsible for periodically checking all components.
  *
  * @author  Sandro Kierner
  * @since 0.0.1
- * @version 0.1.1
+ * @version 0.2.0
  */
 public class Query {
 
@@ -55,25 +59,59 @@ public class Query {
     }
 
     private void runChecks() {
-        netWatchdog.getLogger().debug("Running check cycle...");
-        for (BaseComponent bc : componentManager.getComponents()) {
-            netWatchdog.getLogger().info("Checking component " + bc.getName() + "...");
+
+        int threadCount = 1;
+        int terminationThreshold = netWatchdog.getConfigRegister().getMainConfig().getValue().getInt("threadTerminationThreshold");
+        if (terminationThreshold < 1)
+            terminationThreshold = 60;
+
+        try {
+            threadCount = netWatchdog.getConfigRegister().getMainConfig().getValue().getInt("threadCount");
+            if (threadCount < 1) {
+                netWatchdog.getLogger().error("Invalid value for key \"threadCount\" in main config, must be numeric and higher than 0.");
+            }
+        } catch (Exception e) {
+            netWatchdog.getLogger().error("Invalid value for key \"threadCount\" in main config, must be numeric and higher than 0.");
+            threadCount = 1;
+        }
+
+        if (threadCount > 1) {
+            netWatchdog.getLogger().debug("Running check cycle multithreaded ("+threadCount+" threads)...");
+            ExecutorService tpe = Executors.newFixedThreadPool(threadCount);
+            for (BaseComponent bc : componentManager.getComponents()) {
+                tpe.submit(() -> checkComponent(bc));
+            }
+            tpe.shutdown();
             try {
-                PerformanceClass pc = bc.check();
-                if (pc.getClass() != FallbackPerformanceClass.class) {
-                    netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
-                    if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
-                        pc.runWebhooks();
-                    else
-                        netWatchdog.getLogger().info("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefor skips webhooks.");
-                } else {
-                    netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
-                }
-            } catch (Exception e) {
-                netWatchdog.getLogger().error("Failed to check component " + bc.getName() + ": " + e.getMessage());
+                tpe.awaitTermination(terminationThreshold, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                netWatchdog.getLogger().error("Query thread termination threshold exceeded, appending error message: " + e.getMessage());
+            }
+        } else {
+            netWatchdog.getLogger().info("Running sequential check cycle...");
+            for (BaseComponent bc : componentManager.getComponents()) {
+                checkComponent(bc);
             }
         }
-        netWatchdog.getLogger().debug("Check cycle finished, going to sleep.");
+        netWatchdog.getLogger().info("Check cycle finished.");
+    }
+
+    private void checkComponent(BaseComponent bc) {
+        netWatchdog.getLogger().info("Checking component " + bc.getName() + "...");
+        try {
+            PerformanceClass pc = bc.check();
+            if (pc.getClass() != FallbackPerformanceClass.class) {
+                netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
+                if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
+                    pc.runWebhooks();
+                else
+                    netWatchdog.getLogger().debug("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefore skips webhooks.");
+            } else {
+                netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
+            }
+        } catch (Exception e) {
+            netWatchdog.getLogger().error("Failed to check component " + bc.getName() + ": " + e.getMessage());
+        }
     }
 
     public void start() {

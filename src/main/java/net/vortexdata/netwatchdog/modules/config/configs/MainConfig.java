@@ -30,7 +30,7 @@ import java.util.Stack;
 
 /**
  * @author  Sandro Kierner
- * @version 0.1.1
+ * @version 0.2.0
  * @since 0.0.1
  */
 public class MainConfig extends BaseConfig {
@@ -72,6 +72,8 @@ public class MainConfig extends BaseConfig {
         JSONObject obj = new JSONObject();
         obj.put("enableNorthstars", "true");
         obj.put("pollDelay", "30");
+        obj.put("threadCount", "4");
+        obj.put("threadTerminationThreshold", "60");
         return obj;
     }
 

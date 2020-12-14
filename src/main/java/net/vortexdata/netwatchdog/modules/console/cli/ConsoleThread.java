@@ -31,7 +31,7 @@ import net.vortexdata.netwatchdog.NetWatchdog;
  *
  * @author  Sandro Kierner
  * @since 0.0.1
- * @version 0.1.1
+ * @version 0.2.0
  */
 public class ConsoleThread extends Thread {
 
@@ -53,9 +53,10 @@ public class ConsoleThread extends Thread {
             try {
                 input = CLI.readLine("> ");
                 if (input.length() > 0 && !commandRegister.evaluateCommand(input))
-                    CLI.print(input.split(" ")[0] + ": Command not found");
+                    if (input.split(" ").length > 0)
+                        CLI.print(input.split(" ")[0] + ": Command not found");
             } catch (Exception e) {
-                netWatchdog.shutdown();
+                netWatchdog.getLogger().error("An error occurred whilst trying to parse CLI input, appending error details: " + e.getMessage());
             }
         }
     }

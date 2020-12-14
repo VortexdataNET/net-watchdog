@@ -43,7 +43,7 @@ import java.util.ArrayList;
  *
  * @author  Sandro Kierner
  * @since 0.0.1
- * @version 0.1.1
+ * @version 0.2.0
  */
 public class PerformanceClass {
 
@@ -83,12 +83,12 @@ public class PerformanceClass {
                 if (hurlc.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     netWatchdog.getLogger().info("OK from webook " + pcw.getAddress() + ".");
                 } else {
-                    netWatchdog.getLogger().error("Got non-ok status return from webhook " + pcw.getAddress() + ". (Expected " + HttpURLConnection.HTTP_OK + ", got " + hurlc.getResponseCode() + ")");
+                    netWatchdog.getLogger().info("Got non-ok status return from webhook " + pcw.getAddress() + ". (Expected " + HttpURLConnection.HTTP_OK + ", got " + hurlc.getResponseCode() + ")");
                 }
             } catch (SocketTimeoutException e) {
-                netWatchdog.getLogger().error("Connection to webhook " + pcw.getAddress() + " failed.");
+                netWatchdog.getLogger().warn("Connection to webhook " + pcw.getAddress() + " failed.");
             } catch (IOException e) {
-                netWatchdog.getLogger().error("Failed to call webhook for address " + pcw.getAddress() + ": " + e.getMessage());
+                netWatchdog.getLogger().warn("Failed to call webhook for address " + pcw.getAddress() + ": " + e.getMessage());
             }
         }
     }

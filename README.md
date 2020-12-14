@@ -36,6 +36,7 @@
   * [Northstar Config](#northstar-config)
 * [Command Line](#command-line)
   * [Commands](#commands)
+* [Launch Parameters](#launch-parameters)
 * [Usage](#usage)
   * [Creating and loading components](#creating-and-loading-components)
   * [Disabling a component](#disabling-a-component)
@@ -274,6 +275,8 @@ The main config just tells the app basic information like how long the delay bet
 
 ```json
 {
+   "threadTerminationThreshold": "60",
+   "threadCount": 4,
    "pollDelay": "30",
    "enableNorthstars": "true"
 }
@@ -281,8 +284,11 @@ The main config just tells the app basic information like how long the delay bet
 
 | Key     	        | Value         	| Def. Value 	| Description                                    	     |
 |------------------	|---------------	|------------	|----------------------------------------------------- |
-| pollDelay	        | Int, x > 0   	  | N/A        	| Delay of component scan cycles in seconds.     	     |
+| pollDelay	        | Int, x > 0        | N/A        	| Delay of component scan cycles in seconds.     	     |
 | enableNorthstars 	| Boolean        	| N/A        	| Specifies if Northstar system should be initiated.   |
+| threadCount 	    | Int, x > 0      	| N/A        	| Specifies how many components can be checked in parallel.   |
+| threadTerminationThreshold 	    | Int, x > 0      	| N/A        	| Specifies how long the check cycle will wait for check threads to finish.   |
+
 
 ### Northstar Config
 
@@ -290,6 +296,7 @@ In the Northstar config (northstar.conf) specifies which addresses and/or socket
 
 ```json
 {
+   "threadCount": 1,
    "availPercentMin": "100",
    "northstars": [
       {
@@ -307,8 +314,9 @@ In the Northstar config (northstar.conf) specifies which addresses and/or socket
 
 | Key     	        | Value         	            | Def. Value 	| Description                                    	                                                             |
 |------------------	|---------------------------	|------------	|------------------------------------------------------------------------------------------------------------- |
-| availPercentMin   | Int, x >= 0 & x <= 100   	  | N/A        	| Minimum required percentage of refference points that have to be reached for check cycle to start.     	     |
-| northstars       	| Array of Northstars         | N/A        	| Specifies Northstar refference points.                                                                       |
+| availPercentMin   | Int, x >= 0 & x <= 100   	    | N/A        	| Minimum required percentage of refference points that have to be reached for check cycle to start.     	     |
+| northstars       	| Array of Northstars           | N/A        	| Specifies Northstar refference points.                                                                       |
+| threadCount    	| Int, x > 0                	| N/A        	| Specifies how many threads can be allocated to Northstar checks.   |
 
 ## Command Line
 
@@ -324,6 +332,43 @@ The command line gives administrators control over the app, what services it che
 | components 	| (reload)                                                                    	| Shows a list of all components or reloads all.             	|
 | help       	| N/A                                                                         	| Shows a list of all commands, parameters and descriptions. 	|
 
+
+## Launch Parameters
+
+You can use a set of launch parameters to start the app in spezial modi.
+
+### Usage
+
+There are two forms of a launch parameter: Short and long form. The short form has a single "-" as prefix when used while the long form has "--".
+
+Simply append the launch parameters after the jar name as shown in the examples below.
+
+Setting ignore critical config using long form:
+```bash
+java -jar net-watchdog.jar --ignoreCriticalConfig
+```
+
+Setting log level using long form:
+```bash
+java -jar net-watchdog.jar --logLevel DEBUG
+```
+
+Setting log level using short form:
+```bash
+java -jar net-watchdog.jar -lL DEBUG
+```
+
+Setting log level and ignore critical config using short form:
+```bash
+java -jar net-watchdog.jar -lL DEBUG -iCC
+```
+
+### Available Parameters
+
+| Short | Long                 | Options                                     | Description                                 |
+|-------|----------------------|---------------------------------------------|---------------------------------------------|
+| iCC   | ignoreCriticalConfig | N/A                                         | Any errors during config check are ignored. |
+| ll    | logLevel             | String, "DEBUG" / "INFO" / "WARN" / "ERROR" | Sets the log level.                         |
 
 
 ## Usage

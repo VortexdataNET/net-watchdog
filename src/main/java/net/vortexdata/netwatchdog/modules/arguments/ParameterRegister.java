@@ -58,18 +58,44 @@ public class ParameterRegister {
         }
     }
 
-    private ParamBase getParamFromShort(String shortName) {
+    public ParamBase getParam(String longOrShortName) {
+        if (longOrShortName.startsWith("--")) {
+            longOrShortName = longOrShortName.substring(2);
+            return getParamFromFull(longOrShortName);
+        } else if (longOrShortName.startsWith("-")) {
+            longOrShortName = longOrShortName.substring(1);
+            return getParamFromShort(longOrShortName);
+        } else {
+            if (getParamFromShort(longOrShortName) != null)
+                return getParamFromShort(longOrShortName);
+            else
+                return getParamFromFull(longOrShortName);
+        }
+    }
+
+    public ParamBase getParamFromShort(String shortName) {
         for (ParamBase pb : params)
             if (pb.getShortName().equalsIgnoreCase(shortName))
                 return pb;
         return null;
     }
 
-    private ParamBase getParamFromFull(String fullName) {
+    public ParamBase getParamFromFull(String fullName) {
         for (ParamBase pb : params)
             if (pb.getFullName().equalsIgnoreCase(fullName))
                 return pb;
         return null;
     }
 
+    public String[] getArgs() {
+        return args;
+    }
+
+    public ArrayList<ParamBase> getParams() {
+        return params;
+    }
+
+    public NetWatchdog getNetWatchdog() {
+        return netWatchdog;
+    }
 }
