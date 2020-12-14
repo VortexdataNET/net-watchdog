@@ -275,6 +275,7 @@ The main config just tells the app basic information like how long the delay bet
 
 ```json
 {
+   "threadTerminationThreshold": "60",
    "threadCount": 4,
    "pollDelay": "30",
    "enableNorthstars": "true"
@@ -286,6 +287,7 @@ The main config just tells the app basic information like how long the delay bet
 | pollDelay	        | Int, x > 0        | N/A        	| Delay of component scan cycles in seconds.     	     |
 | enableNorthstars 	| Boolean        	| N/A        	| Specifies if Northstar system should be initiated.   |
 | threadCount 	    | Int, x > 0      	| N/A        	| Specifies how many components can be checked in parallel.   |
+| threadTerminationThreshold 	    | Int, x > 0      	| N/A        	| Specifies how long the check cycle will wait for check threads to finish.   |
 
 
 ### Northstar Config
