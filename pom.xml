@@ -6,7 +6,7 @@
 
     <groupId>net.vortexdata</groupId>
     <artifactId>net-watchdog</artifactId>
-    <version>0.2.0</version><!-- APP_VERSION -->
+    <version>0.3.0</version><!-- APP_VERSION -->
 
     <build>
         <resources>

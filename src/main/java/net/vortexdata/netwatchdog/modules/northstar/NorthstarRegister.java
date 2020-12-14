@@ -13,7 +13,7 @@ import java.util.concurrent.*;
  * Class managing Northstar systems.
  *
  * @author Sandro Kierner
- * @version 0.2.0
+ * @version 0.3.0
  * @since 0.1.0
  */
 public class NorthstarRegister {
