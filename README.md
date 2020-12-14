@@ -275,6 +275,7 @@ The main config just tells the app basic information like how long the delay bet
 
 ```json
 {
+   "threadCount": 4,
    "pollDelay": "30",
    "enableNorthstars": "true"
 }
@@ -282,8 +283,9 @@ The main config just tells the app basic information like how long the delay bet
 
 | Key     	        | Value         	| Def. Value 	| Description                                    	     |
 |------------------	|---------------	|------------	|----------------------------------------------------- |
-| pollDelay	        | Int, x > 0      | N/A        	| Delay of component scan cycles in seconds.     	     |
+| pollDelay	        | Int, x > 0        | N/A        	| Delay of component scan cycles in seconds.     	     |
 | enableNorthstars 	| Boolean        	| N/A        	| Specifies if Northstar system should be initiated.   |
+| threadCount 	    | Int, x > 0      	| N/A        	| Specifies how many components can be checked in parallel.   |
 
 
 ### Northstar Config

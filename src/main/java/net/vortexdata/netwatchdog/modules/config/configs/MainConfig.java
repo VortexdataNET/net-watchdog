@@ -72,6 +72,8 @@ public class MainConfig extends BaseConfig {
         JSONObject obj = new JSONObject();
         obj.put("enableNorthstars", "true");
         obj.put("pollDelay", "30");
+        obj.put("threadCount", "4");
+        obj.put("threadTerminationThreshold", "60");
         return obj;
     }
 
