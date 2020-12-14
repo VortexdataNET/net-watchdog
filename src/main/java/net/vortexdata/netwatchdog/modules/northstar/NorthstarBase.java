@@ -26,6 +26,7 @@ public abstract class NorthstarBase {
     protected int timeout;
     protected NorthstarRegister northstarRegister;
     protected String address;
+    protected boolean wasLastAttemptSuccessful;
 
     public abstract boolean isAvailable();
 
