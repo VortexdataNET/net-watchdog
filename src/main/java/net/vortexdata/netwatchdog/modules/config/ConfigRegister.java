@@ -106,6 +106,10 @@ public class ConfigRegister {
         return (MainConfig) getConfigByPath(MainConfig.CONFIG_PATH);
     }
 
+    public NorthstarConfig getNorthstarConfig() {
+        return (NorthstarConfig) getConfigByPath(NorthstarConfig.CONFIG_PATH);
+    }
+
     public boolean ignoringCriticalConfigFail() {
         return ignoreCriticalConfig;
     }

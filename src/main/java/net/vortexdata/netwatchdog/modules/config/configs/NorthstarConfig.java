@@ -37,6 +37,13 @@ public class NorthstarConfig extends BaseConfig {
             errorStack.add("Minimum availability percentage is not set.");
         }
 
+        if (value.has("threadCount")) {
+            if (value.getInt("threadCount") < 1) {
+                canNorthstarsBeUsed = false;
+                errorStack.add("Value \"threadCount\" is set to an invalid amount. It must be higher than 0.");
+            }
+        }
+
         return errorStack;
     }
 
@@ -61,6 +68,7 @@ public class NorthstarConfig extends BaseConfig {
 
         obj.put("northstars", northstars);
         obj.put("availPercentMin", "100");
+        obj.put("threadCount", "4");
         return obj;
     }
 

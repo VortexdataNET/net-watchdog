@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.*;
 
 /**
  * Class managing Northstar systems.
@@ -35,18 +36,44 @@ public class NorthstarRegister {
 
     public int getAvailabilityPercentage() {
 
-        netWatchdog.getLogger().debug("Determining Northstar availability...");
-
-        if (netWatchdog.getAppInfo().getPlatform() == null)
-            return 0;
+        int threadCount = 1;
+        try {
+            threadCount = netWatchdog.getConfigRegister().getNorthstarConfig().getValue().getInt("threadCount");
+        } catch (Exception e) {
+            threadCount = 1;
+        }
 
         double successful = 0;
-        for (NorthstarBase n : northstars) {
-            if (n.isAvailable())
-                successful++;
+
+        if (threadCount < 2) {
+            netWatchdog.getLogger().debug("Determining Northstar availability sequentially...");
+            if (netWatchdog.getAppInfo().getPlatform() == null)
+                return 0;
+            for (NorthstarBase n : northstars) {
+                if (n.isAvailable())
+                    successful++;
+            }
+        } else {
+            netWatchdog.getLogger().debug("Determining Northstar availability multithreaded ("+threadCount+" threads)...");
+            try {
+                ArrayList<Future> availabilities = new ArrayList<Future>();
+                ExecutorService tpe = Executors.newFixedThreadPool(threadCount);
+                for (NorthstarBase n : northstars) {
+                    availabilities.add(tpe.submit(n::isAvailable));
+                }
+                tpe.shutdown();
+                tpe.awaitTermination(10, TimeUnit.SECONDS);
+                for (Future f : availabilities) {
+                    if ((boolean) f.get())
+                        successful++;
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                netWatchdog.getLogger().error("Failed to determine multithreaded northstar availability percentage, appending error message: " + e.getMessage());
+            }
         }
 
         return (int) ((successful / (double) northstars.size()) * 100);
+
     }
 
     public ArrayList<NorthstarBase> getNorthstars() {

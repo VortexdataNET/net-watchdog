@@ -275,6 +275,8 @@ The main config just tells the app basic information like how long the delay bet
 
 ```json
 {
+   "threadTerminationThreshold": "60",
+   "threadCount": 4,
    "pollDelay": "30",
    "enableNorthstars": "true"
 }
@@ -282,8 +284,11 @@ The main config just tells the app basic information like how long the delay bet
 
 | Key     	        | Value         	| Def. Value 	| Description                                    	     |
 |------------------	|---------------	|------------	|----------------------------------------------------- |
-| pollDelay	        | Int, x > 0   	  | N/A        	| Delay of component scan cycles in seconds.     	     |
+| pollDelay	        | Int, x > 0        | N/A        	| Delay of component scan cycles in seconds.     	     |
 | enableNorthstars 	| Boolean        	| N/A        	| Specifies if Northstar system should be initiated.   |
+| threadCount 	    | Int, x > 0      	| N/A        	| Specifies how many components can be checked in parallel.   |
+| threadTerminationThreshold 	    | Int, x > 0      	| N/A        	| Specifies how long the check cycle will wait for check threads to finish.   |
+
 
 ### Northstar Config
 
@@ -291,6 +296,7 @@ In the Northstar config (northstar.conf) specifies which addresses and/or socket
 
 ```json
 {
+   "threadCount": 1,
    "availPercentMin": "100",
    "northstars": [
       {
@@ -308,8 +314,9 @@ In the Northstar config (northstar.conf) specifies which addresses and/or socket
 
 | Key     	        | Value         	            | Def. Value 	| Description                                    	                                                             |
 |------------------	|---------------------------	|------------	|------------------------------------------------------------------------------------------------------------- |
-| availPercentMin   | Int, x >= 0 & x <= 100   	  | N/A        	| Minimum required percentage of refference points that have to be reached for check cycle to start.     	     |
-| northstars       	| Array of Northstars         | N/A        	| Specifies Northstar refference points.                                                                       |
+| availPercentMin   | Int, x >= 0 & x <= 100   	    | N/A        	| Minimum required percentage of refference points that have to be reached for check cycle to start.     	     |
+| northstars       	| Array of Northstars           | N/A        	| Specifies Northstar refference points.                                                                       |
+| threadCount    	| Int, x > 0                	| N/A        	| Specifies how many threads can be allocated to Northstar checks.   |
 
 ## Command Line
 
