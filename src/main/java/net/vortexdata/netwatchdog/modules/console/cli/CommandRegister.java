@@ -38,7 +38,7 @@ import java.util.Arrays;
  *
  * @author  Sandro Kierner
  * @since 0.0.1
- * @version 0.2.0
+ * @version 0.3.0
  */
 public class CommandRegister {
 
@@ -53,6 +53,9 @@ public class CommandRegister {
 
     public boolean evaluateCommand(String command) {
         String[] parts = command.split(" ");
+        if (parts.length == 0)
+            return false;
+
         BaseCommand c = getCommandByName(parts[0]);
         if (c != null) {
             c.call(Arrays.copyOfRange(parts, 1, parts.length));
@@ -78,6 +81,9 @@ public class CommandRegister {
     }
 
     public BaseCommand getCommandByName(String name) {
+        if (name == null || name.length() == 0)
+            return null;
+
         for (BaseCommand c : commands) {
             if (c.getName().equalsIgnoreCase(name))
                 return c;

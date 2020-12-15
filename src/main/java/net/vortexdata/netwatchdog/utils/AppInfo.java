@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
  *
  * @author          Sandro Kierner
  * @since 0.1.0
- * @version 0.2.0
+ * @version 0.3.0
  */
 public class AppInfo {
 

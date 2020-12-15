@@ -51,11 +51,30 @@ public class AppCommand extends BaseCommand {
     }
 
     private void printInfo() {
-        String format = "%-20s%-24s";
+        String format = "%-30s%-24s";
         AttributedStringBuilder builder = new AttributedStringBuilder();
+
         builder.append(String.format(format, "Version", netWatchdog.getAppInfo().getVersionName())).append("\n");
         builder.append(String.format(format, "RAM Usage (mb)", (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1000)).append("\n");
         builder.append(String.format(format, "Uptime (hours)", Boothandler.getBootStart().until(LocalDateTime.now(), ChronoUnit.HOURS))).append("\n");
+
+        if (netWatchdog.getParamRegister().getArgs().length > 0) {
+            builder.append(String.format(format, "\nActive launch parameters", netWatchdog.getParamRegister().getArgs()[0]));
+
+            for (int i = 1; i < netWatchdog.getParamRegister().getArgs().length; ++i) {
+
+                if (netWatchdog.getParamRegister().getArgs()[i].startsWith("--") || netWatchdog.getParamRegister().getArgs()[i].startsWith("-"))
+                    builder.append(String.format(format, "\n", netWatchdog.getParamRegister().getArgs()[i]));
+                else
+                    builder.append(" ").append(netWatchdog.getParamRegister().getArgs()[i]);
+
+            }
+        } else {
+            builder.append("\nNo active launch parameters.");
+        }
+
+
+
         CLI.print(builder.toAnsi());
     }
 
