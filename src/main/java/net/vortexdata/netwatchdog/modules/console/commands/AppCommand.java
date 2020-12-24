@@ -25,23 +25,15 @@
 package net.vortexdata.netwatchdog.modules.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
-import net.vortexdata.netwatchdog.modules.component.BaseComponent;
+import net.vortexdata.netwatchdog.utils.BootUtils;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 import net.vortexdata.netwatchdog.modules.updater.UpdateManager;
 import net.vortexdata.netwatchdog.utils.GithubAPIUtils;
 import net.vortexdata.netwatchdog.utils.VersionUtils;
 import org.jline.utils.AttributedStringBuilder;
-import org.jline.utils.AttributedStyle;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -80,7 +72,7 @@ public class AppCommand extends BaseCommand {
 
         builder.append(String.format(format, "Version", netWatchdog.getAppInfo().getVersionName())).append("\n");
         builder.append(String.format(format, "RAM Usage (mb)", (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1000)).append("\n");
-        builder.append(String.format(format, "Uptime (hours)", Boothandler.getBootStart().until(LocalDateTime.now(), ChronoUnit.HOURS))).append("\n");
+        builder.append(String.format(format, "Uptime (hours)", BootUtils.getBootStart().until(LocalDateTime.now(), ChronoUnit.HOURS))).append("\n");
 
         if (netWatchdog.getParamRegister().getArgs().length > 0) {
             builder.append(String.format(format, "\nActive launch parameters", netWatchdog.getParamRegister().getArgs()[0]));

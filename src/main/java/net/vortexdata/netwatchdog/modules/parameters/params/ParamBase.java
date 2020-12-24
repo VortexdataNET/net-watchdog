@@ -22,10 +22,17 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.arguments.args;
+package net.vortexdata.netwatchdog.modules.parameters.params;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 
+/**
+ * Base class for all launch parameter classes.
+ *
+ * @author  Sandro Kierner
+ * @since 0.1.0
+ * @version 0.3.0
+ */
 public abstract class ParamBase {
 
     protected String fullName;

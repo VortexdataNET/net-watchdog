@@ -22,19 +22,35 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.arguments.args;
+package net.vortexdata.netwatchdog.utils;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
-public class ParamIgnoreCriticalConfig extends ParamBase {
-    public ParamIgnoreCriticalConfig() {
-        super("ignoreCriticalConfig", "iCC");
+/**
+ * Primitive utility class used to store system
+ * boot timestamps.
+ *
+ * @author  Sandro Kierner
+ * @since 0.0.1
+ * @version 0.2.0
+ */
+public class BootUtils {
+
+    public static LocalDateTime bootStart;
+    public static LocalDateTime bootEnd;
+    public static LocalDateTime shutdown;
+
+    public static float getBootTimeMillis() {
+        return ChronoUnit.MILLIS.between(bootStart, bootEnd);
     }
 
-    @Override
-    public boolean runPreparation(String[] args, String calledName, NetWatchdog netWatchdog) {
-        netWatchdog.getLogger().warn("App is set to ignore critical configuration errors. This may cause issues during runtime! Do not use this command if you don't know what you are doing!");
-        netWatchdog.getConfigRegister().setIgnoreCriticalConfig();
-        return true;
+    public static LocalDateTime getBootStart() {
+        return bootStart;
+    }
+
+    public static LocalDateTime getBootEnd() {
+        return bootEnd;
     }
 }

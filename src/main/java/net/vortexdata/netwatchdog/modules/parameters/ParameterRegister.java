@@ -22,15 +22,24 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.arguments;
+package net.vortexdata.netwatchdog.modules.parameters;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.modules.arguments.args.ParamBase;
-import net.vortexdata.netwatchdog.modules.arguments.args.ParamIgnoreCriticalConfig;
-import net.vortexdata.netwatchdog.modules.arguments.args.ParamLoglevel;
+import net.vortexdata.netwatchdog.modules.parameters.params.ParamBase;
+import net.vortexdata.netwatchdog.modules.parameters.params.ParamIgnoreCriticalConfig;
+import net.vortexdata.netwatchdog.modules.parameters.params.ParamLoglevel;
 
 import java.util.ArrayList;
 
+/**
+ * Register call that initializes and holds all
+ * launch parameter classes. It also evaluates
+ * and runs given launch parameters.
+ *
+ * @author  Sandro Kierner
+ * @since 0.1.0
+ * @version 0.3.0
+ */
 public class ParameterRegister {
 
     private String[] args;

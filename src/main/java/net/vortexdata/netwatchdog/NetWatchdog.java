@@ -26,7 +26,7 @@ package net.vortexdata.netwatchdog;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import net.vortexdata.netwatchdog.modules.arguments.ParameterRegister;
+import net.vortexdata.netwatchdog.modules.parameters.ParameterRegister;
 import net.vortexdata.netwatchdog.modules.config.ConfigRegister;
 import net.vortexdata.netwatchdog.modules.config.configs.BaseConfig;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
@@ -34,7 +34,7 @@ import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 import net.vortexdata.netwatchdog.modules.console.cli.CommandRegister;
 import net.vortexdata.netwatchdog.modules.console.cli.ConsoleThread;
 import net.vortexdata.netwatchdog.modules.console.cli.JLineAppender;
-import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
+import net.vortexdata.netwatchdog.utils.BootUtils;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.northstar.NorthstarRegister;
 import net.vortexdata.netwatchdog.modules.query.Query;
@@ -77,7 +77,7 @@ public class NetWatchdog {
 
     public void launch(String[] args) {
 
-        Boothandler.bootStart = LocalDateTime.now();
+        BootUtils.bootStart = LocalDateTime.now();
         isShuttingDown = false;
 
         // Display start screen
@@ -158,8 +158,8 @@ public class NetWatchdog {
         query.start();
 
         // End boot sequence
-        Boothandler.bootEnd = LocalDateTime.now();
-        logger.info("It took " + (int) Boothandler.getBootTimeMillis() + " ms to launch the app.");
+        BootUtils.bootEnd = LocalDateTime.now();
+        logger.info("It took " + (int) BootUtils.getBootTimeMillis() + " ms to launch the app.");
 
         consoleThread.start();
     }
