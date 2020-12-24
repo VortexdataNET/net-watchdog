@@ -63,12 +63,22 @@ public class PerformanceClass {
         this.netWatchdog = netWatchdog;
     }
 
-    public boolean lookupContent(String string) {
-        if (string == null || contentLookup == null)
+    /**
+     * Checks if performance class response content lookup has match.
+     *
+     * @param   responseString    Response string from performance class.
+     * @return                    <code>true</code> if match was found;
+     *                            <code>false<code> if no match was found.
+     */
+    public boolean lookupContent(String responseString) {
+        if (responseString == null || contentLookup == null)
             return false;
-        return string.contains(contentLookup);
+        return responseString.contains(contentLookup);
     }
 
+    /**
+     * Runs configured webhooks if applicable.
+     */
     public void runWebhooks() {
 
         if (webhooks == null || webhooks.isEmpty())
@@ -81,7 +91,7 @@ public class PerformanceClass {
                     body = pcw.getBody();
                 HttpsURLConnection hurlc = RestUtils.getPostConnection(netWatchdog.getAppInfo(), RestUtils.getPostBytes(body), pcw.getAddress(), "application/json", pcw.getHeaders());
                 if (hurlc.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    netWatchdog.getLogger().info("OK from webook " + pcw.getAddress() + ".");
+                    netWatchdog.getLogger().info("OK from webhook " + pcw.getAddress() + ".");
                 } else {
                     netWatchdog.getLogger().info("Got non-ok status return from webhook " + pcw.getAddress() + ". (Expected " + HttpURLConnection.HTTP_OK + ", got " + hurlc.getResponseCode() + ")");
                 }

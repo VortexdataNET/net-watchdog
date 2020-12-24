@@ -29,6 +29,11 @@ import org.json.JSONObject;
 
 import java.util.Stack;
 
+/**
+ * @author  Sandro Kierner
+ * @version 0.2.0
+ * @since 0.1.0
+ */
 public class NorthstarConfig extends BaseConfig {
 
     private boolean canNorthstarsBeUsed;

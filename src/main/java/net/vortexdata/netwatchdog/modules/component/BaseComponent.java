@@ -54,6 +54,15 @@ public abstract class BaseComponent {
         this.cachePerformanceClass = cachePerformanceClass;
     }
 
+    /**
+     * Checks availability of the component and tries to
+     * match it to a fitting performance class.
+     *
+     * Also updates {@link BaseComponent#hasPerformanceClassChanged} and
+     * {@link BaseComponent#lastPerformanceClass} values.
+     *
+     * @return  Matching {@link PerformanceClass}
+     */
     public PerformanceClass check() {
         lastCheck = LocalDateTime.now();
         PerformanceClass pc = runPerformanceCheck();
@@ -67,8 +76,19 @@ public abstract class BaseComponent {
         return pc;
     }
 
-    public abstract PerformanceClass runPerformanceCheck();
+    /**
+     * Runs check code and maps it to matching {@link PerformanceClass}.
+     *
+     * @return  Mapped {@link PerformanceClass}
+     */
+    protected abstract PerformanceClass runPerformanceCheck();
 
+    /**
+     * Tries to match response time to available {@link PerformanceClass}.
+     *
+     * @param   responseTime
+     * @return                  Mapped {@link PerformanceClass}
+     */
     protected PerformanceClass getPerformanceClassByResponseTime(int responseTime) {
         for (PerformanceClass pc : performanceClasses) {
             if (pc.getResponseTimeRange()[0] <= responseTime && pc.getResponseTimeRange()[1] >= responseTime)

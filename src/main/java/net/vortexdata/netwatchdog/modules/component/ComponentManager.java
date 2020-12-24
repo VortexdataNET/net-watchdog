@@ -56,6 +56,14 @@ public class ComponentManager {
         this.netWatchdog = netWatchdog;
     }
 
+    /**
+     * Tries to load a and parse component from file.
+     *
+     * @param   filename    {@link String} containing path to file.
+     * @return              {@link BaseComponent} object parsed from file;
+     *                      <code>null</code> if file was not found or configuration
+     *                      is invalid.
+     */
     public BaseComponent loadComponent(String filename) {
         JSONObject obj = loadComponentJSON(filename);
         if (obj == null)
@@ -119,6 +127,13 @@ public class ComponentManager {
         return null;
     }
 
+    /**
+     * Loads content from file as {@link JSONObject}.
+     *
+     * @param   filename    {@link String} containing path to file.
+     * @return              {@link JSONObject} containing file content;
+     *                      <code>null</code> if file was not found or an error occurred.
+     */
     private JSONObject loadComponentJSON(String filename) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(COMPONENTS_DIR + filename));
@@ -139,6 +154,12 @@ public class ComponentManager {
         return null;
     }
 
+    /**
+     * Tries to load and parse all component files contained in components directory.
+     *
+     * @return              <code>true</code> if some components were loaded;
+     *                      <code>false</code> if no components were loaded.
+     */
     public boolean loadAll() {
         unloadedComponents.clear();
         components.clear();
@@ -154,7 +175,7 @@ public class ComponentManager {
         File[] fileList = file.listFiles(compFileFilter);
         if (fileList.length == 0) {
             netWatchdog.getLogger().info("There are no components to load.");
-            return true;
+            return false;
         }
         for (int i = 0; i < fileList.length; i++) {
             netWatchdog.getLogger().debug("Trying to load component " + fileList[i].getName() + "...");
@@ -170,15 +191,7 @@ public class ComponentManager {
                 unloadedComponents.add(fileList[i]);
             }
         }
-        return false;
-    }
-
-    public BaseComponent getComponentByName(String componentName) {
-        for (BaseComponent c : components) {
-            if (c.getName().equalsIgnoreCase(componentName))
-                return c;
-        }
-        return null;
+        return true;
     }
 
     public static ArrayList<PerformanceClass> constructPerformanceClassesFromJSONArray(NetWatchdog netWatchdog, String componentName, JSONArray array) {
@@ -269,13 +282,31 @@ public class ComponentManager {
         return performanceClassWebhooks;
     }
 
-    public boolean enableComponent(String name, boolean appendCompIdentifier) {
+    /**
+     * Tries to enable component by filename.
+     *
+     * @param filename                  {@link String} containing path to component file.
+     * @param appendCompIdentifier      <code>true</code> if you wish to automatically append the component
+     *                                  file-ending ({@link ComponentManager#COMPONENT_IDENTIFIER}).
+     *
+     * @return                          <code>true</code> if component was loaded successfully;
+     *                                  <code>false</code> if component could not be loaded.
+     */
+    public boolean enableComponent(String filename, boolean appendCompIdentifier) {
         if (appendCompIdentifier)
-            return enableComponent(name + ComponentManager.COMPONENT_IDENTIFIER);
+            return enableComponent(filename + ComponentManager.COMPONENT_IDENTIFIER);
         else
-            return enableComponent(name);
+            return enableComponent(filename);
     }
 
+    /**
+     * Tries to enable component by name.
+     *
+     * @param filename                  {@link String} containing path to component file.
+     *
+     * @return                          <code>true</code> if component was loaded successfully;
+     *                                  <code>false</code> if component could not be loaded.
+     */
     public boolean enableComponent(String filename) {
         netWatchdog.getLogger().info("Trying to enable component " + filename + "...");
         BaseComponent c = loadComponent(filename);
@@ -290,6 +321,13 @@ public class ComponentManager {
         }
     }
 
+    /**
+     * Disables component by filename.
+     *
+     * @param filename      {@link String} specifying the target component file name.
+     * @return              <code>true</code> if component has been disabled;
+     *                      <code>false</code> if component was not found.
+     */
     public boolean disableComponent(String filename) {
         netWatchdog.getLogger().debug("Trying to disable component " + filename + "...");
         BaseComponent c = getComponentByFilename(filename);
@@ -312,16 +350,20 @@ public class ComponentManager {
         return null;
     }
 
+    public BaseComponent getComponentByName(String componentName) {
+        for (BaseComponent c : components) {
+            if (c.getName().equalsIgnoreCase(componentName))
+                return c;
+        }
+        return null;
+    }
+
     public ArrayList<BaseComponent> getComponents() {
         return components;
     }
 
     public NetWatchdog getNetWatchdog() {
         return netWatchdog;
-    }
-
-    public boolean unloadComponent(BaseComponent component) {
-        return components.remove(component);
     }
 
     public ArrayList<File> getUnloadedComponents() {

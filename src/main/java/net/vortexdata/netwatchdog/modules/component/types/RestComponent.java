@@ -43,6 +43,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * RestComponent used to check websites and REST APIs.
+ *
+ * @author          Sandro Kierner
+ * @since 0.0.1
+ * @version 0.2.0
+ */
 public class RestComponent extends BaseComponent {
 
     private final HashMap<String, String> headers;
@@ -59,7 +66,7 @@ public class RestComponent extends BaseComponent {
     }
 
     @Override
-    public PerformanceClass runPerformanceCheck() {
+    protected PerformanceClass runPerformanceCheck() {
 
         HttpsURLConnection hurlc = null;
         try {
