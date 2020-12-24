@@ -27,12 +27,34 @@ package net.vortexdata.netwatchdog.utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Utils class used to fetch project specific
+ * information via the GitHub API.
+ *
+ * @author Sandro Kierner
+ * @since 0.0.1
+ * @version 0.2.0
+ */
 public class GithubAPIUtils {
 
+    /**
+     * Gets <code>net-watchdog.jar</code> asset information {@link JSONObject}
+     * from GitHub release {@link JSONObject}.
+     *
+     * @param   release     GitHub Release {@link JSONObject} (e.g. obtained from GitHub release API).
+     * @return              Asset information {@link JSONObject} matching <code>net-watchdog.jar</code> file name.
+     */
     public static JSONObject getJarAssetInfo(JSONObject release) {
         return getJarAssetInfo(release.getJSONArray("assets"));
     }
 
+    /**
+     * Gets <code>net-watchdog.jar</code> asset information {@link JSONObject}
+     * from {@link JSONArray} asset array.
+     *
+     * @param   assets  Asset {@link JSONArray} (e.g. obtained from GitHub release API).
+     * @return          Asset information {@link JSONObject} matching <code>net-watchdog.jar</code> file name.
+     */
     public static JSONObject getJarAssetInfo(JSONArray assets) {
         for (int i = 0; i < assets.length(); i++) {
             if (assets.getJSONObject(i).getString("name").equalsIgnoreCase("net-watchdog.jar"))

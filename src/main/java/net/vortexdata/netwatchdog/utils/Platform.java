@@ -24,11 +24,27 @@
 
 package net.vortexdata.netwatchdog.utils;
 
+/**
+ * Enum class used to determine the
+ * operating system platform the
+ * app is running on.
+ *
+ * @author Sandro Kierner
+ * @since 0.0.1
+ * @version 0.2.0
+ */
 public enum Platform {
     WINDOWS("WIN"),
     LINUX("LINUX"),
     MAC("MAC");
 
+    /**
+     * Get a Platform enum by passing the OS name (e.g. by using System.getProperty("os.name"))
+     * as <a href="#{@link}">{@link String}</a>string.
+     *
+     * @param   platformRaw     Platform name which is matched with platform regex.
+     * @return                  The matching platform enum, null if no match is found.
+     */
     public static Platform getPlatformFromString(String platformRaw) {
         platformRaw = platformRaw.toUpperCase();
         if (platformRaw.contains(WINDOWS.regex)) {

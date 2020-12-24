@@ -36,22 +36,23 @@ import java.time.format.DateTimeFormatter;
  */
 public class DateUtils {
 
+    /**
+     * Get a quick-formatted string from {@link LocalDateTime} object.
+     * 
+     * @param date  {@link LocalDateTime} object to be formatted.
+     * @return      {@link String} in format <code>hh:mm:ss y-M-d</code>.
+     */
     public static String getPrettyStringFromLocalDateTime(LocalDateTime date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss y-M-d");
         return formatter.format(date);
     }
 
-    public static LocalDateTime getLocalDateTimeFromStringISO(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        LocalDateTime export = LocalDateTime.parse(date, formatter);
-        return export;
-    }
-
-    public static String getISOStringFromLocalDateTime(LocalDateTime date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        return formatter.format(date);
-    }
-
+    /**
+     * Get an easily readable string from {@link LocalDateTime} object.
+     *
+     * @param ldt   {@link LocalDateTime} object to be formatted.
+     * @return      {@link String} in format <code>MMMM d, yyyy HH:mm</code>.
+     */
     public static String getReadableDateString(LocalDateTime ldt) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy HH:mm");
         return formatter.format(ldt);

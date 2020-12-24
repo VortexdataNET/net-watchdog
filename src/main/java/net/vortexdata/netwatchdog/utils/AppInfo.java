@@ -47,6 +47,11 @@ public class AppInfo {
         platform = Platform.getPlatformFromString(System.getProperty("os.name"));
     }
 
+    /**
+     * Loads project information baked into projects.json file.
+     * @return        <code>true</code> if information has been loaded successfully;
+     *                <code>false</code> if an error occurred during load.
+     */
     public boolean loadProjectConfig() {
 
         StringBuffer sb = new StringBuffer();

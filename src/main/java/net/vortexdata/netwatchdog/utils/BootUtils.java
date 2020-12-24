@@ -42,6 +42,10 @@ public class BootUtils {
     public static LocalDateTime bootEnd;
     public static LocalDateTime shutdown;
 
+    /**
+     * Calculates total boot time of app from {@link BootUtils#bootStart} and {@link BootUtils#bootEnd}.
+     * @return      Total boot time in milliseconds.
+     */
     public static float getBootTimeMillis() {
         return ChronoUnit.MILLIS.between(bootStart, bootEnd);
     }

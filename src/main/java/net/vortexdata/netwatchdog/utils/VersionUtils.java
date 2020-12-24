@@ -24,8 +24,21 @@
 
 package net.vortexdata.netwatchdog.utils;
 
+/**
+ * Utils class used to compare and evaluate Semantic Versioning 2.0.0 version tags.
+ *
+ * @author          Sandro Kierner
+ * @since 0.0.1
+ * @version 0.2.0
+ */
 public class VersionUtils {
 
+    /**
+     * Checks validity of given version tag.
+     *
+     * @param   tag     Tag as string.
+     * @return          true if tag is valid, false if not.
+     */
     public static boolean isVersionTagValid(String tag) {
         String[] split = tag.split("\\.");
         if (split.length != 3) return false;
@@ -41,6 +54,16 @@ public class VersionUtils {
         return true;
     }
 
+    /**
+     * Compares version tags and works out if parameter <code>tag1</code> is
+     * equal to, newer or older than parameter <code>tag2</code>.
+     *
+     * @param   tag1    Tag as string.
+     * @param   tag2    Tag as string.
+     * @return          <code>0</code> if tags are equal;
+     *                  <code>1</code> if tag1 is newer/higher than tag2;
+     *                  <code>-1</code> if tag1 is older/lower than tag2;
+     */
     public static int compareVersionTags(String tag1, String tag2) {
         String[] level1 = tag1.split("\\.");
         String[] level2 = tag2.split("\\.");
