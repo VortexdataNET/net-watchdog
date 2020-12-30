@@ -44,7 +44,11 @@ public class CLI {
 
     public static LineReader lineReader;
 
-    public static void init(CommandRegister register) {
+    /**
+     * Initializes terminal object and argument completer.
+     * @param commandRegister   {@link CommandRegister} object.
+     */
+    public static void init(CommandRegister commandRegister) {
         Terminal terminal = null;
 
         try {
@@ -55,7 +59,7 @@ public class CLI {
             e.printStackTrace();
         }
 
-        ArgumentCompleter ac = register.getCommandNameArgumentCompleter();
+        ArgumentCompleter ac = commandRegister.getCommandNameArgumentCompleter();
         ac.setStrict(true);
 
         lineReader = LineReaderBuilder.builder()
@@ -64,10 +68,21 @@ public class CLI {
                 .build();
     }
 
+    /**
+     * Prints a string above input line. Use this to avoid
+     * breaking user input display.
+     * @param msg
+     */
     public static void print(String msg) {
         lineReader.printAbove(msg);
     }
 
+    /**
+     * Reads line from user.
+     *
+     * @param prefix    {@link String} to display before input line.
+     * @return          {@link String} Users input.
+     */
     public static String readLine(String prefix) {
         return lineReader.readLine(prefix);
     }
@@ -90,6 +105,12 @@ public class CLI {
         return (input.equalsIgnoreCase("i-know-what-i-am-doing"));
     }
 
+    /**
+     * Displays a message to user which they have to acknowledge by using
+     * return key.
+     *
+     * @param message       {@link String} Message to display.
+     */
     public static void promptInfo(String message) {
         CLI.readLine(message );
     }

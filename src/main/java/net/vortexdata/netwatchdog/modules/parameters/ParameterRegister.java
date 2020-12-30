@@ -55,6 +55,10 @@ public class ParameterRegister {
         params.add(new ParamIgnoreCriticalConfig());
     }
 
+    /**
+     * Evaluates arguments contained in args array
+     * and calls parameter objects if applicable.
+     */
     public void evaluateArguments() {
 
         if (args.length == 0) {

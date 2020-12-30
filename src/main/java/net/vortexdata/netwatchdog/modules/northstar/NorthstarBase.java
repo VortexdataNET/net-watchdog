@@ -52,6 +52,11 @@ public abstract class NorthstarBase {
     protected String address;
     protected boolean wasLastAttemptSuccessful;
 
+    /**
+     * Determines if Northstar can be reached.
+     * @return      <code>true</code> if northstar could be reached;
+     *              <code>false</code> if northstar could NOT be reached.
+     */
     public abstract boolean isAvailable();
 
 }

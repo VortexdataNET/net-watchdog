@@ -58,6 +58,9 @@ public class Query {
         this.componentManager = netWatchdog.getComponentManager();
     }
 
+    /**
+     * Runs Northstar and components checks.
+     */
     private void runChecks() {
 
         int threadCount = 1;

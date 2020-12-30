@@ -43,6 +43,15 @@ public abstract class ParamBase {
         this.shortName = shortName;
     }
 
+    /**
+     * Runs parameter logic.
+     *
+     * @param args          String array containing arguments of the parameter call.
+     * @param calledName    String defining by which name the parameter was called by user.
+     * @param netWatchdog   {@link NetWatchdog} instance used to control the app.
+     * @return              <code>true</code> if preparation finished successfully.
+     *                      <code>false</code> if preparation failed.
+     */
     public abstract boolean runPreparation(String[] args, String calledName, NetWatchdog netWatchdog);
 
     public String getFullName() {

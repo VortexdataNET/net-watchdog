@@ -48,7 +48,12 @@ public class UpdateManager {
         this.netWatchdog = netWatchdog;
     }
 
-
+    /**
+     * Downloads release with matching release tag.
+     * @param tag       {@link String} specifying the release to download.
+     * @return          <code>true</code> if release has been downloaded successfully;
+     *                  <code>false</code> if download failed.
+     */
     public boolean downloadRelease(String tag) {
         netWatchdog.getLogger().debug("Trying to download release...");
         File sysDirectory = new File("sys//"+SYS_PATH+"//releases");
@@ -85,6 +90,12 @@ public class UpdateManager {
         return true;
     }
 
+    /**
+     * Fetches release info by tag from GitHub release API.
+     *
+     * @param tag   {@link String} specifying release tag.
+     * @return      {@link JSONObject} containing release info.
+     */
     public JSONObject getReleaseInfo(String tag) {
         try {
             HttpsURLConnection hurlc = RestUtils.getGetConnection(netWatchdog.getAppInfo(), API_URL + "/releases/tags/"+tag);
@@ -112,6 +123,12 @@ public class UpdateManager {
         }
     }
 
+    /**
+     * Checks if release tag is available.
+     * @param tag   Release tag.
+     * @return      <code>true</code> if it's available.
+     *              <code>false</code> if it's not.
+     */
     public boolean isTagAvailable(String tag) {
         JSONArray array = fetchAvailableReleases();
         for (int i = 0; i < array.length(); i++) {
@@ -128,6 +145,10 @@ public class UpdateManager {
         return (VersionUtils.compareVersionTags(ref[ref.length-1], netWatchdog.getAppInfo().getVersionName()) == 1);
     }
 
+    /**
+     * Looks for and returns latest releases version tag.
+     * @return      {@link String} representing latest version tag.
+     */
     public String getLatestVersionTag() {
         JSONArray array = fetchAvailableReleases();
         if (array != null) {
@@ -141,6 +162,10 @@ public class UpdateManager {
         return ref[ref.length-1];
     }
 
+    /**
+     * Fetches available releases from GitHub API.
+     * @return      {@link JSONArray} containing all available releases.
+     */
     public JSONArray fetchAvailableReleases() {
         try {
             HttpsURLConnection hurlc = RestUtils.getGetConnection(netWatchdog.getAppInfo(), API_URL + "/git/refs/tags");

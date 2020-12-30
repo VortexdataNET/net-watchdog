@@ -50,6 +50,12 @@ public abstract class BaseCommand {
         this.description = description;
     }
 
+    /**
+     * Returns help message of command used in help
+     * command.
+     * @return      {@link String} representing help
+     *              message.
+     */
     public String getHelpMessage() {
         StringBuilder sb = new StringBuilder();
 
@@ -73,6 +79,12 @@ public abstract class BaseCommand {
         return sb.toString();
     }
 
+    /**
+     * Generates args {@link String} from arguments {@link HashMap}.
+     * Used in help message.
+     *
+     * @return  {@link String} formatted as args string.
+     */
     private String generateArgsString() {
         if (args == null || args.size() == 0)
             return "N/A";
@@ -92,10 +104,18 @@ public abstract class BaseCommand {
         return export;
     }
 
+    /**
+     * Prints help message to CLI.
+     */
     protected void printUsage() {
         CLI.print(getHelpMessage());
     }
 
+    /**
+     * Runs command logic.
+     * @param args      Array containing all user arguments
+     *                  separated by whitespace.
+     */
     public abstract void call(String[] args);
 
     public String getName() {
