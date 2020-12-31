@@ -1,23 +1,39 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 VortexdataNET
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package net.vortexdata.netwatchdog.modules.console.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.modules.boothandler.Boothandler;
-import net.vortexdata.netwatchdog.modules.component.BaseComponent;
+import net.vortexdata.netwatchdog.utils.BootUtils;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 import net.vortexdata.netwatchdog.modules.updater.UpdateManager;
 import net.vortexdata.netwatchdog.utils.GithubAPIUtils;
 import net.vortexdata.netwatchdog.utils.VersionUtils;
 import org.jline.utils.AttributedStringBuilder;
-import org.jline.utils.AttributedStyle;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -56,7 +72,7 @@ public class AppCommand extends BaseCommand {
 
         builder.append(String.format(format, "Version", netWatchdog.getAppInfo().getVersionName())).append("\n");
         builder.append(String.format(format, "RAM Usage (mb)", (double) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1024 / 1000)).append("\n");
-        builder.append(String.format(format, "Uptime (hours)", Boothandler.getBootStart().until(LocalDateTime.now(), ChronoUnit.HOURS))).append("\n");
+        builder.append(String.format(format, "Uptime (hours)", BootUtils.getBootStart().until(LocalDateTime.now(), ChronoUnit.HOURS))).append("\n");
 
         if (netWatchdog.getParamRegister().getArgs().length > 0) {
             builder.append(String.format(format, "\nActive launch parameters", netWatchdog.getParamRegister().getArgs()[0]));

@@ -1,5 +1,5 @@
 /*
- * NET Watchdog
+ * MIT License
  *
  * Copyright (c) 2020 VortexdataNET
  *
@@ -59,6 +59,11 @@ public class ConfigRegister {
         loadAll();
     }
 
+    /**
+     * Loads all configs.
+     * @return      <code>true</code> if no errors occurred;
+     *              <code>false</code> if one or more errors occurred;
+     */
     public boolean loadAll() {
 
         boolean didNoErrorOccur = true;

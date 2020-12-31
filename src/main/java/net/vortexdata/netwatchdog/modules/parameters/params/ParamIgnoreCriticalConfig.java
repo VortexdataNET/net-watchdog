@@ -22,40 +22,27 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.utils;
+package net.vortexdata.netwatchdog.modules.parameters.params;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import net.vortexdata.netwatchdog.NetWatchdog;
 
 /**
- * Utils class used to parse and transform dates.
+ * Instructs the app to ignore config check errors thrown by
+ * critical configs during app boot.
  *
- * @author          Sandro Kierner
- * @since 0.0.1
- * @version 0.2.0
+ * @author  Sandro Kierner
+ * @since 0.1.0
+ * @version 0.3.0
  */
-public class DateUtils {
-
-    /**
-     * Get a quick-formatted string from {@link LocalDateTime} object.
-     * 
-     * @param date  {@link LocalDateTime} object to be formatted.
-     * @return      {@link String} in format <code>hh:mm:ss y-M-d</code>.
-     */
-    public static String getPrettyStringFromLocalDateTime(LocalDateTime date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss y-M-d");
-        return formatter.format(date);
+public class ParamIgnoreCriticalConfig extends ParamBase {
+    public ParamIgnoreCriticalConfig() {
+        super("ignoreCriticalConfig", "iCC");
     }
 
-    /**
-     * Get an easily readable string from {@link LocalDateTime} object.
-     *
-     * @param ldt   {@link LocalDateTime} object to be formatted.
-     * @return      {@link String} in format <code>MMMM d, yyyy HH:mm</code>.
-     */
-    public static String getReadableDateString(LocalDateTime ldt) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy HH:mm");
-        return formatter.format(ldt);
+    @Override
+    public boolean runPreparation(String[] args, String calledName, NetWatchdog netWatchdog) {
+        netWatchdog.getLogger().warn("App is set to ignore critical configuration errors. This may cause issues during runtime! Do not use this command if you don't know what you are doing!");
+        netWatchdog.getConfigRegister().setIgnoreCriticalConfig();
+        return true;
     }
-
 }

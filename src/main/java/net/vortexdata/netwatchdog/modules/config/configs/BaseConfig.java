@@ -1,5 +1,5 @@
 /*
- * NET Watchdog
+ * MIT License
  *
  * Copyright (c) 2020 VortexdataNET
  *
@@ -62,10 +62,24 @@ public abstract class BaseConfig {
         this(path, true);
     }
 
+    /**
+     * Tries to load config file and creates it if it doesn't
+     * already exist.
+     *
+     * @return     <code>true</code> if config has been loaded successfully;
+     *             <code>false</code> if error occurred during load.
+     */
     public boolean load() {
         return load(true);
     }
 
+    /**
+     * Tries to load config file.
+     *
+     * @param   createIfNonExistent     <code>true</code> if config should be created if not found.
+     * @return                          <code>true</code> if config has been loaded successfully;
+     *                                  <code>false</code> if error occurred during load.
+     */
     public boolean load(boolean createIfNonExistent) {
 
         // Quickly check if the config actually exists
@@ -98,13 +112,14 @@ public abstract class BaseConfig {
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
+            configStatus = ConfigStatus.LOAD_FAILED;
+            value = loadedValue;
+            return false;
         }
 
-
         value = loadedValue;
-
         configStatus = ConfigStatus.LOADED;
-        return false;
+        return true;
     }
 
     private void indexJsonObject(JSONObject jsonObject, String path, HashMap<String, String> outputMap) {
@@ -173,10 +188,18 @@ public abstract class BaseConfig {
         return create(defaultValue);
     }
 
-    public boolean create(JSONObject newObj) {
+    /**
+     * Creates config file from default value {@link JSONObject}.
+     *
+     * @param   defaultValues       {@link JSONObject} representing default config
+     *                              values and structure.
+     * @return                      <code>true</code> if config has been created;
+     *                              <code>false</code> if creation failed.
+     */
+    public boolean create(JSONObject defaultValues) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(path, false));
-            bw.write(newObj.toString(3));
+            bw.write(defaultValues.toString(3));
             bw.flush();
             bw.close();
             return load(false);
@@ -185,6 +208,21 @@ public abstract class BaseConfig {
             return false;
         }
     }
+
+    /**
+     * Creates {@link JSONObject} representing default values of config.
+     * @return  {@link JSONObject} representing default values of config.
+     */
+    public abstract JSONObject populateDefaultValue();
+
+    /**
+     * Checks config values and if they are within valid range and of correct
+     * datatypes.
+     *
+     * @return      {@link Stack<String>} of error messages. If size is 0, no errors
+     *              were encountered and config is valid.
+     */
+    public abstract Stack<String> checkIntegrity();
 
     public ConfigStatus getConfigStatus() {
         return configStatus;
@@ -201,10 +239,6 @@ public abstract class BaseConfig {
     public JSONObject getValue() {
         return value;
     }
-
-    public abstract Stack<String> checkIntegrity();
-
-    public abstract JSONObject populateDefaultValue();
 
     public boolean isCritical() {
         return isCritical;

@@ -1,5 +1,5 @@
 /*
- * NET Watchdog
+ * MIT License
  *
  * Copyright (c) 2020 VortexdataNET
  *
@@ -35,6 +35,13 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**
+ * SocketComponent used to check socket endpoints or APIs.
+ *
+ * @author          Sandro Kierner
+ * @since 0.0.1
+ * @version 0.2.0
+ */
 public class SocketComponent extends BaseComponent {
 
     private final int port;
@@ -45,7 +52,7 @@ public class SocketComponent extends BaseComponent {
     }
 
     @Override
-    public PerformanceClass runPerformanceCheck() {
+    protected PerformanceClass runPerformanceCheck() {
         try {
             long start = System.currentTimeMillis();
             Socket socket = new Socket(address, port);

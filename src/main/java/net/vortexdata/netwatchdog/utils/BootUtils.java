@@ -1,5 +1,5 @@
 /*
- * NET Watchdog
+ * MIT License
  *
  * Copyright (c) 2020 VortexdataNET
  *
@@ -22,25 +22,30 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.boothandler;
+package net.vortexdata.netwatchdog.utils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 /**
- * Primitive utility class used to store system event timestamps.
+ * Primitive utility class used to store system
+ * boot timestamps.
  *
  * @author  Sandro Kierner
  * @since 0.0.1
  * @version 0.2.0
  */
-public class Boothandler {
+public class BootUtils {
 
     public static LocalDateTime bootStart;
     public static LocalDateTime bootEnd;
     public static LocalDateTime shutdown;
 
+    /**
+     * Calculates total boot time of app from {@link BootUtils#bootStart} and {@link BootUtils#bootEnd}.
+     * @return      Total boot time in milliseconds.
+     */
     public static float getBootTimeMillis() {
         return ChronoUnit.MILLIS.between(bootStart, bootEnd);
     }

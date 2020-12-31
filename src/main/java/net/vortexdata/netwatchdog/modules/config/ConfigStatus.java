@@ -1,5 +1,5 @@
 /*
- * NET Watchdog
+ * MIT License
  *
  * Copyright (c) 2020 VortexdataNET
  *
@@ -25,7 +25,7 @@
 package net.vortexdata.netwatchdog.modules.config;
 
 /**
- * Config Status enum, used in the components command.
+ * Config Status enum.
  *
  * @author          Sandro Kierner
  * @since 0.0.1

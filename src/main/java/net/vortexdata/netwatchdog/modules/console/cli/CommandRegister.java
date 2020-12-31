@@ -1,5 +1,5 @@
 /*
- * NET Watchdog
+ * MIT License
  *
  * Copyright (c) 2020 VortexdataNET
  *
@@ -51,6 +51,13 @@ public class CommandRegister {
         registerCommands();
     }
 
+    /**
+     * Tries to get command by name and call it.
+     *
+     * @param command   {@link String} name of command.
+     * @return          <code>true</code> if command has been called;
+     *                  <code>false</code> if no command was found.
+     */
     public boolean evaluateCommand(String command) {
         String[] parts = command.split(" ");
         if (parts.length == 0)
@@ -64,6 +71,9 @@ public class CommandRegister {
         return false;
     }
 
+    /**
+     * Initializes and registers all available commands.
+     */
     private void registerCommands() {
         registerCommand(new ExitCommand(netWatchdog));
         registerCommand(new ComponentCommand(netWatchdog));
@@ -73,6 +83,15 @@ public class CommandRegister {
         registerCommand(new AppCommand(netWatchdog));
     }
 
+    /**
+     * Add a command object to command register if its name is
+     * not in use already.
+     *
+     * @param command   {@link BaseCommand} to add.
+     * @return          <code>true</code> if command has been added;
+     *                  <code>false</code> if command with same name
+     *                  is already registered.
+     */
     public boolean registerCommand(BaseCommand command) {
         if (getCommandByName(command.getName()) != null)
             return false;
@@ -80,6 +99,14 @@ public class CommandRegister {
         return true;
     }
 
+    /**
+     * Looks for and returns command which matches the
+     * name to look for.
+     *
+     * @param name      {@link String} name to look for.
+     * @return          {@link BaseCommand} which's name
+     *                  matches <code>name</code> parameter.
+     */
     public BaseCommand getCommandByName(String name) {
         if (name == null || name.length() == 0)
             return null;
@@ -91,6 +118,12 @@ public class CommandRegister {
         return null;
     }
 
+    /**
+     * Returns JLine argument completer.
+     *
+     * @return  {@link ArgumentCompleter} containing all command
+     *          names.
+     */
     public ArgumentCompleter getCommandNameArgumentCompleter() {
         String[] names = new String[commands.size()];
         int i = 0;

@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 VortexdataNET
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package net.vortexdata.netwatchdog.modules.updater;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
@@ -24,7 +48,12 @@ public class UpdateManager {
         this.netWatchdog = netWatchdog;
     }
 
-
+    /**
+     * Downloads release with matching release tag.
+     * @param tag       {@link String} specifying the release to download.
+     * @return          <code>true</code> if release has been downloaded successfully;
+     *                  <code>false</code> if download failed.
+     */
     public boolean downloadRelease(String tag) {
         netWatchdog.getLogger().debug("Trying to download release...");
         File sysDirectory = new File("sys//"+SYS_PATH+"//releases");
@@ -61,6 +90,12 @@ public class UpdateManager {
         return true;
     }
 
+    /**
+     * Fetches release info by tag from GitHub release API.
+     *
+     * @param tag   {@link String} specifying release tag.
+     * @return      {@link JSONObject} containing release info.
+     */
     public JSONObject getReleaseInfo(String tag) {
         try {
             HttpsURLConnection hurlc = RestUtils.getGetConnection(netWatchdog.getAppInfo(), API_URL + "/releases/tags/"+tag);
@@ -88,6 +123,12 @@ public class UpdateManager {
         }
     }
 
+    /**
+     * Checks if release tag is available.
+     * @param tag   Release tag.
+     * @return      <code>true</code> if it's available.
+     *              <code>false</code> if it's not.
+     */
     public boolean isTagAvailable(String tag) {
         JSONArray array = fetchAvailableReleases();
         for (int i = 0; i < array.length(); i++) {
@@ -104,6 +145,10 @@ public class UpdateManager {
         return (VersionUtils.compareVersionTags(ref[ref.length-1], netWatchdog.getAppInfo().getVersionName()) == 1);
     }
 
+    /**
+     * Looks for and returns latest releases version tag.
+     * @return      {@link String} representing latest version tag.
+     */
     public String getLatestVersionTag() {
         JSONArray array = fetchAvailableReleases();
         if (array != null) {
@@ -117,6 +162,10 @@ public class UpdateManager {
         return ref[ref.length-1];
     }
 
+    /**
+     * Fetches available releases from GitHub API.
+     * @return      {@link JSONArray} containing all available releases.
+     */
     public JSONArray fetchAvailableReleases() {
         try {
             HttpsURLConnection hurlc = RestUtils.getGetConnection(netWatchdog.getAppInfo(), API_URL + "/git/refs/tags");

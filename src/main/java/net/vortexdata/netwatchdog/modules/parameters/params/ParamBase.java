@@ -22,40 +22,43 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.utils;
+package net.vortexdata.netwatchdog.modules.parameters.params;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import net.vortexdata.netwatchdog.NetWatchdog;
 
 /**
- * Utils class used to parse and transform dates.
+ * Base class for all launch parameter classes.
  *
- * @author          Sandro Kierner
- * @since 0.0.1
- * @version 0.2.0
+ * @author  Sandro Kierner
+ * @since 0.1.0
+ * @version 0.3.0
  */
-public class DateUtils {
+public abstract class ParamBase {
 
-    /**
-     * Get a quick-formatted string from {@link LocalDateTime} object.
-     * 
-     * @param date  {@link LocalDateTime} object to be formatted.
-     * @return      {@link String} in format <code>hh:mm:ss y-M-d</code>.
-     */
-    public static String getPrettyStringFromLocalDateTime(LocalDateTime date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss y-M-d");
-        return formatter.format(date);
+    protected String fullName;
+    protected String shortName;
+
+    public ParamBase(String fullName, String shortName) {
+        this.fullName = fullName;
+        this.shortName = shortName;
     }
 
     /**
-     * Get an easily readable string from {@link LocalDateTime} object.
+     * Runs parameter logic.
      *
-     * @param ldt   {@link LocalDateTime} object to be formatted.
-     * @return      {@link String} in format <code>MMMM d, yyyy HH:mm</code>.
+     * @param args          String array containing arguments of the parameter call.
+     * @param calledName    String defining by which name the parameter was called by user.
+     * @param netWatchdog   {@link NetWatchdog} instance used to control the app.
+     * @return              <code>true</code> if preparation finished successfully.
+     *                      <code>false</code> if preparation failed.
      */
-    public static String getReadableDateString(LocalDateTime ldt) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy HH:mm");
-        return formatter.format(ldt);
+    public abstract boolean runPreparation(String[] args, String calledName, NetWatchdog netWatchdog);
+
+    public String getFullName() {
+        return fullName;
     }
 
+    public String getShortName() {
+        return shortName;
+    }
 }
