@@ -46,8 +46,8 @@ public class SocketComponent extends BaseComponent {
 
     private final int port;
 
-    public SocketComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass, int port) {
-        super(address, name, filename, performanceClasses, cachePerformanceClass);
+    public SocketComponent(String filename, String address, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass, int port) {
+        super(filename, address, performanceClasses, cachePerformanceClass);
         this.port = port;
     }
 
@@ -96,12 +96,11 @@ public class SocketComponent extends BaseComponent {
         } catch (Exception e) {
             netWatchdog.getLogger().error("Failed to parse port of component " + name + ", falling back to port 80.");
         }
-        ArrayList<PerformanceClass> pcs = ComponentManager.constructPerformanceClassesFromJSONArray(netWatchdog, name, obj.getJSONArray("performanceClasses"));
+        ArrayList<PerformanceClass> pcs = PerformanceClass.constructPerformanceClassesFromJSONArray(netWatchdog, name, obj.getJSONArray("performanceClasses"));
 
         return new SocketComponent(
-                address,
-                name,
                 filename,
+                address,
                 pcs,
                 cachePerformanceClass,
                 port

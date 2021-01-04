@@ -78,7 +78,7 @@ public class ComponentManager {
             return null;
 
         // Check if component is already loaded
-        if (getComponentByName(filename) != null) {
+        if (getComponentByFilename(filename) != null) {
             netWatchdog.getLogger().error("Can not load component " + obj.getString("name") + " as its already loaded.");
             return null;
         }
@@ -150,10 +150,10 @@ public class ComponentManager {
             netWatchdog.getLogger().debug("Trying to load component " + fileList[i].getName() + "...");
             BaseComponent c = loadComponent(fileList[i].getName());
             if (c != null) {
-                if (getComponentByName(c.getName()) != null) {
-                    netWatchdog.getLogger().error("Skipping addition of component " + c.getName() + " as this name is already used by another one.");
+                if (getComponentByFilename(c.getFilename()) != null) {
+                    netWatchdog.getLogger().error("Skipping enablement of component " + c.getFilename() + " as this filename is already in use.");
                 } else {
-                    netWatchdog.getLogger().info("Adding component " + c.getName() + " to component registry.");
+                    netWatchdog.getLogger().info("Enabling component " + c.getFilename() + ".");
                     components.add(c);
                 }
             } else {
@@ -163,110 +163,8 @@ public class ComponentManager {
         return true;
     }
 
-    public static ArrayList<PerformanceClass> constructPerformanceClassesFromJSONArray(NetWatchdog netWatchdog, String componentName, JSONArray array) {
-        ArrayList<PerformanceClass> export = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            PerformanceClass pc = constructPerformanceClassFromJSON(netWatchdog, componentName, array.getJSONObject(i));
-            if (pc != null)
-                export.add(pc);
-        }
-        return export;
-    }
 
-    public static PerformanceClass constructPerformanceClassFromJSON(NetWatchdog netWatchdog, String componentName, JSONObject obj) {
-        if (!obj.has("name")) {
-            netWatchdog.getLogger().error("Can not construct performance class for component " + componentName + " as its name is not configured.");
-            return null;
-        }
-        if (!obj.has("responseTimeRange")) {
-            netWatchdog.getLogger().error("Can not construct performance class "+obj.get("name")+" for component " + componentName + " as its response time range is not configured.");
-            return null;
-        }
-        if (!obj.has("webhookPosts")) {
-            netWatchdog.getLogger().error("Can not construct performance class "+obj.get("name")+" for component " + componentName + " as no webhooks are configured.");
-            return null;
-        }
 
-        String name = obj.getString("name");
-        String[] responseTimeRange = obj.getString("responseTimeRange").split("-");
-        int[] responseTimes = new int[2];
-        try {
-            responseTimes[0] = Integer.parseInt(responseTimeRange[0]);
-            responseTimes[1] = Integer.parseInt(responseTimeRange[1]);
-        } catch (Exception e) {
-            if (responseTimeRange[0].equalsIgnoreCase("timeout")) {
-                responseTimes[0] = -1;
-                responseTimes[1] = -1;
-            } else {
-                netWatchdog.getLogger().error("Failed to parse response time range of performance class "+name+" in component " + componentName + ".");
-                return null;
-            }
-        }
-        String contentLookup = null;
-        try {
-            contentLookup = obj.getString("contentLookup");
-        } catch (Exception e) {
-            netWatchdog.getLogger().debug("Content lookup header not found for component " + componentName + ".");
-        }
-
-        ArrayList<PerformanceClassWebhook> webhooks = getPerformanceClassWebhooksFromJSONArray(netWatchdog, componentName, name, obj.getJSONArray("webhookPosts"));
-
-        return new PerformanceClass(name, responseTimes, contentLookup, webhooks, netWatchdog);
-
-    }
-
-    public static ArrayList<PerformanceClassWebhook> getPerformanceClassWebhooksFromJSONArray(NetWatchdog netWatchdog, String componentName, String pcName, JSONArray array) {
-        ArrayList<PerformanceClassWebhook> performanceClassWebhooks = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
-            JSONObject obj = array.getJSONObject(i);
-            if (!obj.has("address")) {
-                netWatchdog.getLogger().error("Failed to add performance class webhook for performance class " + pcName + " in component "+ componentName + " as its address is not defined.");
-                continue;
-            }
-
-            HashMap<String, String> headers = new HashMap<String, String>();
-            JSONArray headerarray = obj.getJSONArray("headers");
-            for (int j = 0; j < headerarray.length(); j++) {
-                String[] pair = headerarray.getString(j).split(":");
-                if (pair.length != 2) {
-                    netWatchdog.getLogger().warn("Skipping addition of webhook header " + headerarray.getString(j) + " as its malformed. Please consult documentation.");
-                    continue;
-                }
-                headers.put(pair[0], pair[1]);
-            }
-
-            String body = null;
-            try {
-                body = obj.getString("body");
-            } catch (Exception e) {
-                netWatchdog.getLogger().debug("No body parameter found for performance class " + pcName + " in component " + componentName + ".");
-            }
-
-            performanceClassWebhooks.add(new PerformanceClassWebhook(
-                    obj.getString("address"),
-                    headers,
-                    body
-            ));
-        }
-        return performanceClassWebhooks;
-    }
-
-    /**
-     * Tries to enable component by filename.
-     *
-     * @param filename                  {@link String} containing path to component file.
-     * @param appendCompIdentifier      <code>true</code> if you wish to automatically append the component
-     *                                  file-ending ({@link ComponentManager#COMPONENT_IDENTIFIER}).
-     *
-     * @return                          <code>true</code> if component was loaded successfully;
-     *                                  <code>false</code> if component could not be loaded.
-     */
-    public boolean enableComponent(String filename, boolean appendCompIdentifier) {
-        if (appendCompIdentifier)
-            return enableComponent(filename + ComponentManager.COMPONENT_IDENTIFIER);
-        else
-            return enableComponent(filename);
-    }
 
     /**
      * Tries to enable component by name.
@@ -285,7 +183,7 @@ public class ComponentManager {
         } else {
             unloadedComponents.removeIf(f -> f.getName().equals(filename));
             components.add(c);
-            netWatchdog.getLogger().info("Component " + c.getName() + " successfully enabled.");
+            netWatchdog.getLogger().info("Component " + c.getFilename() + " successfully enabled.");
             return true;
         }
     }
@@ -303,7 +201,7 @@ public class ComponentManager {
         if (c != null) {
             netWatchdog.getLogger().debug("Disabling component "+filename+"...");
             unloadedComponents.add(new File(ComponentManager.COMPONENTS_DIR + c.getFilename()));
-            components.removeIf(x -> x.getName().equalsIgnoreCase(c.getName()));
+            components.removeIf(x -> x.getFilename().equalsIgnoreCase(c.getFilename()));
             return true;
         } else {
             netWatchdog.getLogger().debug("Component "+filename+" not found.");
@@ -314,14 +212,6 @@ public class ComponentManager {
     public BaseComponent getComponentByFilename(String filename) {
         for (BaseComponent c : components) {
             if (c.getFilename().equals(filename))
-                return c;
-        }
-        return null;
-    }
-
-    public BaseComponent getComponentByName(String componentName) {
-        for (BaseComponent c : components) {
-            if (c.getName().equalsIgnoreCase(componentName))
                 return c;
         }
         return null;

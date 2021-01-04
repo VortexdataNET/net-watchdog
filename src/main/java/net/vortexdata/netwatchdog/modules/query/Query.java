@@ -100,20 +100,20 @@ public class Query {
     }
 
     private void checkComponent(BaseComponent bc) {
-        netWatchdog.getLogger().info("Checking component " + bc.getName() + "...");
+        netWatchdog.getLogger().info("Checking component " + bc.getFilename() + "...");
         try {
             PerformanceClass pc = bc.check();
             if (pc.getClass() != FallbackPerformanceClass.class) {
-                netWatchdog.getLogger().info("Component " + bc.getName() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
+                netWatchdog.getLogger().info("Component " + bc.getFilename() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
                 if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
                     pc.runWebhooks();
                 else
-                    netWatchdog.getLogger().debug("Component " + bc.getName() + " returned cached performance class ("+bc.getName()+") and therefore skips webhooks.");
+                    netWatchdog.getLogger().debug("Component " + bc.getFilename() + " returned cached performance class ("+bc.getFilename()+") and therefore skips webhooks.");
             } else {
-                netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getName() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
+                netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getFilename() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
             }
         } catch (Exception e) {
-            netWatchdog.getLogger().error("Failed to check component " + bc.getName() + ": " + e.getMessage());
+            netWatchdog.getLogger().error("Failed to check component " + bc.getFilename() + ": " + e.getMessage());
         }
     }
 

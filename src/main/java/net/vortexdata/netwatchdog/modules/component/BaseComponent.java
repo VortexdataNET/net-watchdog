@@ -38,16 +38,14 @@ public abstract class BaseComponent {
 
     protected LocalDateTime lastCheck;
     protected String address;
-    protected String name;
     protected ArrayList<PerformanceClass> performanceClasses;
     protected String filename;
     protected boolean cachePerformanceClass;
     protected boolean hasPerformanceClassChanged;
     protected PerformanceClass lastPerformanceClass;
 
-    public BaseComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass) {
+    public BaseComponent(String filename, String address, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass) {
         this.address = address;
-        this.name = name;
         this.performanceClasses = performanceClasses;
         this.filename = filename;
         this.hasPerformanceClassChanged = true;
@@ -99,10 +97,6 @@ public abstract class BaseComponent {
 
     public String getAddress() {
         return address;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public ArrayList<PerformanceClass> getPerformanceClasses() {

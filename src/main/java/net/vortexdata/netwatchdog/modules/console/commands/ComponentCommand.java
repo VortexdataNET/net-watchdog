@@ -96,8 +96,8 @@ public class ComponentCommand extends BaseCommand {
                 }
             } else if (args[0].equalsIgnoreCase("enable")) {
                 if (args.length > 1) {
-                    CLI.print("Trying to load component from file " + args[1] + "...");
-                    netWatchdog.getComponentManager().enableComponent(args[1], true);
+                    CLI.print("Trying to load and enable component from file " + args[1] + "...");
+                    netWatchdog.getComponentManager().enableComponent(args[1]);
                 } else {
                     CLI.print("Please specify the components filename.");
                 }

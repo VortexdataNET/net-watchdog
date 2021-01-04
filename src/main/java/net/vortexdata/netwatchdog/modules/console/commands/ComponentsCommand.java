@@ -67,7 +67,7 @@ public class ComponentsCommand extends BaseCommand {
 
             for (BaseComponent c : netWatchdog.getComponentManager().getComponents()) {
                 builder.style(AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN))
-                        .append(String.format("%-32s%-32s%-32s", c.getFilename(), c.getName(), "loaded") + "\n");
+                        .append(String.format("%-32s%-32s%-32s", c.getFilename(), c.getFilename(), "loaded") + "\n");
             }
             for (File f : netWatchdog.getComponentManager().getUnloadedComponents()) {
                 builder.style(AttributedStyle.DEFAULT.foreground(AttributedStyle.RED))

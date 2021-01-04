@@ -57,8 +57,8 @@ public class RestComponent extends BaseComponent {
     private final RequestMethod requestMethod;
     private final AppInfo appInfo;
 
-    public RestComponent(AppInfo appInfo, String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass, HashMap<String, String> headers, String body, RequestMethod requestMethod) {
-        super(address, name, filename, performanceClasses, cachePerformanceClass);
+    public RestComponent(String filename, AppInfo appInfo, String address, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass, HashMap<String, String> headers, String body, RequestMethod requestMethod) {
+        super(filename, address, performanceClasses, cachePerformanceClass);
         this.appInfo = appInfo;
         this.headers = headers;
         this.body = body;
@@ -156,7 +156,7 @@ public class RestComponent extends BaseComponent {
             netWatchdog.getLogger().debug("No body found for component " + name + ".");
         }
         String filename = obj.getString("filename");
-        ArrayList<PerformanceClass> pcs = ComponentManager.constructPerformanceClassesFromJSONArray(netWatchdog, name, obj.getJSONArray("performanceClasses"));
+        ArrayList<PerformanceClass> pcs = PerformanceClass.constructPerformanceClassesFromJSONArray(netWatchdog, name, obj.getJSONArray("performanceClasses"));
 
         HashMap<String, String> headers = new HashMap<>();
         try {
@@ -174,10 +174,9 @@ public class RestComponent extends BaseComponent {
         }
 
         return new RestComponent(
+                filename,
                 appInfo,
                 address,
-                name,
-                filename,
                 pcs,
                 cachePerformanceClass,
                 headers,
