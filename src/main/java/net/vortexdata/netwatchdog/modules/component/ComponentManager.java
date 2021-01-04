@@ -69,58 +69,27 @@ public class ComponentManager {
         if (obj == null)
             return null;
 
+        // Check if all required keys are set
         boolean hasFatalFlaw = false;
-        try {
-            if (!obj.has("name")) {
-                netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its name is not configured.");
-                hasFatalFlaw = true;
-            }
-        } catch (Exception e) {
-            netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its name is not configured.");
-            hasFatalFlaw = true;
-        } try {
-            if (!obj.has("address")) {
-                netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its address is not configured.");
-                hasFatalFlaw = true;
-            }
-        } catch (Exception e) {
-            netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its address is not configured.");
-            hasFatalFlaw = true;
-        } try {
-            if (!obj.has("performanceClasses")) {
-                netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its performance classes are not configured.");
-                hasFatalFlaw = true;
-            }
-        } catch (Exception e) {
-            netWatchdog.getLogger().error("Can not construct component of file " + filename + " as its performance classes are not configured.");
-            hasFatalFlaw = true;
-        } try {
-            String jsonFilename = obj.getString("filename");
-            if (!(jsonFilename+ComponentManager.COMPONENT_IDENTIFIER).equals(filename)) {
-                netWatchdog.getLogger().error("Component of file " + filename + " has non-matching filename parameter (expected: "+filename+", got: "+jsonFilename+ComponentManager.COMPONENT_IDENTIFIER+").");
-                hasFatalFlaw = true;
-            }
-        } catch (Exception e) {
-            netWatchdog.getLogger().error("Component of file " + filename + " is missing filename parameter. Please check configuration.");
-            hasFatalFlaw = true;
-        }
+
+
 
         if (hasFatalFlaw)
             return null;
 
-        if (getComponentByName(obj.getString("name")) != null) {
-            netWatchdog.getLogger().error("Can not load component " + obj.getString("name") + " as its either already loaded or another one with same name is loaded.");
+        // Check if component is already loaded
+        if (getComponentByName(filename) != null) {
+            netWatchdog.getLogger().error("Can not load component " + obj.getString("name") + " as its already loaded.");
             return null;
         }
 
+        // Determine type of component
         if (obj.getString("type").equalsIgnoreCase("REST")) {
             netWatchdog.getLogger().debug("Loading REST component...");
             return RestComponent.getRestComponentFromJSON(netWatchdog.getAppInfo(), obj, netWatchdog);
         } else if (obj.getString("type").equalsIgnoreCase("SOCKET")) {
             netWatchdog.getLogger().debug("Loading SOCKET component...");
             return SocketComponent.getSocketComponentFromJSON(obj, netWatchdog);
-        } else if (obj.getString("type").equalsIgnoreCase("PING")) {
-
         } else {
             netWatchdog.getLogger().error("Unknown component type " + obj.getString("type") + ". Please check configuration and try again.");
         }
@@ -147,9 +116,9 @@ public class ComponentManager {
             }
             br.close();
         } catch (FileNotFoundException e) {
-            netWatchdog.getLogger().error("Failed to load component " + filename + " as its file could not be found: " + e.getMessage());
+            netWatchdog.getLogger().error("Component file " + filename + " could not be found: " + e.getMessage());
         } catch (IOException e) {
-            netWatchdog.getLogger().error("Failed to load component " + filename + ", appending error message: " + e.getMessage());
+            netWatchdog.getLogger().error("Component file " + filename + " could not be loaded due to an IO error: " + e.getMessage());
         }
         return null;
     }
@@ -169,7 +138,7 @@ public class ComponentManager {
         FilenameFilter compFileFilter = new FilenameFilter(){
             public boolean accept(File dir, String name) {
                 String lowercaseName = name.toLowerCase();
-                return lowercaseName.endsWith("-component.conf");
+                return lowercaseName.endsWith(".json");
             }
         };
         File[] fileList = file.listFiles(compFileFilter);
