@@ -125,7 +125,7 @@ public class NetWatchdog {
 
 
         // COMPONENTS
-        componentManager = new ComponentManager(this);
+        componentManager = new ComponentManager();
         componentManager.loadAll();
 
 

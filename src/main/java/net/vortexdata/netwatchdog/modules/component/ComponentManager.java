@@ -47,21 +47,22 @@ public class ComponentManager {
 
     private final ArrayList<File> unloadedComponents;
     private final ArrayList<BaseComponent> components;
-    private final NetWatchdog netWatchdog;
 
-    public ComponentManager(NetWatchdog netWatchdog) {
+    public ComponentManager() {
         components = new ArrayList<>();
         unloadedComponents = new ArrayList<>();
-        this.netWatchdog = netWatchdog;
     }
 
     /**
      * Tries to load a and parse component from file.
      *
-     * @param   filename    {@link String} containing path to file.
-     * @return              {@link BaseComponent} object parsed from file;
-     *                      <code>null</code> if file was not found or configuration
-     *                      is invalid.
+     * @param   filename                        {@link String} containing path to file.
+     * @throws InvalidComponentJSONException    If component configuration is invalid (missing keys,
+     *                                          incorrect data type in value, etc.)
+     *
+     * @return                                  {@link BaseComponent} object parsed from file;
+     *                                          <code>null</code> if file was not found or configuration
+     *                                          is invalid.
      */
     public BaseComponent loadComponent(String filename) throws InvalidComponentJSONException {
         JSONObject obj = loadComponentJSON(filename);
@@ -100,7 +101,8 @@ public class ComponentManager {
      *
      * @param   filename    {@link String} containing path to file.
      * @return              {@link JSONObject} containing file content;
-     *                      <code>null</code> if file was not found or an error occurred.
+     *                      <code>null</code> if file was not found or an error
+     *                      occurred (e.g. invalid JSON).
      */
     private JSONObject loadComponentJSON(String filename) {
         try {
@@ -125,7 +127,7 @@ public class ComponentManager {
     /**
      * Tries to load and parse all component files contained in components directory.
      *
-     * @return              <code>true</code> if some components were loaded;
+     * @return              <code>true</code> if at least one component was loaded;
      *                      <code>false</code> if no components were loaded.
      */
     public boolean loadAll() {
@@ -148,10 +150,12 @@ public class ComponentManager {
             return false;
         }
 
+        boolean didAtLeastOneLoad = false;
         for (int i = 0; i < fileList.length; i++) {
-            enableComponent(fileList[i].getName());
+            if (enableComponent(fileList[i].getName()) && !didAtLeastOneLoad)
+                didAtLeastOneLoad = true;
         }
-        return true;
+        return didAtLeastOneLoad;
     }
 
 
@@ -184,7 +188,8 @@ public class ComponentManager {
     }
 
     /**
-     * Disables component by filename.
+     * Disables component by filename and adds the latter to unloaded component
+     * register.
      *
      * @param filename      {@link String} specifying the target component file name.
      * @return              <code>true</code> if component has been disabled;
@@ -214,10 +219,6 @@ public class ComponentManager {
 
     public ArrayList<BaseComponent> getComponents() {
         return components;
-    }
-
-    public NetWatchdog getNetWatchdog() {
-        return netWatchdog;
     }
 
     public ArrayList<File> getUnloadedComponents() {
