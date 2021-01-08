@@ -25,6 +25,7 @@
 package net.vortexdata.netwatchdog.modules.parameters;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import net.vortexdata.netwatchdog.modules.parameters.params.ParamBase;
 import net.vortexdata.netwatchdog.modules.parameters.params.ParamIgnoreCriticalConfig;
 import net.vortexdata.netwatchdog.modules.parameters.params.ParamLoglevel;
@@ -62,10 +63,10 @@ public class ParameterRegister {
     public void evaluateArguments() {
 
         if (args.length == 0) {
-            netWatchdog.getLogger().debug("No arguments found, skipping evaluation.");
+            Log.debug("No arguments found, skipping evaluation.");
             return;
         } else {
-            netWatchdog.getLogger().debug("Found " + args.length + " arguments.");
+            Log.debug("Found " + args.length + " arguments.");
         }
 
         String calledName = "";

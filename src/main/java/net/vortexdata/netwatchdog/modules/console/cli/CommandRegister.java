@@ -25,7 +25,7 @@
 package net.vortexdata.netwatchdog.modules.console.cli;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.modules.console.commands.*;
+import net.vortexdata.netwatchdog.modules.console.cli.commands.*;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
 

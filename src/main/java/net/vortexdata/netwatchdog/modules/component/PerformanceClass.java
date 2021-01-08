@@ -25,6 +25,9 @@
 package net.vortexdata.netwatchdog.modules.component;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
+import net.vortexdata.netwatchdog.exceptions.InvalidPerformanceClassJSONException;
+import net.vortexdata.netwatchdog.exceptions.InvalidWebhookJSONException;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import net.vortexdata.netwatchdog.utils.RequestMethod;
 import net.vortexdata.netwatchdog.utils.RestUtils;
 import org.json.JSONArray;
@@ -56,14 +59,12 @@ public class PerformanceClass {
     private int lastRecordedResponseTime;
     private final String contentLookup;
     private final ArrayList<PerformanceClassWebhook> webhooks;
-    private final NetWatchdog netWatchdog;
 
-    public PerformanceClass(String name, int[] responseTimeRange, String contentLookup, ArrayList<PerformanceClassWebhook> webhooks, NetWatchdog netWatchdog) {
+    public PerformanceClass(String name, int[] responseTimeRange, String contentLookup, ArrayList<PerformanceClassWebhook> webhooks) {
         this.name = name;
         this.responseTimeRange = responseTimeRange;
         this.contentLookup = contentLookup;
         this.webhooks = webhooks;
-        this.netWatchdog = netWatchdog;
     }
 
     /**
@@ -92,16 +93,23 @@ public class PerformanceClass {
                 String body = "";
                 if (pcw.getBody() != null && !pcw.getBody().isEmpty())
                     body = pcw.getBody();
-                HttpsURLConnection hurlc = RestUtils.getPostConnection(netWatchdog.getAppInfo(), RestUtils.getPostBytes(body), pcw.getAddress(), "application/json", pcw.getHeaders());
+
+                HttpsURLConnection hurlc = RestUtils.getPostConnection(
+                        RestUtils.getPostBytes(body),
+                        pcw.getAddress(),
+                        "application/json",
+                        pcw.getHeaders()
+                );
+
                 if (hurlc.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    netWatchdog.getLogger().info("OK from webhook " + pcw.getAddress() + ".");
+                    Log.info("OK from webhook " + pcw.getAddress() + ".");
                 } else {
-                    netWatchdog.getLogger().info("Got non-ok status return from webhook " + pcw.getAddress() + ". (Expected " + HttpURLConnection.HTTP_OK + ", got " + hurlc.getResponseCode() + ")");
+                    Log.info("NON-OK status from webhook " + pcw.getAddress() + ". (" + hurlc.getResponseCode() + ")");
                 }
             } catch (SocketTimeoutException e) {
-                netWatchdog.getLogger().warn("Connection to webhook " + pcw.getAddress() + " failed.");
+                Log.warn("Connection to webhook " + pcw.getAddress() + " failed.");
             } catch (IOException e) {
-                netWatchdog.getLogger().warn("Failed to call webhook for address " + pcw.getAddress() + ": " + e.getMessage());
+                Log.warn("Failed to call webhook for address " + pcw.getAddress() + ": " + e.getMessage());
             }
         }
     }
@@ -126,69 +134,77 @@ public class PerformanceClass {
 
 
 
-    public static ArrayList<PerformanceClass> constructPerformanceClassesFromJSONArray(NetWatchdog netWatchdog, String componentName, JSONArray array) {
+    public static ArrayList<PerformanceClass> constructPerformanceClassesFromJSONArray(JSONArray array) {
         ArrayList<PerformanceClass> export = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
-            PerformanceClass pc = PerformanceClass.constructPerformanceClassFromJSON(netWatchdog, componentName, array.getJSONObject(i));
-            if (pc != null)
+            try {
+                PerformanceClass pc = PerformanceClass.constructPerformanceClassFromJSON(array.getJSONObject(i));
                 export.add(pc);
+            } catch (InvalidPerformanceClassJSONException e) {
+                e.printStackTrace();
+            }
         }
         return export;
     }
 
-    public static ArrayList<PerformanceClassWebhook> getPerformanceClassWebhooksFromJSONArray(NetWatchdog netWatchdog, String componentName, String pcName, JSONArray array) {
+    public static ArrayList<PerformanceClassWebhook> getPerformanceClassWebhooksFromJSONArray(JSONArray array) {
         ArrayList<PerformanceClassWebhook> performanceClassWebhooks = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
-            JSONObject obj = array.getJSONObject(i);
-            if (!obj.has("address")) {
-                netWatchdog.getLogger().error("Failed to add performance class webhook for performance class " + pcName + " in component "+ componentName + " as its address is not defined.");
-                continue;
-            }
-
-            HashMap<String, String> headers = new HashMap<String, String>();
-            JSONArray headerarray = obj.getJSONArray("headers");
-            for (int j = 0; j < headerarray.length(); j++) {
-                String[] pair = headerarray.getString(j).split(":");
-                if (pair.length != 2) {
-                    netWatchdog.getLogger().warn("Skipping addition of webhook header " + headerarray.getString(j) + " as its malformed. Please consult documentation.");
-                    continue;
-                }
-                headers.put(pair[0], pair[1]);
-            }
-
-            String body = null;
             try {
-                body = obj.getString("body");
-            } catch (Exception e) {
-                netWatchdog.getLogger().debug("No body parameter found for performance class " + pcName + " in component " + componentName + ".");
+                performanceClassWebhooks.add(getPerformanceClassWebhookFromJSON(array.getJSONObject(i)));
+            } catch (InvalidWebhookJSONException e) {
+                e.printStackTrace();
             }
-
-            performanceClassWebhooks.add(new PerformanceClassWebhook(
-                    obj.getString("address"),
-                    headers,
-                    body
-            ));
         }
         return performanceClassWebhooks;
     }
 
+    public static PerformanceClassWebhook getPerformanceClassWebhookFromJSON(JSONObject obj) throws InvalidWebhookJSONException {
 
+        if (!obj.has("address"))
+            throw new InvalidWebhookJSONException("Address key is not set.");
 
-    public static PerformanceClass constructPerformanceClassFromJSON(NetWatchdog netWatchdog, String componentName, JSONObject obj) {
-        if (!obj.has("name")) {
-            netWatchdog.getLogger().error("Can not construct performance class for component " + componentName + " as its name is not configured.");
-            return null;
+        // Determine headers
+        HashMap<String, String> headers = new HashMap<String, String>();
+        if (!obj.has("headers")) {
+            JSONArray headerarray = obj.getJSONArray("headers");
+            for (int j = 0; j < headerarray.length(); j++) {
+                String[] pair = headerarray.getString(j).split(":");
+                if (pair.length != 2) {
+                    Log.warn("Skipping addition of webhook header " + headerarray.getString(j) + " as its malformed. Please consult documentation.");
+                    continue;
+                }
+                headers.put(pair[0], pair[1]);
+            }
         }
+
+        String body = "";
+        if (obj.has("body"))
+            body = obj.getString("body");
+
+        return new PerformanceClassWebhook(
+            obj.getString("address"),
+            headers,
+            body
+        );
+    }
+
+
+
+    public static PerformanceClass constructPerformanceClassFromJSON(JSONObject obj) throws InvalidPerformanceClassJSONException {
         if (!obj.has("responseTimeRange")) {
-            netWatchdog.getLogger().error("Can not construct performance class "+obj.get("name")+" for component " + componentName + " as its response time range is not configured.");
-            return null;
+            throw new InvalidPerformanceClassJSONException("Response time range is not set.");
         }
         if (!obj.has("webhookPosts")) {
-            netWatchdog.getLogger().error("Can not construct performance class "+obj.get("name")+" for component " + componentName + " as no webhooks are configured.");
-            return null;
+            throw new InvalidPerformanceClassJSONException("No webhook posts are set.");
+        }
+        if (!obj.has("name")) {
+            throw new InvalidPerformanceClassJSONException("No name is set.");
         }
 
         String name = obj.getString("name");
+
+        // Determine response time range
         String[] responseTimeRange = obj.getString("responseTimeRange").split("-");
         int[] responseTimes = new int[2];
         try {
@@ -199,20 +215,19 @@ public class PerformanceClass {
                 responseTimes[0] = -1;
                 responseTimes[1] = -1;
             } else {
-                netWatchdog.getLogger().error("Failed to parse response time range of performance class "+name+" in component " + componentName + ".");
-                return null;
+                throw new InvalidPerformanceClassJSONException("Failed to parse response time range.");
             }
         }
+
         String contentLookup = null;
-        try {
+        if (obj.has("contentLookup"))
             contentLookup = obj.getString("contentLookup");
-        } catch (Exception e) {
-            netWatchdog.getLogger().debug("Content lookup header not found for component " + componentName + ".");
-        }
 
-        ArrayList<PerformanceClassWebhook> webhooks = getPerformanceClassWebhooksFromJSONArray(netWatchdog, componentName, name, obj.getJSONArray("webhookPosts"));
 
-        return new PerformanceClass(name, responseTimes, contentLookup, webhooks, netWatchdog);
+
+        ArrayList<PerformanceClassWebhook> webhooks = getPerformanceClassWebhooksFromJSONArray(obj.getJSONArray("webhookPosts"));
+
+        return new PerformanceClass(name, responseTimes, contentLookup, webhooks);
 
     }
 }

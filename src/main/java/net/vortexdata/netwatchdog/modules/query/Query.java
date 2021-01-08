@@ -31,6 +31,7 @@ import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.component.FallbackPerformanceClass;
 import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import net.vortexdata.netwatchdog.modules.northstar.NorthstarBase;
 
 import java.util.ArrayList;
@@ -71,15 +72,15 @@ public class Query {
         try {
             threadCount = netWatchdog.getConfigRegister().getMainConfig().getValue().getInt("threadCount");
             if (threadCount < 1) {
-                netWatchdog.getLogger().error("Invalid value for key \"threadCount\" in main config, must be numeric and higher than 0.");
+                Log.error("Invalid value for key \"threadCount\" in main config, must be numeric and higher than 0.");
             }
         } catch (Exception e) {
-            netWatchdog.getLogger().error("Invalid value for key \"threadCount\" in main config, must be numeric and higher than 0.");
+            Log.error("Invalid value for key \"threadCount\" in main config, must be numeric and higher than 0.");
             threadCount = 1;
         }
 
         if (threadCount > 1) {
-            netWatchdog.getLogger().debug("Running check cycle multithreaded ("+threadCount+" threads)...");
+            Log.debug("Running check cycle multithreaded ("+threadCount+" threads)...");
             ExecutorService tpe = Executors.newFixedThreadPool(threadCount);
             for (BaseComponent bc : componentManager.getComponents()) {
                 tpe.submit(() -> checkComponent(bc));
@@ -88,32 +89,32 @@ public class Query {
             try {
                 tpe.awaitTermination(terminationThreshold, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-                netWatchdog.getLogger().error("Query thread termination threshold exceeded, appending error message: " + e.getMessage());
+                Log.error("Query thread termination threshold exceeded, appending error message: " + e.getMessage());
             }
         } else {
-            netWatchdog.getLogger().info("Running sequential check cycle...");
+            Log.info("Running sequential check cycle...");
             for (BaseComponent bc : componentManager.getComponents()) {
                 checkComponent(bc);
             }
         }
-        netWatchdog.getLogger().info("Check cycle finished.");
+        Log.info("Check cycle finished.");
     }
 
     private void checkComponent(BaseComponent bc) {
-        netWatchdog.getLogger().info("Checking component " + bc.getFilename() + "...");
+        Log.info("Checking component " + bc.getFilename() + "...");
         try {
             PerformanceClass pc = bc.check();
             if (pc.getClass() != FallbackPerformanceClass.class) {
-                netWatchdog.getLogger().info("Component " + bc.getFilename() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
+                Log.info("Component " + bc.getFilename() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
                 if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())
                     pc.runWebhooks();
                 else
-                    netWatchdog.getLogger().debug("Component " + bc.getFilename() + " returned cached performance class ("+bc.getFilename()+") and therefore skips webhooks.");
+                    Log.debug("Component " + bc.getFilename() + " returned cached performance class ("+bc.getFilename()+") and therefore skips webhooks.");
             } else {
-                netWatchdog.getLogger().warn("Failed to find a suitable performance class for component " + bc.getFilename() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
+                Log.warn("Failed to find a suitable performance class for component " + bc.getFilename() + " with response time "+((FallbackPerformanceClass) pc).getResponseTime()+".");
             }
         } catch (Exception e) {
-            netWatchdog.getLogger().error("Failed to check component " + bc.getFilename() + ": " + e.getMessage());
+            Log.error("Failed to check component " + bc.getFilename() + ": " + e.getMessage());
         }
     }
 
@@ -125,7 +126,7 @@ public class Query {
             @Override
             public void run() {
                 if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getAppInfo().getPlatform() == null)
-                    netWatchdog.getLogger().warn("The Northstar system has been disabled as it is not supported on your operating system.");
+                    Log.warn("The Northstar system has been disabled as it is not supported on your operating system.");
                 while (true) {
                     try {
                         if (!componentManager.getComponents().isEmpty()) {
@@ -135,7 +136,7 @@ public class Query {
                                 if (actualPercent >= neededPercent) {
                                     runChecks();
                                 } else {
-                                    netWatchdog.getLogger().warn("Northstar results insufficient to run check cycle (got "+actualPercent+"%, expecting "+neededPercent+"%), skipping.");
+                                    Log.warn("Northstar results insufficient to run check cycle (got "+actualPercent+"%, expecting "+neededPercent+"%), skipping.");
                                 }
                             } else {
                                 runChecks();
@@ -143,7 +144,7 @@ public class Query {
                         }
                         Thread.sleep(mainConfig.getValue().getInt("pollDelay") * 1000);
                     } catch (InterruptedException e) {
-                        netWatchdog.getLogger().debug("Query got interrupted (for shutdown?).");
+                        Log.debug("Query got interrupted (for shutdown?).");
                     }
                 }
             }

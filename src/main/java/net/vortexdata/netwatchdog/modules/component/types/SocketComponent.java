@@ -28,6 +28,7 @@ import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.component.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import org.json.JSONObject;
 
 import java.io.DataInputStream;
@@ -88,15 +89,15 @@ public class SocketComponent extends BaseComponent {
             if (obj.getString("cacheLastResult").equalsIgnoreCase("false"))
                 cachePerformanceClass = false;
         } catch (Exception e) {
-            netWatchdog.getLogger().debug("Couldn't find cacheLastResult key, falling back to true.");
+            Log.debug("Couldn't find cacheLastResult key, falling back to true.");
         }
         int port = 80;
         try {
             port = Integer.parseInt(obj.getString("port"));
         } catch (Exception e) {
-            netWatchdog.getLogger().error("Failed to parse port of component " + name + ", falling back to port 80.");
+            Log.error("Failed to parse port of component " + name + ", falling back to port 80.");
         }
-        ArrayList<PerformanceClass> pcs = PerformanceClass.constructPerformanceClassesFromJSONArray(netWatchdog, name, obj.getJSONArray("performanceClasses"));
+        ArrayList<PerformanceClass> pcs = PerformanceClass.constructPerformanceClassesFromJSONArray(obj.getJSONArray("performanceClasses"));
 
         return new SocketComponent(
                 filename,

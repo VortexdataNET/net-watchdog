@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.console.commands;
+package net.vortexdata.netwatchdog.modules.console.cli.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
+import net.vortexdata.netwatchdog.modules.component.BaseComponent;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 
@@ -54,7 +55,7 @@ public class ComponentCommand extends BaseCommand {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("create")) {
                 if (args.length > 1) {
-                    String newFilePath = ComponentManager.COMPONENTS_DIR + args[1] + ComponentManager.COMPONENT_IDENTIFIER;
+                    String newFilePath = ComponentManager.COMPONENTS_DIR + args[1] + BaseComponent.FILE_EXTENSION;
                     try {
                         BufferedReader headBr = null;
                         File file = new File(newFilePath);
@@ -66,7 +67,7 @@ public class ComponentCommand extends BaseCommand {
                         }
                         BufferedWriter bw = new BufferedWriter(new FileWriter(newFilePath, false));
                         try {
-                            InputStream headIs = getClass().getResourceAsStream("/rest-component.conf");
+                            InputStream headIs = getClass().getResourceAsStream("/rest-component.json");
                             headBr = new BufferedReader(new InputStreamReader(headIs));
                             while (headBr.ready()) {
                                 String line = headBr.readLine();
@@ -74,7 +75,7 @@ public class ComponentCommand extends BaseCommand {
                                 bw.write(line + "\n");
                             }
                             headBr.close();
-                            CLI.print("New component " + args[1] + " created at " + ComponentManager.COMPONENTS_DIR + args[1] + ComponentManager.COMPONENT_IDENTIFIER + ".");
+                            CLI.print("New component " + args[1] + " created at " + ComponentManager.COMPONENTS_DIR + args[1] + BaseComponent.FILE_EXTENSION + ".");
                         } catch (Exception e) {
                             return;
                         }
@@ -104,7 +105,7 @@ public class ComponentCommand extends BaseCommand {
             } else if (args[0].equalsIgnoreCase("delete")) {
                 if (args.length > 1) {
                     try {
-                        Files.delete(Paths.get(ComponentManager.COMPONENTS_DIR + args[1] + ComponentManager.COMPONENT_IDENTIFIER));
+                        Files.delete(Paths.get(ComponentManager.COMPONENTS_DIR + args[1] + BaseComponent.FILE_EXTENSION));
                         CLI.print("Component file " + args[1] + " successfully deleted. Please bear in mind that the component may still be loaded. To unload, use 'component disable [name]'.");
                     } catch (IOException e) {
                         CLI.print("Could not delete component file " + args[1] + ": " + e.getMessage());

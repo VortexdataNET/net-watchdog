@@ -22,40 +22,12 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.component;
+package net.vortexdata.netwatchdog.exceptions;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
+public class InvalidComponentJSONException extends Exception {
 
-import java.util.ArrayList;
-
-/**
- * @author  Sandro Kierner
- * @version 0.2.0
- * @since 0.0.1
- *
- * This performance class is a placeholder / dummy class which is
- * returned if no performance class could be found meeting the
- * response time or other criteria in the check component method.
- *
- * It is primarily used for debugging purpose to get a response
- * time back to Query thead.
- */
-public class FallbackPerformanceClass extends PerformanceClass {
-
-    private final int responseTime;
-    private final String info;
-
-    public FallbackPerformanceClass(int responseTime, String additionalInformation) {
-        super("Fallback", null, null, null);
-        this.responseTime = responseTime;
-        this.info = additionalInformation;
+    public InvalidComponentJSONException(String message) {
+        super(message);
     }
 
-    public int getResponseTime() {
-        return responseTime;
-    }
-
-    public String getInfo() {
-        return info;
-    }
 }

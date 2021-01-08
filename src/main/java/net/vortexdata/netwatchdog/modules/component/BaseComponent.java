@@ -36,6 +36,7 @@ import java.util.ArrayList;
  */
 public abstract class BaseComponent {
 
+    public static String FILE_EXTENSION = ".json";
     protected LocalDateTime lastCheck;
     protected String address;
     protected ArrayList<PerformanceClass> performanceClasses;

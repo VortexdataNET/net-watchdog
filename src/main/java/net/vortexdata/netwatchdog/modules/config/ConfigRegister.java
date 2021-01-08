@@ -29,6 +29,7 @@ import net.vortexdata.netwatchdog.modules.config.configs.BaseConfig;
 import net.vortexdata.netwatchdog.modules.config.configs.MainConfig;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -56,7 +57,6 @@ public class ConfigRegister {
         configs.add(new NorthstarConfig());
         didCriticalConfigFail = false;
         wereConfigsUpdated = false;
-        loadAll();
     }
 
     /**
@@ -78,7 +78,7 @@ public class ConfigRegister {
                         break;
                     sb.append(s).append("\n");
                 }
-                netWatchdog.getLogger().error("Integrity check for config " + config.getPath() + " failed, logging error stack: \n" + sb.toString());
+                Log.error("Integrity check for config " + config.getPath() + " failed, logging error stack: \n" + sb.toString());
                 didNoErrorOccur = false;
             }
             if (!didNoErrorOccur && config.isCritical())

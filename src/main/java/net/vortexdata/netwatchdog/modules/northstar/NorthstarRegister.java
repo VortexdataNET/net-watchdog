@@ -26,6 +26,7 @@ package net.vortexdata.netwatchdog.modules.northstar;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,7 +71,7 @@ public class NorthstarRegister {
         double successful = 0;
 
         if (threadCount < 2) {
-            netWatchdog.getLogger().debug("Determining Northstar availability sequentially...");
+            Log.debug("Determining Northstar availability sequentially...");
             if (netWatchdog.getAppInfo().getPlatform() == null)
                 return 0;
             for (NorthstarBase n : northstars) {
@@ -78,7 +79,7 @@ public class NorthstarRegister {
                     successful++;
             }
         } else {
-            netWatchdog.getLogger().debug("Determining Northstar availability multithreaded ("+threadCount+" threads)...");
+            Log.debug("Determining Northstar availability multithreaded ("+threadCount+" threads)...");
             try {
                 ArrayList<Future> availabilities = new ArrayList<Future>();
                 ExecutorService tpe = Executors.newFixedThreadPool(threadCount);
@@ -92,7 +93,7 @@ public class NorthstarRegister {
                         successful++;
                 }
             } catch (InterruptedException | ExecutionException e) {
-                netWatchdog.getLogger().error("Failed to determine multithreaded northstar availability percentage, appending error message: " + e.getMessage());
+                Log.error("Failed to determine multithreaded northstar availability percentage, appending error message: " + e.getMessage());
             }
         }
 

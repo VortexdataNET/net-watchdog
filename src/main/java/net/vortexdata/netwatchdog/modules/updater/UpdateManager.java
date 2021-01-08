@@ -26,6 +26,7 @@ package net.vortexdata.netwatchdog.modules.updater;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import net.vortexdata.netwatchdog.utils.GithubAPIUtils;
 import net.vortexdata.netwatchdog.utils.RestUtils;
 import net.vortexdata.netwatchdog.utils.VersionUtils;
@@ -55,24 +56,24 @@ public class UpdateManager {
      *                  <code>false</code> if download failed.
      */
     public boolean downloadRelease(String tag) {
-        netWatchdog.getLogger().debug("Trying to download release...");
+        Log.debug("Trying to download release...");
         File sysDirectory = new File("sys//"+SYS_PATH+"//releases");
         if (!sysDirectory.exists() || !sysDirectory.isDirectory())
             if (!sysDirectory.mkdirs()) {
-                netWatchdog.getLogger().error("Failed to create download manager system directory.");
+                Log.error("Failed to create download manager system directory.");
                 return false;
             }
 
         JSONObject jsonObject = getReleaseInfo(tag);
         if (jsonObject == null) {
-            netWatchdog.getLogger().error("Failed to fetch release info ("+tag+").");
+            Log.error("Failed to fetch release info ("+tag+").");
             return false;
         }
 
 
         JSONObject releaseInfo = GithubAPIUtils.getJarAssetInfo(jsonObject.getJSONArray("assets"));
         if (releaseInfo == null) {
-            netWatchdog.getLogger().error("Got invalid release info from API endpoint.");
+            Log.error("Got invalid release info from API endpoint.");
             return false;
         }
 
@@ -84,7 +85,7 @@ public class UpdateManager {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
             }
         } catch (IOException e) {
-            netWatchdog.getLogger().error("Download of release asset failed: " + e.getMessage());
+            Log.error("Download of release asset failed: " + e.getMessage());
             return false;
         }
         return true;
@@ -98,7 +99,7 @@ public class UpdateManager {
      */
     public JSONObject getReleaseInfo(String tag) {
         try {
-            HttpsURLConnection hurlc = RestUtils.getGetConnection(netWatchdog.getAppInfo(), API_URL + "/releases/tags/"+tag);
+            HttpsURLConnection hurlc = RestUtils.getGetConnection(API_URL + "/releases/tags/"+tag);
             if (hurlc.getResponseCode() != HttpsURLConnection.HTTP_OK)
                 return null;
 
@@ -107,7 +108,7 @@ public class UpdateManager {
 
             return new JSONObject(response);
         } catch (Exception e) {
-            netWatchdog.getLogger().error("Failed to fetch release "+tag+": " + e.getMessage());
+            Log.error("Failed to fetch release "+tag+": " + e.getMessage());
             return null;
         }
     }
@@ -168,7 +169,7 @@ public class UpdateManager {
      */
     public JSONArray fetchAvailableReleases() {
         try {
-            HttpsURLConnection hurlc = RestUtils.getGetConnection(netWatchdog.getAppInfo(), API_URL + "/git/refs/tags");
+            HttpsURLConnection hurlc = RestUtils.getGetConnection(API_URL + "/git/refs/tags");
             if (hurlc.getResponseCode() != HttpsURLConnection.HTTP_OK)
                 return null;
 
@@ -177,7 +178,7 @@ public class UpdateManager {
 
             return new JSONArray(response);
         } catch (Exception e) {
-            netWatchdog.getLogger().debug("Failed to fetch available releases: " + e.getMessage());
+            Log.debug("Failed to fetch available releases: " + e.getMessage());
             return null;
         }
     }

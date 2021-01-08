@@ -22,31 +22,12 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.console.commands;
+package net.vortexdata.netwatchdog.exceptions;
 
+public class InvalidWebhookJSONException extends Exception {
 
-import net.vortexdata.netwatchdog.NetWatchdog;
-import org.jline.reader.impl.completer.ArgumentCompleter;
-
-/**
- * Application halt command.
- *
- * @author  Sandro Kierner
- * @since 0.0.1
- * @version 0.2.0
- */
-public class ExitCommand extends BaseCommand {
-
-    public ExitCommand(NetWatchdog netWatchdog) {
-        super(netWatchdog, "exit", "Exit and close the app.");
+    public InvalidWebhookJSONException(String message) {
+        super(message);
     }
 
-    protected ArgumentCompleter populateArgumentCompleter() {
-        return null;
-    }
-
-    @Override
-    public void call(String[] args) {
-        netWatchdog.shutdown();
-    }
 }

@@ -24,6 +24,7 @@
 
 package net.vortexdata.netwatchdog.utils;
 
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -67,6 +68,13 @@ public class AppInfo {
         }
 
         values = new JSONObject(sb.toString());
+
+        // Inform user about platform
+        if (getPlatform() == null)
+            Log.warn("Looks like your operating system is not supported ("+System.getProperty("os.name")+"). This may cause issues with some of the apps systems. Please either use Windows, Linux or macOS.");
+        else
+            Log.info("Platform " + getPlatform() + " detected.");
+
         return true;
     }
 

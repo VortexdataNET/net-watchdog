@@ -24,6 +24,7 @@
 
 package net.vortexdata.netwatchdog.modules.northstar;
 
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import org.json.JSONObject;
 
 /**
@@ -45,13 +46,13 @@ public class NorthstarFactory {
         if (jsonObject.has("address")) {
             address = jsonObject.getString("address");
         } else {
-            nr.getNetWatchdog().getLogger().error("Can not construct Northstar as no address is defined.");
+            Log.error("Can not construct Northstar as no address is defined.");
             return null;
         }
 
         String type = jsonObject.getString("type");
         if (!type.equalsIgnoreCase("ICMP") && !type.equalsIgnoreCase("SOCKET")) {
-            nr.getNetWatchdog().getLogger().error("Can not construct Northstar with address "+address+". Type must either be SOCKET or ICMP.");
+            Log.error("Can not construct Northstar with address "+address+". Type must either be SOCKET or ICMP.");
             return null;
         }
 
@@ -60,7 +61,7 @@ public class NorthstarFactory {
             if (jsonObject.has("port"))
                 port = jsonObject.getInt("port");
             else {
-                nr.getNetWatchdog().getLogger().error("Can not construct Northstar with address "+address+". Port is missing.");
+                Log.error("Can not construct Northstar with address "+address+". Port is missing.");
                 return null;
             }
 

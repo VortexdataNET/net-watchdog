@@ -26,6 +26,7 @@ package net.vortexdata.netwatchdog;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import net.vortexdata.netwatchdog.modules.parameters.ParameterRegister;
 import net.vortexdata.netwatchdog.modules.config.ConfigRegister;
 import net.vortexdata.netwatchdog.modules.config.configs.BaseConfig;
@@ -80,87 +81,101 @@ public class NetWatchdog {
         BootUtils.bootStart = LocalDateTime.now();
         isShuttingDown = false;
 
-        // Display start screen
+
+        // START-SCREEN
         printCopyHeader();
 
-        // Init. loggers and console
+
+        // CLI AND LOGGER INIT
         JLineAppender jLineAppender = new JLineAppender();
         jLineAppender.start();
 
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         logger = loggerContext.getLogger("net.vortexdata.netwatchdog");
+        Log.LOGGER = logger;
         logger.setLevel(Level.DEBUG);
 
-        logger.info("App starting... Please wait.");
+        Log.info("App starting... Please wait.");
 
+
+        // COMMAND REGISTER
         commandRegister = new CommandRegister(this);
         CLI.init(commandRegister);
-        consoleThread = new ConsoleThread(commandRegister, this);
+        consoleThread = new ConsoleThread(commandRegister);
 
-        // Load project info
-        logger.debug("Loading project info...");
+
+        // APP INFO
+        Log.debug("Loading project info...");
         appInfo = new AppInfo();
         if (appInfo.loadProjectConfig()) {
-            logger.debug("Project info loaded successfully.");
+            Log.debug("Project info loaded successfully.");
         } else {
-            logger.warn("Failed to load project info! This may cause issues during runtime. Is the jar file valid? Are read and write permissions set? Please check for solution and retry.");
+            Log.warn("Failed to load project info! This may cause issues during runtime. Is the jar file valid? Are read and write permissions set? Please check for solution and retry.");
         }
-        logger.debug("You are running version " + appInfo.getVersionName() + ".");
+        Log.debug("You are running version " + appInfo.getVersionName() + ".");
 
-        // Init Update Manager
+
+        // UPDATE MANAGER
         updateManager = new UpdateManager(this);
 
-        // Inform user about platform
-        if (appInfo.getPlatform() == null)
-            logger.warn("Looks like your operating system is not supported ("+System.getProperty("os.name")+"). This may cause issues with some of the apps systems. Please either use Windows, Linux or macOS.");
-        else
-            logger.debug("Platform " + appInfo.getPlatform() + " detected.");
 
-        // configs
+        // APP CONFIGS
         configRegister = new ConfigRegister(this);
+        configRegister.loadAll();
+
+
+        // COMPONENTS
         componentManager = new ComponentManager(this);
         componentManager.loadAll();
 
-        // Northstar register
+
+        // NORTHSTAR SYSTEM
         if (configRegister.getMainConfig().getValue().has("enableNorthstars") && configRegister.getMainConfig().getValue().getString("enableNorthstars").equalsIgnoreCase("true")) {
             if (((NorthstarConfig) configRegister.getConfigByPath(NorthstarConfig.CONFIG_PATH)).canNorthstarsBeUsed()) {
-                logger.info("Enabling Northstar system.");
+                Log.info("Enabling Northstar system.");
                 northstarRegister = new NorthstarRegister(this);
             } else {
-                logger.warn("Can not start Northstar system due to configuration errors.");
+                Log.warn("Can not start Northstar system due to configuration errors.");
             }
         }
 
-        // Check start parameters
+
+        // LET START PARAMETERS TAKE EFFECT
         paramRegister = new ParameterRegister(args, this);
         paramRegister.evaluateArguments();
 
-        // Boot-wrapup checks
-        logger.debug("Starting boot-wrapup checks...");
+
+        // BOOT-WRAPUP
+        Log.debug("Starting boot-wrapup checks...");
         if (configRegister.didCriticalConfigFail()) {
-            logger.error("Encountered a critical configuration error during boot which may cause issues at runtime.");
+            Log.error("Encountered a critical configuration error during boot which may cause issues at runtime.");
             shutdown();
         }
 
-        // Warn user if any configs have been updated
+
+        // POST- CONFIG-UPDATE USER NOTIFICATION
         if (configRegister.wereConfigsUpdated()) {
-            logger.debug("Detected updated configs.");
+            Log.debug("Detected updated configs.");
             for (BaseConfig c : configRegister.getUpdatedConfigs()) {
-                logger.warn("Config " + c.getPath() + " has been updated.");
+                Log.warn("Config " + c.getPath() + " has been updated.");
             }
             if (CLI.promptYesNo("Some configs have been updated (may be a result of updating the app). It is highly advised to check configs before further use. " +
                     "\n\nDo you want to stop the app?"))
                 shutdown();
         }
 
-        // Init query
+
+        // START QUERY
         query = new Query(this);
         query.start();
 
-        // End boot sequence
-        BootUtils.bootEnd = LocalDateTime.now();
-        logger.info("It took " + (int) BootUtils.getBootTimeMillis() + " ms to launch the app.");
 
+        // END BOOT SEQUENCE
+        BootUtils.bootEnd = LocalDateTime.now();
+        Log.info("It took " + (int) BootUtils.getBootTimeMillis() + " ms to launch the app.");
+
+
+        // START CLI
         consoleThread.start();
     }
 
@@ -173,7 +188,7 @@ public class NetWatchdog {
                 System.out.println(headBr.readLine());
             }
         } catch (Exception e) {
-            System.out.println("Can't display credits... :(");
+            System.out.println("CRITICAL ERROR! UNABLE TO ACCESS APP RESOURCES.");
         }
     }
 
@@ -181,8 +196,8 @@ public class NetWatchdog {
         if (isShuttingDown)
             return;
         isShuttingDown = true;
-        this.getLogger().info("Shutting down for system halt...");
-        this.getLogger().info("Waiting for console thread to finish...");
+        Log.info("Shutting down for system halt...");
+        Log.info("Waiting for console thread to finish...");
         if (getConsoleThread() != null) {
             this.getConsoleThread().end();
             this.getConsoleThread().interrupt();
@@ -190,15 +205,11 @@ public class NetWatchdog {
         if (getQuery() != null) {
             this.getQuery().interrupt();
         }
-        this.getLogger().info("Ending logging at " + DateUtils.getPrettyStringFromLocalDateTime(LocalDateTime.now()) + ".");
+        Log.info("Ending logging at " + DateUtils.getPrettyStringFromLocalDateTime(LocalDateTime.now()) + ".");
         System.exit(0);
     }
 
     public ch.qos.logback.classic.Logger getLogbackLogger() {
-        return logger;
-    }
-
-    public Logger getLogger() {
         return logger;
     }
 

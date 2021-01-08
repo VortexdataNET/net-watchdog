@@ -24,6 +24,7 @@
 
 package net.vortexdata.netwatchdog.modules.northstar;
 
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import net.vortexdata.netwatchdog.utils.Platform;
 
 import java.io.BufferedReader;
@@ -89,7 +90,7 @@ public class ICMPNorthstar extends NorthstarBase {
                 }
             }
         } catch (IOException e) {
-            northstarRegister.getNetWatchdog().getLogger().debug(e.getMessage());
+            Log.debug(e.getMessage());
             wasLastAttemptSuccessful = false;
             return false;
         }
