@@ -9,7 +9,7 @@
   <p align="center">
     Periodically scan for service outages and react to them using webhooks.
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Visit website »</strong></a>
+    <a href="https://netwatchdog.vortexdata.net"><strong>Visit website »</strong></a>
     <br />
     <br />
     <a href="https://github.com/vortexdatanet/net-watchdog/issues">Report Bug</a>
