@@ -25,6 +25,7 @@
 package net.vortexdata.netwatchdog.modules.component.types;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
+import net.vortexdata.netwatchdog.exceptions.InvalidComponentJSONException;
 import net.vortexdata.netwatchdog.modules.component.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
@@ -35,6 +36,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * SocketComponent used to check socket endpoints or APIs.
@@ -80,10 +82,19 @@ public class SocketComponent extends BaseComponent {
         }
     }
 
-    public static SocketComponent getSocketComponentFromJSON(JSONObject obj, NetWatchdog netWatchdog) {
-        String name = obj.getString("name");
+    public static SocketComponent getSocketComponentFromJSON(JSONObject obj, String filename) throws InvalidComponentJSONException {
+
+        String[] neededKeys = {
+                "address"
+        };
+        if (!obj.keySet().containsAll(
+                Arrays.asList(neededKeys)
+        )) {
+            throw new InvalidComponentJSONException("Can not construct SOCKET component from JSON as required keys are missing.");
+        }
+
         String address = obj.getString("address");
-        String filename = obj.getString("filename");
+
         boolean cachePerformanceClass = true;
         try {
             if (obj.getString("cacheLastResult").equalsIgnoreCase("false"))
@@ -95,7 +106,7 @@ public class SocketComponent extends BaseComponent {
         try {
             port = Integer.parseInt(obj.getString("port"));
         } catch (Exception e) {
-            Log.error("Failed to parse port of component " + name + ", falling back to port 80.");
+            Log.error("Failed to parse port of component "+filename+", falling back to port 80.");
         }
         ArrayList<PerformanceClass> pcs = PerformanceClass.constructPerformanceClassesFromJSONArray(obj.getJSONArray("performanceClasses"));
 

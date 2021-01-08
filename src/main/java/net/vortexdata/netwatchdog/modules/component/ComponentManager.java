@@ -66,21 +66,29 @@ public class ComponentManager {
     public BaseComponent loadComponent(String filename) throws InvalidComponentJSONException {
         JSONObject obj = loadComponentJSON(filename);
         if (obj == null)
-            return null;
+            throw new InvalidComponentJSONException("Loaded JSON object must not be null.");
 
         // Check if component is already loaded
         if (getComponentByFilename(filename) != null) {
-            Log.error("Can not load component " + obj.getString("name") + " as its already loaded.");
+            Log.error("Can not load component " + filename + " as its already loaded.");
             return null;
         }
 
         // Determine type of component
         if (obj.getString("type").equalsIgnoreCase("REST")) {
-            Log.debug("Loading REST component...");
-            return RestComponent.getRestComponentFromJSON(obj, filename);
+            try {
+                Log.debug("Loading REST component...");
+                return RestComponent.getRestComponentFromJSON(obj, filename);
+            } catch (InvalidComponentJSONException e) {
+                Log.error("Can not load component "+filename+" due to invalid JSON configuration.", e);
+            }
         } else if (obj.getString("type").equalsIgnoreCase("SOCKET")) {
-            Log.debug("Loading SOCKET component...");
-            return SocketComponent.getSocketComponentFromJSON(obj, netWatchdog);
+            try {
+                Log.debug("Loading SOCKET component...");
+                return SocketComponent.getSocketComponentFromJSON(obj, filename);
+            } catch (InvalidComponentJSONException e) {
+                Log.error("Can not load component "+filename+" due to invalid JSON configuration.", e);
+            }
         } else {
             Log.error("Unknown component type " + obj.getString("type") + ". Please check configuration and try again.");
         }
@@ -126,30 +134,37 @@ public class ComponentManager {
         Log.info("Trying to load and initiate all components...");
         File file = new File(COMPONENTS_DIR);
         file.mkdirs();
+
         FilenameFilter compFileFilter = new FilenameFilter(){
             public boolean accept(File dir, String name) {
                 String lowercaseName = name.toLowerCase();
                 return lowercaseName.endsWith(".json");
             }
         };
+
         File[] fileList = file.listFiles(compFileFilter);
         if (fileList.length == 0) {
             Log.info("There are no components to load.");
             return false;
         }
+
         for (int i = 0; i < fileList.length; i++) {
             Log.debug("Trying to load component " + fileList[i].getName() + "...");
+
+            BaseComponent c = null;
             try {
-                BaseComponent c = loadComponent(fileList[i].getName());
+                c = loadComponent(fileList[i].getName());
                 if (getComponentByFilename(c.getFilename()) != null) {
                     Log.error("Skipping enablement of component " + c.getFilename() + " as this filename is already in use.");
+                    unloadedComponents.add(fileList[i]);
                 } else {
                     Log.info("Enabling component " + c.getFilename() + ".");
                     components.add(c);
                 }
             } catch (InvalidComponentJSONException e) {
-                unloadedComponents.add(fileList[i]);
+                Log.error("Failed to load component " + fileList[i].getName() + ".", e);
             }
+
         }
         return true;
     }
@@ -170,12 +185,15 @@ public class ComponentManager {
         BaseComponent c = null;
         try {
             c = loadComponent(filename);
+            if (c == null)
+                return false;
+
             unloadedComponents.removeIf(f -> f.getName().equals(filename));
             components.add(c);
             Log.info("Component " + c.getFilename() + " successfully enabled.");
             return true;
         } catch (InvalidComponentJSONException e) {
-            Log.error("Failed to enable component " + filename + ".");
+            Log.error("Failed to enable component " + filename + ".", e);
             return false;
         }
     }

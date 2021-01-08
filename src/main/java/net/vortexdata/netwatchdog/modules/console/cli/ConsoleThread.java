@@ -55,8 +55,7 @@ public class ConsoleThread extends Thread {
                     if (input.split(" ").length > 0)
                         CLI.print(input.split(" ")[0] + ": Command not found");
             } catch (Exception e) {
-                Log.error("An error occurred whilst trying to parse CLI input, appending error details: " + e.getMessage());
-                e.printStackTrace();
+                Log.error("An error occurred whilst trying to parse CLI input.", e);
             }
         }
     }
