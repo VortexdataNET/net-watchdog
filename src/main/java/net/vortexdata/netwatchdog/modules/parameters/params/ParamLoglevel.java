@@ -44,7 +44,7 @@ public class ParamLoglevel extends ParamBase {
     @Override
     public boolean runPreparation(String[] args, String calledName, NetWatchdog netWatchdog) {
 
-        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) Log.LOGGER;
+        ch.qos.logback.classic.Logger logger = Log.LOGGER;
 
         if (args.length == 0) {
             Log.warn("Missing log level argument for start parameter "+calledName+", falling back to log level INFO.");

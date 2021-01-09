@@ -40,9 +40,10 @@ import java.util.Arrays;
  * @since 0.0.1
  * @version 0.2.0
  */
+@SuppressWarnings("UnusedReturnValue")
 public class CommandRegister {
 
-    ArrayList<BaseCommand> commands;
+    final ArrayList<BaseCommand> commands;
     private final NetWatchdog netWatchdog;
 
     public CommandRegister(NetWatchdog netWatchdog) {

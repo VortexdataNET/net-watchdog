@@ -49,7 +49,7 @@
 
 ## About
 
-The NET Watchdog was created in an effort to create a scalable, light-weight, self-sustaining system which checks for service outages or degradations. The application can then react to such events by calling webhooks which could for example notify system adminstrators, update a status page (eg. Cachet), send emails or trigger internal countermeasures.
+The NET Watchdog is a project created in an effort to provide a scalable, light-weight, self-sustaining system which checks for service outages or degradations. The application can then react to such events by calling webhooks which could for example notify system adminstrators, update a status page (eg. Cachet), send emails or trigger internal countermeasures.
 
 ### Quick Facts
 
@@ -71,7 +71,7 @@ The NET Watchdog was created in an effort to create a scalable, light-weight, se
 
 ## Getting Started
 
-Simply download the latest release and unzip it in a folder you want the application to build it's directory structure in. Once unzipped, simply run the jar files by using
+Simply download the latest release and unzip it in a folder you want the application to build its directory structure in. Once unzipped, simply run the jar files by using:
 
 ```sh
 java -jar net-watchdog.jar
@@ -93,7 +93,7 @@ apt-get install screen
 
 ## Components
 
-The services you want to check are called components by the app. A component is defined and configured by a JSON config files in the `components` directory. The files name must end with `-component.conf` to be recognized by the app.
+Services you want to check are called components by the app. A component is defined and configured by a JSON config files in the `components` directory. The files name must end with `-component.conf` to be recognized by the app.
 
 There are currently two types of components: REST and Socket components.
 

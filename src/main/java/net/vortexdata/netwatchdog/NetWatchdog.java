@@ -58,7 +58,7 @@ import java.time.LocalDateTime;
  */
 public class NetWatchdog {
 
-    public static String APP_SUBSYSTEM_DIRECTORY = "app";
+    public static final String APP_SUBSYSTEM_DIRECTORY = "app";
 
     private boolean isShuttingDown;
     private ComponentManager componentManager;
@@ -121,7 +121,7 @@ public class NetWatchdog {
 
 
         // APP CONFIGS
-        configRegister = new ConfigRegister(this);
+        configRegister = new ConfigRegister();
         configRegister.loadAll();
 
 
@@ -148,7 +148,7 @@ public class NetWatchdog {
 
         // BOOT-WRAPUP
         Log.debug("Starting boot-wrapup checks...");
-        if (configRegister.didCriticalConfigFail()) {
+        if (configRegister.didCriticalConfigFail() && configRegister.isIgnoringCriticalError()) {
             Log.error("Encountered a critical configuration error during boot which may cause issues at runtime.");
             shutdown();
         }
@@ -181,7 +181,7 @@ public class NetWatchdog {
     }
 
     public void printCopyHeader() {
-        BufferedReader headBr = null;
+        BufferedReader headBr;
         try {
             InputStream headIs = getClass().getResourceAsStream("/startup-header.txt");
             headBr = new BufferedReader(new InputStreamReader(headIs));
@@ -240,10 +240,6 @@ public class NetWatchdog {
 
     public UpdateManager getUpdateManager() {
         return updateManager;
-    }
-
-    public boolean isShuttingDown() {
-        return isShuttingDown;
     }
 
     public ParameterRegister getParamRegister() {

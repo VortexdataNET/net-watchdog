@@ -32,5 +32,5 @@ package net.vortexdata.netwatchdog.utils;
  * @version 0.2.0
  */
 public enum RequestMethod {
-    GET, PUT, POST
+    GET, POST
 }

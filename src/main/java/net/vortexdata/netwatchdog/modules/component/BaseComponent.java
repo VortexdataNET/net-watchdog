@@ -36,12 +36,12 @@ import java.util.ArrayList;
  */
 public abstract class BaseComponent {
 
-    public static String FILE_EXTENSION = ".json";
+    public static final String FILE_EXTENSION = ".json";
     protected LocalDateTime lastCheck;
-    protected String address;
-    protected ArrayList<PerformanceClass> performanceClasses;
-    protected String filename;
-    protected boolean cachePerformanceClass;
+    protected final String address;
+    protected final ArrayList<PerformanceClass> performanceClasses;
+    protected final String filename;
+    protected final boolean cachePerformanceClass;
     protected boolean hasPerformanceClassChanged;
     protected PerformanceClass lastPerformanceClass;
 
@@ -85,7 +85,7 @@ public abstract class BaseComponent {
     /**
      * Tries to match response time to available {@link PerformanceClass}.
      *
-     * @param   responseTime
+     * @param   responseTime    Response time to find performance class for.
      * @return                  Mapped {@link PerformanceClass}
      */
     protected PerformanceClass getPerformanceClassByResponseTime(int responseTime) {
@@ -94,18 +94,6 @@ public abstract class BaseComponent {
                 return pc;
         }
         return new FallbackPerformanceClass(responseTime, "");
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public ArrayList<PerformanceClass> getPerformanceClasses() {
-        return performanceClasses;
-    }
-
-    public LocalDateTime getLastCheck() {
-        return lastCheck;
     }
 
     public String getFilename() {
@@ -120,7 +108,7 @@ public abstract class BaseComponent {
         return hasPerformanceClassChanged;
     }
 
-    public PerformanceClass getLastPerformanceClass() {
-        return lastPerformanceClass;
+    public LocalDateTime getLastCheck() {
+        return lastCheck;
     }
 }

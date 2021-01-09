@@ -42,8 +42,7 @@ public class UpdateManager {
     public static final String API_URL = "https://api.github.com/repos/VortexdataNET/net-watchdog";
     public static final String SYS_PATH = "dnldmng";
     public static final String UPDATE_AVAILABLE_MESSAGE = "There is a new update available for download! Please use the command 'app upgrade' to get more information.";
-    private static int UPDATE_AVAILABLE_PAUSE = 5000;
-    private NetWatchdog netWatchdog;
+    private final NetWatchdog netWatchdog;
 
     public UpdateManager(NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;
@@ -127,6 +126,7 @@ public class UpdateManager {
         String message = delimiter + "\n" + UPDATE_AVAILABLE_MESSAGE + "\n" + delimiter;
         CLI.print(message);
         try {
+            int UPDATE_AVAILABLE_PAUSE = 5000;
             Thread.sleep(UPDATE_AVAILABLE_PAUSE);
         } catch (Exception e) {
             // Ignore as it doesn't matter

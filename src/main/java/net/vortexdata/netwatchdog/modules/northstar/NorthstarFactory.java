@@ -38,7 +38,7 @@ public class NorthstarFactory {
 
     public static NorthstarBase getNorthstarFromJSON(JSONObject jsonObject, NorthstarRegister nr) {
 
-        String address = "";
+        String address;
         int port = -1;
         int samples = 0;
         int timeout = -1;

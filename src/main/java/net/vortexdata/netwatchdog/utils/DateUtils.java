@@ -47,15 +47,4 @@ public class DateUtils {
         return formatter.format(date);
     }
 
-    /**
-     * Get an easily readable string from {@link LocalDateTime} object.
-     *
-     * @param ldt   {@link LocalDateTime} object to be formatted.
-     * @return      {@link String} in format <code>MMMM d, yyyy HH:mm</code>.
-     */
-    public static String getReadableDateString(LocalDateTime ldt) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy HH:mm");
-        return formatter.format(ldt);
-    }
-
 }

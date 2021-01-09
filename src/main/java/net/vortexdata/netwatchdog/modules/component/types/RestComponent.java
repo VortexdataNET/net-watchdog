@@ -24,13 +24,11 @@
 
 package net.vortexdata.netwatchdog.modules.component.types;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.exceptions.InvalidComponentJSONException;
 import net.vortexdata.netwatchdog.modules.component.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.FallbackPerformanceClass;
 import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
 import net.vortexdata.netwatchdog.modules.console.logging.Log;
-import net.vortexdata.netwatchdog.utils.AppInfo;
 import net.vortexdata.netwatchdog.utils.RequestMethod;
 import net.vortexdata.netwatchdog.utils.RestUtils;
 import org.json.JSONArray;
@@ -65,6 +63,7 @@ public class RestComponent extends BaseComponent {
         this.requestMethod = requestMethod;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected PerformanceClass runPerformanceCheck() {
 

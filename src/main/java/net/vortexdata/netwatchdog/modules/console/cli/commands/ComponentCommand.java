@@ -57,7 +57,7 @@ public class ComponentCommand extends BaseCommand {
                 if (args.length > 1) {
                     String newFilePath = ComponentManager.COMPONENTS_DIR + args[1] + BaseComponent.FILE_EXTENSION;
                     try {
-                        BufferedReader headBr = null;
+                        BufferedReader headBr;
                         File file = new File(newFilePath);
                         if (file.exists()) {
                             if (args.length <= 2 || !args[2].equalsIgnoreCase("--force")) {

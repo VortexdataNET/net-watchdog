@@ -41,7 +41,7 @@ import java.io.InputStreamReader;
 public class AppInfo {
 
     private JSONObject values;
-    private Platform platform;
+    private final Platform platform;
 
     public AppInfo() {
         values = new JSONObject();
@@ -55,8 +55,8 @@ public class AppInfo {
      */
     public boolean loadProjectConfig() {
 
-        StringBuffer sb = new StringBuffer();
-        BufferedReader headBr = null;
+        StringBuilder sb = new StringBuilder();
+        BufferedReader headBr;
         try {
             InputStream headIs = getClass().getResourceAsStream("/project.json");
             headBr = new BufferedReader(new InputStreamReader(headIs));
@@ -78,19 +78,11 @@ public class AppInfo {
         return true;
     }
 
-    public JSONObject getValues() {
-        return values;
-    }
-
     public String getVersionName() {
         if (values.has("versionName"))
             return values.getString("versionName");
         else
             return "0.0.0";
-    }
-
-    public String getArch() {
-        return System.getProperty("os.arch");
     }
 
     public Platform getPlatform() {

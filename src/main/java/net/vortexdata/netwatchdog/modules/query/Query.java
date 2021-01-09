@@ -32,9 +32,7 @@ import net.vortexdata.netwatchdog.modules.component.FallbackPerformanceClass;
 import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 import net.vortexdata.netwatchdog.modules.console.logging.Log;
-import net.vortexdata.netwatchdog.modules.northstar.NorthstarBase;
 
-import java.util.ArrayList;
 import java.util.concurrent.*;
 
 /**
@@ -64,7 +62,7 @@ public class Query {
      */
     private void runChecks() {
 
-        int threadCount = 1;
+        int threadCount;
         int terminationThreshold = netWatchdog.getConfigRegister().getMainConfig().getValue().getInt("threadTerminationThreshold");
         if (terminationThreshold < 1)
             terminationThreshold = 60;
@@ -122,30 +120,27 @@ public class Query {
         if (hasStarted)
             return;
         hasStarted = true;
-        thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getAppInfo().getPlatform() == null)
-                    Log.warn("The Northstar system has been disabled as it is not supported on your operating system.");
-                while (true) {
-                    try {
-                        if (!componentManager.getComponents().isEmpty()) {
-                            if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getAppInfo().getPlatform() != null) {
-                                int neededPercent = netWatchdog.getConfigRegister().getConfigByPath(NorthstarConfig.CONFIG_PATH).getValue().getInt("availPercentMin");
-                                int actualPercent = netWatchdog.getNorthstarRegister().getAvailabilityPercentage();
-                                if (actualPercent >= neededPercent) {
-                                    runChecks();
-                                } else {
-                                    Log.warn("Northstar results insufficient to run check cycle (got "+actualPercent+"%, expecting "+neededPercent+"%), skipping.");
-                                }
-                            } else {
+        thread = new Thread(() -> {
+            if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getAppInfo().getPlatform() == null)
+                Log.warn("The Northstar system has been disabled as it is not supported on your operating system.");
+            while (true) {
+                try {
+                    if (!componentManager.getComponents().isEmpty()) {
+                        if (netWatchdog.getNorthstarRegister() != null && netWatchdog.getAppInfo().getPlatform() != null) {
+                            int neededPercent = netWatchdog.getConfigRegister().getConfigByPath(NorthstarConfig.CONFIG_PATH).getValue().getInt("availPercentMin");
+                            int actualPercent = netWatchdog.getNorthstarRegister().getAvailabilityPercentage();
+                            if (actualPercent >= neededPercent) {
                                 runChecks();
+                            } else {
+                                Log.warn("Northstar results insufficient to run check cycle (got "+actualPercent+"%, expecting "+neededPercent+"%), skipping.");
                             }
+                        } else {
+                            runChecks();
                         }
-                        Thread.sleep(mainConfig.getValue().getInt("pollDelay") * 1000);
-                    } catch (InterruptedException e) {
-                        Log.debug("Query got interrupted (for shutdown?).");
                     }
+                    Thread.sleep(mainConfig.getValue().getInt("pollDelay") * 1000);
+                } catch (InterruptedException e) {
+                    Log.debug("Query got interrupted (for shutdown?).");
                 }
             }
         });

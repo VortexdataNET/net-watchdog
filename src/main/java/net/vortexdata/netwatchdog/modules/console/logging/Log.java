@@ -24,8 +24,6 @@
 
 package net.vortexdata.netwatchdog.modules.console.logging;
 
-import java.util.logging.Level;
-
 /**
  * API for sending log output to file and console.
  *
@@ -48,24 +46,12 @@ public class Log {
         log(message, null, LogLevel.DEBUG);
     }
 
-    public static void debug(String message, Throwable throwable) {
-        log(message, throwable, LogLevel.DEBUG);
-    }
-
     public static void info(String message) {
         log(message, null, LogLevel.INFO);
     }
 
-    public static void info(String message, Throwable throwable) {
-        log(message, throwable, LogLevel.INFO);
-    }
-
     public static void warn(String message) {
         log(message, null, LogLevel.WARN);
-    }
-
-    public static void warn(String message, Throwable throwable) {
-        log(message, throwable, LogLevel.WARN);
     }
 
     public static void error(String message) {

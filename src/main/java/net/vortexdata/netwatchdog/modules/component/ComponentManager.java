@@ -24,7 +24,6 @@
 
 package net.vortexdata.netwatchdog.modules.component;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.exceptions.InvalidComponentJSONException;
 import net.vortexdata.netwatchdog.modules.component.types.RestComponent;
 import net.vortexdata.netwatchdog.modules.component.types.SocketComponent;
@@ -33,6 +32,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Owner class of all loaded components. Manages and loads components.
@@ -41,6 +41,7 @@ import java.util.ArrayList;
  * @since 0.0.1
  * @version 0.2.0
  */
+@SuppressWarnings("UnusedReturnValue")
 public class ComponentManager {
 
     public static final String COMPONENTS_DIR = "components//";
@@ -78,14 +79,14 @@ public class ComponentManager {
         // Determine type of component
         if (obj.getString("type").equalsIgnoreCase("REST")) {
             try {
-                Log.debug("Component " + filename + "is a REST component.");
+                Log.debug("Component " + filename + " is a REST component.");
                 return RestComponent.getRestComponentFromJSON(obj, filename);
             } catch (InvalidComponentJSONException e) {
                 Log.error("Component "+filename+"'s configuration is invalid and can not be loaded and enabled.", e);
             }
         } else if (obj.getString("type").equalsIgnoreCase("SOCKET")) {
             try {
-                Log.debug("Component " + filename + "is a SOCKET component.");
+                Log.debug("Component " + filename + " is a SOCKET component.");
                 return SocketComponent.getSocketComponentFromJSON(obj, filename);
             } catch (InvalidComponentJSONException e) {
                 Log.error("Component "+filename+"'s configuration is invalid and can not be loaded and enabled.", e);
@@ -130,6 +131,7 @@ public class ComponentManager {
      * @return              <code>true</code> if at least one component was loaded;
      *                      <code>false</code> if no components were loaded.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean loadAll() {
         unloadedComponents.clear();
         components.clear();
@@ -137,22 +139,20 @@ public class ComponentManager {
         File file = new File(COMPONENTS_DIR);
         file.mkdirs();
 
-        FilenameFilter compFileFilter = new FilenameFilter(){
-            public boolean accept(File dir, String name) {
-                String lowercaseName = name.toLowerCase();
-                return lowercaseName.endsWith(".json");
-            }
+        FilenameFilter compFileFilter = (dir, name) -> {
+            String lowercaseName = name.toLowerCase();
+            return lowercaseName.endsWith(".json");
         };
 
         File[] fileList = file.listFiles(compFileFilter);
-        if (fileList.length == 0) {
+        if (Objects.requireNonNull(fileList).length == 0) {
             Log.info("There are no components to load.");
             return false;
         }
 
         boolean didAtLeastOneLoad = false;
-        for (int i = 0; i < fileList.length; i++) {
-            if (enableComponent(fileList[i].getName()) && !didAtLeastOneLoad)
+        for (File value : fileList) {
+            if (enableComponent(value.getName()) && !didAtLeastOneLoad)
                 didAtLeastOneLoad = true;
         }
         return didAtLeastOneLoad;
@@ -171,7 +171,7 @@ public class ComponentManager {
      */
     public boolean enableComponent(String filename) {
         Log.debug("Component " + filename + " is being loaded and enabled...");
-        BaseComponent c = null;
+        BaseComponent c;
         try {
             c = loadComponent(filename);
             if (c == null)

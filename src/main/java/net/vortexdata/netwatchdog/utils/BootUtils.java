@@ -25,7 +25,6 @@
 package net.vortexdata.netwatchdog.utils;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -40,7 +39,6 @@ public class BootUtils {
 
     public static LocalDateTime bootStart;
     public static LocalDateTime bootEnd;
-    public static LocalDateTime shutdown;
 
     /**
      * Calculates total boot time of app from {@link BootUtils#bootStart} and {@link BootUtils#bootEnd}.
@@ -54,7 +52,4 @@ public class BootUtils {
         return bootStart;
     }
 
-    public static LocalDateTime getBootEnd() {
-        return bootEnd;
-    }
 }

@@ -36,7 +36,7 @@ import java.net.Socket;
  */
 public class SocketNorthstar extends NorthstarBase {
 
-    private int port;
+    private final int port;
 
     public SocketNorthstar(NorthstarRegister northstarRegister, String address, int timeout, int port) {
         super(northstarRegister, address, timeout, 1);
@@ -52,9 +52,7 @@ public class SocketNorthstar extends NorthstarBase {
             Socket s = new Socket(address, port);
             s.close();
             long end = System.currentTimeMillis();
-            if (end-start >= timeout)
-                return false;
-            return true;
+            return end - start < timeout;
         } catch (IOException e) {
             return false;
         }

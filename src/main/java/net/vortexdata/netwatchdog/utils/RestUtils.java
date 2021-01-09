@@ -29,10 +29,7 @@ import org.json.JSONException;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
@@ -43,6 +40,7 @@ import java.util.HashMap;
  * @since 0.0.1
  * @version 0.2.0
  */
+@SuppressWarnings("SameReturnValue")
 public class RestUtils {
 
     public static byte[] getPostBytes(String body) throws JSONException {
@@ -81,7 +79,7 @@ public class RestUtils {
 
     public static String readResponseStream(BufferedReader reader) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        String line = "";
+        String line;
         while ((line = reader.readLine()) != null) {
             stringBuilder.append(line);
         }

@@ -24,7 +24,6 @@
 
 package net.vortexdata.netwatchdog.modules.config.configs;
 
-import net.vortexdata.netwatchdog.modules.config.ConfigStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,19 +40,18 @@ import java.util.Stack;
  * @since 0.0.1
  * @version 0.2.0
  */
+@SuppressWarnings("UnusedReturnValue")
 public abstract class BaseConfig {
 
-    private ConfigStatus configStatus;
-    private String path = "main.cfg";
+    private final String path;
     private final JSONObject defaultValue;
     private JSONObject value;
-    private boolean isCritical;
+    private final boolean isCritical;
     private boolean hasBeenUpdated;
 
     public BaseConfig(String path, boolean isCritical) {
         this.path = path;
         this.isCritical = isCritical;
-        configStatus = ConfigStatus.UNLOADED;
         defaultValue = populateDefaultValue();
         hasBeenUpdated = false;
     }
@@ -112,13 +110,11 @@ public abstract class BaseConfig {
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
-            configStatus = ConfigStatus.LOAD_FAILED;
             value = loadedValue;
             return false;
         }
 
         value = loadedValue;
-        configStatus = ConfigStatus.LOADED;
         return true;
     }
 
@@ -223,10 +219,6 @@ public abstract class BaseConfig {
      *              were encountered and config is valid.
      */
     public abstract Stack<String> checkIntegrity();
-
-    public ConfigStatus getConfigStatus() {
-        return configStatus;
-    }
 
     public String getPath() {
         return path;

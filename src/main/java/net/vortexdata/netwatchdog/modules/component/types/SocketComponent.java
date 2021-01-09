@@ -24,15 +24,12 @@
 
 package net.vortexdata.netwatchdog.modules.component.types;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.exceptions.InvalidComponentJSONException;
 import net.vortexdata.netwatchdog.modules.component.BaseComponent;
-import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
 import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import org.json.JSONObject;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;

@@ -56,7 +56,7 @@ public class HelpCommand extends BaseCommand {
             builder.append("The following commands are supported at the moment:\n\n");
             StringBuilder sb = new StringBuilder();
             for (BaseCommand c : netWatchdog.getCommandRegister().getCommands()) {
-                sb.append(String.format("%-32s%-32s", c.getName(), c.getDescription()) + "\n");
+                sb.append(String.format("%-32s%-32s", c.getName(), c.getDescription())).append("\n");
             }
 
             CLI.print(builder.toAnsi());

@@ -24,7 +24,6 @@
 
 package net.vortexdata.netwatchdog.modules.console.cli;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.console.logging.Log;
 
 /**
@@ -48,7 +47,7 @@ public class ConsoleThread extends Thread {
     public void run() {
         active = true;
         while (active) {
-            String input = "";
+            String input;
             try {
                 input = CLI.readLine("> ");
                 if (input.length() > 0 && !commandRegister.evaluateCommand(input))

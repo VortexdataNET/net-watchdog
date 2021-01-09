@@ -24,23 +24,17 @@
 
 package net.vortexdata.netwatchdog.modules.component;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.exceptions.InvalidPerformanceClassJSONException;
 import net.vortexdata.netwatchdog.exceptions.InvalidWebhookJSONException;
 import net.vortexdata.netwatchdog.modules.console.logging.Log;
-import net.vortexdata.netwatchdog.utils.RequestMethod;
 import net.vortexdata.netwatchdog.utils.RestUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -165,7 +159,7 @@ public class PerformanceClass {
             throw new InvalidWebhookJSONException("Address key is not set.");
 
         // Determine headers
-        HashMap<String, String> headers = new HashMap<String, String>();
+        HashMap<String, String> headers = new HashMap<>();
         if (!obj.has("headers")) {
             JSONArray headerarray = obj.getJSONArray("headers");
             for (int j = 0; j < headerarray.length(); j++) {

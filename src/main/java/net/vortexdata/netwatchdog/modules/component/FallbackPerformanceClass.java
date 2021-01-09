@@ -24,10 +24,6 @@
 
 package net.vortexdata.netwatchdog.modules.component;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
-
-import java.util.ArrayList;
-
 /**
  * @author  Sandro Kierner
  * @version 0.2.0
@@ -48,7 +44,10 @@ public class FallbackPerformanceClass extends PerformanceClass {
     public FallbackPerformanceClass(int responseTime, String additionalInformation) {
         super("Fallback", null, null, null);
         this.responseTime = responseTime;
-        this.info = additionalInformation;
+        if (additionalInformation == null || additionalInformation.isEmpty())
+            info = "N/A";
+        else
+            info = additionalInformation;
     }
 
     public int getResponseTime() {
@@ -58,4 +57,5 @@ public class FallbackPerformanceClass extends PerformanceClass {
     public String getInfo() {
         return info;
     }
+
 }

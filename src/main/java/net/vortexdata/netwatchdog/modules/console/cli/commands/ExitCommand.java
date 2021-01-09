@@ -26,7 +26,6 @@ package net.vortexdata.netwatchdog.modules.console.cli.commands;
 
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import org.jline.reader.impl.completer.ArgumentCompleter;
 
 /**
  * Application halt command.
@@ -39,10 +38,6 @@ public class ExitCommand extends BaseCommand {
 
     public ExitCommand(NetWatchdog netWatchdog) {
         super(netWatchdog, "exit", "Exit and close the app.");
-    }
-
-    protected ArgumentCompleter populateArgumentCompleter() {
-        return null;
     }
 
     @Override

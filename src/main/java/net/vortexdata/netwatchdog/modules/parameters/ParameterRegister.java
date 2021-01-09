@@ -43,9 +43,9 @@ import java.util.ArrayList;
  */
 public class ParameterRegister {
 
-    private String[] args;
-    private ArrayList<ParamBase> params;
-    private NetWatchdog netWatchdog;
+    private final String[] args;
+    private final ArrayList<ParamBase> params;
+    private final NetWatchdog netWatchdog;
 
     public ParameterRegister(String[] args, NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;
@@ -96,21 +96,6 @@ public class ParameterRegister {
         }
     }
 
-    public ParamBase getParam(String longOrShortName) {
-        if (longOrShortName.startsWith("--")) {
-            longOrShortName = longOrShortName.substring(2);
-            return getParamFromFull(longOrShortName);
-        } else if (longOrShortName.startsWith("-")) {
-            longOrShortName = longOrShortName.substring(1);
-            return getParamFromShort(longOrShortName);
-        } else {
-            if (getParamFromShort(longOrShortName) != null)
-                return getParamFromShort(longOrShortName);
-            else
-                return getParamFromFull(longOrShortName);
-        }
-    }
-
     public ParamBase getParamFromShort(String shortName) {
         for (ParamBase pb : params)
             if (pb.getShortName().equalsIgnoreCase(shortName))
@@ -129,11 +114,4 @@ public class ParameterRegister {
         return args;
     }
 
-    public ArrayList<ParamBase> getParams() {
-        return params;
-    }
-
-    public NetWatchdog getNetWatchdog() {
-        return netWatchdog;
-    }
 }
