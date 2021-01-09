@@ -50,6 +50,15 @@ public class UpdateManager {
     }
 
     /**
+     * Looks for any new releases and prompts user about newer version
+     * being available for download.
+     */
+    public void searchForAndPromptUpdate() {
+        if (areUpdatesAvailable())
+            promptUpdateAvailable();
+    }
+
+    /**
      * Downloads release with matching release tag.
      * @param tag       {@link String} specifying the release to download.
      * @return          <code>true</code> if release has been downloaded successfully;
@@ -57,7 +66,7 @@ public class UpdateManager {
      */
     public boolean downloadRelease(String tag) {
         Log.debug("Trying to download release...");
-        File sysDirectory = new File("sys//"+SYS_PATH+"//releases");
+        File sysDirectory = new File(NetWatchdog.APP_SUBSYSTEM_DIRECTORY + File.separator + SYS_PATH + File.separator + "releases");
         if (!sysDirectory.exists() || !sysDirectory.isDirectory())
             if (!sysDirectory.mkdirs()) {
                 Log.error("Failed to create download manager system directory.");
@@ -78,7 +87,7 @@ public class UpdateManager {
         }
 
         try (BufferedInputStream in = new BufferedInputStream(new URL(releaseInfo.getString("browser_download_url")).openStream());
-            FileOutputStream fileOutputStream = new FileOutputStream(netWatchdog.getSysPath() + SYS_PATH + "//releases//"+tag+".jar", false)) {
+            FileOutputStream fileOutputStream = new FileOutputStream(NetWatchdog.APP_SUBSYSTEM_DIRECTORY + File.separator +  SYS_PATH + File.separator + "releases" + File.separator + tag + ".jar", false)) {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
@@ -184,7 +193,7 @@ public class UpdateManager {
     }
 
     public static String getDownloadedReleasePath(String tag) {
-        return NetWatchdog.getSysPath() + SYS_PATH + "//releases//"+tag+".jar";
+        return NetWatchdog.APP_SUBSYSTEM_DIRECTORY + File.separator + SYS_PATH + File.separator + "releases" + File.separator + tag + ".jar";
     }
 
 }

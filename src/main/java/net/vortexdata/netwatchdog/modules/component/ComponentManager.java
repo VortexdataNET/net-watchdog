@@ -170,7 +170,7 @@ public class ComponentManager {
      *                                  <code>false</code> if component could not be loaded.
      */
     public boolean enableComponent(String filename) {
-        Log.info("Component " + filename + " is being loaded and enabled...");
+        Log.debug("Component " + filename + " is being loaded and enabled...");
         BaseComponent c = null;
         try {
             c = loadComponent(filename);

@@ -42,7 +42,6 @@ import net.vortexdata.netwatchdog.modules.query.Query;
 import net.vortexdata.netwatchdog.modules.updater.UpdateManager;
 import net.vortexdata.netwatchdog.utils.AppInfo;
 import net.vortexdata.netwatchdog.utils.DateUtils;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
@@ -59,10 +58,11 @@ import java.time.LocalDateTime;
  */
 public class NetWatchdog {
 
+    public static String APP_SUBSYSTEM_DIRECTORY = "app";
+
     private boolean isShuttingDown;
     private ComponentManager componentManager;
     private NorthstarRegister northstarRegister;
-    private ch.qos.logback.classic.Logger logger;
     private CommandRegister commandRegister;
     private ConsoleThread consoleThread;
     private ConfigRegister configRegister;
@@ -91,7 +91,7 @@ public class NetWatchdog {
         jLineAppender.start();
 
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        logger = loggerContext.getLogger("net.vortexdata.netwatchdog");
+        ch.qos.logback.classic.Logger logger = loggerContext.getLogger("net.vortexdata.netwatchdog");
         Log.LOGGER = logger;
         logger.setLevel(Level.DEBUG);
 
@@ -117,6 +117,7 @@ public class NetWatchdog {
 
         // UPDATE MANAGER
         updateManager = new UpdateManager(this);
+        updateManager.searchForAndPromptUpdate();
 
 
         // APP CONFIGS
@@ -209,10 +210,6 @@ public class NetWatchdog {
         System.exit(0);
     }
 
-    public ch.qos.logback.classic.Logger getLogbackLogger() {
-        return logger;
-    }
-
     public CommandRegister getCommandRegister() {
         return commandRegister;
     }
@@ -251,9 +248,5 @@ public class NetWatchdog {
 
     public ParameterRegister getParamRegister() {
         return paramRegister;
-    }
-
-    public static String getSysPath() {
-        return "sys//";
     }
 }
