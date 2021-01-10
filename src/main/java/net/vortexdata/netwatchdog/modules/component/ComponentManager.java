@@ -25,8 +25,9 @@
 package net.vortexdata.netwatchdog.modules.component;
 
 import net.vortexdata.netwatchdog.exceptions.InvalidComponentJSONException;
-import net.vortexdata.netwatchdog.modules.component.types.RestComponent;
-import net.vortexdata.netwatchdog.modules.component.types.SocketComponent;
+import net.vortexdata.netwatchdog.modules.component.components.BaseComponent;
+import net.vortexdata.netwatchdog.modules.component.components.RestComponent;
+import net.vortexdata.netwatchdog.modules.component.components.SocketComponent;
 import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import org.json.JSONObject;
 

@@ -26,10 +26,10 @@ package net.vortexdata.netwatchdog.modules.query;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.config.configs.MainConfig;
-import net.vortexdata.netwatchdog.modules.component.BaseComponent;
+import net.vortexdata.netwatchdog.modules.component.components.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
-import net.vortexdata.netwatchdog.modules.component.FallbackPerformanceClass;
-import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
+import net.vortexdata.netwatchdog.modules.component.performanceclasses.FallbackPerformanceClass;
+import net.vortexdata.netwatchdog.modules.component.performanceclasses.PerformanceClass;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 import net.vortexdata.netwatchdog.modules.console.logging.Log;
 

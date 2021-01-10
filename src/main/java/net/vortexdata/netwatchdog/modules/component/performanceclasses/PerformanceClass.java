@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.component;
+package net.vortexdata.netwatchdog.modules.component.performanceclasses;
 
 import net.vortexdata.netwatchdog.exceptions.InvalidPerformanceClassJSONException;
 import net.vortexdata.netwatchdog.exceptions.InvalidWebhookJSONException;

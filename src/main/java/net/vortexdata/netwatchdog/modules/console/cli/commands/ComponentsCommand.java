@@ -26,7 +26,7 @@ package net.vortexdata.netwatchdog.modules.console.cli.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
-import net.vortexdata.netwatchdog.modules.component.BaseComponent;
+import net.vortexdata.netwatchdog.modules.component.components.BaseComponent;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 
