@@ -108,7 +108,7 @@ A REST (representational state transfer) component can be used to check websites
    "name":"Example Service",
    "filename":"example-service",
    "address":"https://example.com/api/myapi.php",
-   "performanceClasses":[
+   "basePerformanceClasses":[
       {
          "name":"Operational",
          "responseTimeRange":"0-80",
@@ -176,7 +176,7 @@ A socket component can connect to a server socket on a specific port (eg. heartb
    "filename":"my-database",
    "address":"192.168.0.1",
    "port":"3306",
-   "performanceClasses":[
+   "basePerformanceClasses":[
       {
          "name":"Operational",
          "responseTimeRange":"0-80",
@@ -248,7 +248,7 @@ The tables below gives an overview of all root component and performance class k
 | address            	| String, any                                                    	| N/A           | Defines the API / service address.                   	                | Yes      	| ✔️    	| ✔️      	|
 | port              	| Integer, any                                                    	| 80            | Defines socket port.                                 	                | No      	| ❌️    	| ✔️      	|
 | cacheLastResult    	| Boolean                                                         	| true          | True if webhooks should be re-run on same Performance Class result. 	| No       	| ✔️    	| ✔️      	|
-| performanceClasses 	| Array, Performance Class configuration                         	| N/A           | Defines the Performance Classes used with component. 	                | No       	| ✔️    	| ✔️      	|
+| basePerformanceClasses 	| Array, Performance Class configuration                         	| N/A           | Defines the Performance Classes used with component. 	                | No       	| ✔️    	| ✔️      	|
 
 #### Performance Class
 

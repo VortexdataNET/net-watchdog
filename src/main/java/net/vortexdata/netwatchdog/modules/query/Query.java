@@ -29,7 +29,7 @@ import net.vortexdata.netwatchdog.modules.config.configs.MainConfig;
 import net.vortexdata.netwatchdog.modules.component.components.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.ComponentManager;
 import net.vortexdata.netwatchdog.modules.component.performanceclasses.FallbackPerformanceClass;
-import net.vortexdata.netwatchdog.modules.component.performanceclasses.PerformanceClass;
+import net.vortexdata.netwatchdog.modules.component.performanceclasses.BasePerformanceClass;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
 import net.vortexdata.netwatchdog.modules.console.logging.Log;
 
@@ -101,7 +101,7 @@ public class Query {
     private void checkComponent(BaseComponent bc) {
         Log.info("Checking component " + bc.getFilename() + "...");
         try {
-            PerformanceClass pc = bc.check();
+            BasePerformanceClass pc = bc.check();
             if (pc.getClass() != FallbackPerformanceClass.class) {
                 Log.info("Component " + bc.getFilename() + "'s check returned performance class " + pc.getName() + " with response time "+pc.getLastRecordedResponseTime()+".");
                 if (!bc.isCachePerformanceClass() || bc.isHasPerformanceClassChanged())

@@ -95,6 +95,8 @@ public class ComponentManager {
         } else {
             Log.error("Component " + filename + " uses unsupported component type " + obj.getString("type") + ". Please check configuration and try again.");
         }
+
+
         return null;
     }
 

@@ -1,16 +1,31 @@
 {
    "type":"REST",
-   "method":"POST",
-   "address":"https://jsonplaceholder.typicode.com/todos/1",
-   "headers":[
-      "Content-Type:application/json"
-   ],
-   "body":"{'status':'0'}",
-   "performanceClasses":[
+   "uri":"https://jsonplaceholder.typicode.com/todos/1",
+   "settings": {
+      "requestBody":"{'status':'0'}",
+      "timeout": 5000,
+      "method":"POST",
+      "headers":[
+         "Content-Type:application/json"
+      ]
+   },
+   "performanceClasses": [
       {
          "name":"Best Performance",
-         "responseTimeRange":"0-20",
-         "contentLookup":"\"status\":\"offline\"",
+         "conditions": [
+            {
+               "name": "RESPONSE_TIME_RANGE",
+               "value": "0-20",
+               "weight": 100,
+               "critical": true
+            },
+            {
+               "name": "RESPONSE_BODY_MATCH",
+               "value": "test",
+               "weight": 100,
+               "critical": true
+            }
+         ],
          "webhookPosts":[
             {
                "address":"https://jsonplaceholder.typicode.com/posts",
@@ -22,14 +37,14 @@
          ]
       },
       {
-         "name":"Timeout",
-         "responseTimeRange":"timeout",
+         "name":"TIMEOUT",
          "webhookPosts":[
             {
                "address":"https://jsonplaceholder.typicode.com/posts",
                "headers":[
                   "Content-Type:application/json"
-               ]
+               ],
+               "body":"{'test':'value'}"
             }
          ]
       }

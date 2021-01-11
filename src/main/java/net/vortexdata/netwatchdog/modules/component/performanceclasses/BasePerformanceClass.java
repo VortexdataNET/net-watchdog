@@ -45,21 +45,26 @@ import java.util.HashMap;
  * @since 0.0.1
  * @version 0.2.0
  */
-public class PerformanceClass {
+public class BasePerformanceClass {
 
     private final String name;
-    // 0 = start, 1 = end value
-    private final int[] responseTimeRange;
-    private int lastRecordedResponseTime;
-    private final String contentLookup;
     private final ArrayList<PerformanceClassWebhook> webhooks;
 
-    public PerformanceClass(String name, int[] responseTimeRange, String contentLookup, ArrayList<PerformanceClassWebhook> webhooks) {
+    // 0 = start, 1 = end value
+    //private final int[] responseTimeRange;
+    //private int lastRecordedResponseTime;
+    //private final String contentLookup;
+
+
+    /*
+    public BasePerformanceClass(String name, int[] responseTimeRange, String contentLookup, ArrayList<PerformanceClassWebhook> webhooks) {
         this.name = name;
         this.responseTimeRange = responseTimeRange;
         this.contentLookup = contentLookup;
         this.webhooks = webhooks;
     }
+   */
+
 
     /**
      * Checks if performance class response content lookup has match.
@@ -128,11 +133,11 @@ public class PerformanceClass {
 
 
 
-    public static ArrayList<PerformanceClass> constructPerformanceClassesFromJSONArray(JSONArray array) {
-        ArrayList<PerformanceClass> export = new ArrayList<>();
+    public static ArrayList<BasePerformanceClass> constructPerformanceClassesFromJSONArray(JSONArray array) {
+        ArrayList<BasePerformanceClass> export = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             try {
-                PerformanceClass pc = PerformanceClass.constructPerformanceClassFromJSON(array.getJSONObject(i));
+                BasePerformanceClass pc = BasePerformanceClass.constructPerformanceClassFromJSON(array.getJSONObject(i));
                 export.add(pc);
             } catch (InvalidPerformanceClassJSONException e) {
                 e.printStackTrace();
@@ -185,7 +190,7 @@ public class PerformanceClass {
 
 
 
-    public static PerformanceClass constructPerformanceClassFromJSON(JSONObject obj) throws InvalidPerformanceClassJSONException {
+    public static BasePerformanceClass constructPerformanceClassFromJSON(JSONObject obj) throws InvalidPerformanceClassJSONException {
         if (!obj.has("responseTimeRange")) {
             throw new InvalidPerformanceClassJSONException("Response time range is not set.");
         }
@@ -221,7 +226,7 @@ public class PerformanceClass {
 
         ArrayList<PerformanceClassWebhook> webhooks = getPerformanceClassWebhooksFromJSONArray(obj.getJSONArray("webhookPosts"));
 
-        return new PerformanceClass(name, responseTimes, contentLookup, webhooks);
+        return new BasePerformanceClass(name, responseTimes, contentLookup, webhooks);
 
     }
 }
