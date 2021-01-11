@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -47,7 +48,7 @@ public class RestUtils {
         return body.getBytes(StandardCharsets.UTF_8);
     }
 
-    public static HttpsURLConnection getPostConnection(byte[] data, String url, String contentType, HashMap<String, String> extraHeaders) throws IOException {
+    public static HttpsURLConnection getPostConnection(byte[] data, String url, String contentType, ArrayList<String> extraHeaders) throws IOException {
         HttpsURLConnection connection =
                 (HttpsURLConnection) new URL(url).openConnection();
         connection.setDoOutput(true);
@@ -57,8 +58,9 @@ public class RestUtils {
         connection.setConnectTimeout(5000);
 
         if (extraHeaders != null) {
-            for (String key : extraHeaders.keySet()) {
-                connection.setRequestProperty(key, extraHeaders.get(key));
+            for (String header : extraHeaders) {
+                String[] property = header.split(":");
+                connection.setRequestProperty(property[0], property[1]);
             }
         }
 

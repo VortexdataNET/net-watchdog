@@ -51,16 +51,37 @@ import java.util.HashMap;
  */
 public class RestComponent extends BaseComponent {
 
-    private final HashMap<String, String> headers;
-    private final String body;
-    private final RequestMethod requestMethod;
+    private ArrayList<String> headers;
+    private RequestMethod requestMethod;
+    private int timeout;
+    private String requestBody;
 
+    /*
     public RestComponent(String filename, String address, ArrayList<BasePerformanceClass> basePerformanceClasses, boolean cachePerformanceClass, HashMap<String, String> headers, String body, RequestMethod requestMethod) {
         super(filename, address, basePerformanceClasses, cachePerformanceClass);
         this.headers = headers;
         this.body = body;
         this.requestMethod = requestMethod;
     }
+     */
+
+    public RestComponent(String type, String uri, JSONObject componentSettings, ArrayList<BasePerformanceClass> performanceClasses, boolean cachePerformanceClass) {
+        super(type, uri, componentSettings, performanceClasses, cachePerformanceClass);
+
+    }
+
+    protected void loadSettings() {
+        requestBody = componentSettings.getString("requestBody");
+        timeout = componentSettings.getInt("timeout");
+        requestMethod = RequestMethod.valueOf(componentSettings.getString("method"));
+
+
+        headers = new ArrayList<>();
+        for (Object o : componentSettings.getJSONArray("headers")) {
+            headers.add(o.toString());
+        }
+    }
+
 
     @SuppressWarnings("ConstantConditions")
     @Override
@@ -69,7 +90,7 @@ public class RestComponent extends BaseComponent {
         HttpsURLConnection hurlc = null;
         try {
             if (requestMethod == RequestMethod.POST)
-                hurlc = post(body, uri, headers);
+                hurlc = post(requestBody, uri, headers);
             else if (requestMethod == RequestMethod.GET) {
                 hurlc = get(uri, headers);
             }
@@ -88,7 +109,7 @@ public class RestComponent extends BaseComponent {
                 String response = RestUtils.readResponseStream(new BufferedReader(
                         new InputStreamReader(hurlc.getInputStream())));
 
-                for (BasePerformanceClass pc : basePerformanceClasses)
+                for (BasePerformanceClass pc : performanceClasses)
                     if (pc.lookupContent(response)) {
                         pc.setLastRecordedResponseTime(responseTime);
                         return pc;
@@ -111,7 +132,7 @@ public class RestComponent extends BaseComponent {
     }
 
     // TODO: Add parameter support
-    private HttpsURLConnection get(String url, HashMap<String, String> extraHeaders) {
+    private HttpsURLConnection get(String url, ArrayList<String> extraHeaders) {
         try {
             return RestUtils.getGetConnection(uri);
         } catch (IOException e) {
@@ -120,7 +141,7 @@ public class RestComponent extends BaseComponent {
         return null;
     }
 
-    private HttpsURLConnection post(String body, String url, HashMap<String, String> extraHeaders) {
+    private HttpsURLConnection post(String body, String url, ArrayList<String> extraHeaders) {
         if (url == null || url.isEmpty() || body == null || body.isEmpty())
             return null;
         try {
@@ -129,6 +150,8 @@ public class RestComponent extends BaseComponent {
             return null;
         }
     }
+
+
 
     public static RestComponent getRestComponentFromJSON(JSONObject obj, String filename) throws InvalidComponentJSONException {
 

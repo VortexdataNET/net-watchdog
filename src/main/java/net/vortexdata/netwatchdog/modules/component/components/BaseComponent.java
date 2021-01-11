@@ -26,9 +26,11 @@ package net.vortexdata.netwatchdog.modules.component.components;
 
 import net.vortexdata.netwatchdog.modules.component.performanceclasses.BasePerformanceClass;
 import net.vortexdata.netwatchdog.modules.component.performanceclasses.FallbackPerformanceClass;
+import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -42,15 +44,24 @@ public abstract class BaseComponent {
 
     public static final String FILE_EXTENSION = ".json";
 
-    protected LocalDateTime lastCheck;
-    protected final String uri;
-    protected final ArrayList<BasePerformanceClass> basePerformanceClasses;
     protected final String filename;
+    protected final String type;
+    protected final String uri;
+    protected final JSONObject componentSettings;
+    protected final ArrayList<BasePerformanceClass> performanceClasses;
+
+
+
+
+
+    protected LocalDateTime lastCheck;
+
     protected final boolean cachePerformanceClass;
     protected boolean hasPerformanceClassChanged;
     protected BasePerformanceClass lastBasePerformanceClass;
-    protected LinkedList<String> criteria;
 
+
+/*
     public BaseComponent(String filename, String uri, ArrayList<BasePerformanceClass> basePerformanceClasses, boolean cachePerformanceClass, LinkedList<String> criteria) {
         this.uri = uri;
         this.basePerformanceClasses = basePerformanceClasses;
@@ -60,6 +71,21 @@ public abstract class BaseComponent {
 
         this.criteria = criteria;
     }
+    */
+
+    public BaseComponent(String type, String uri, JSONObject componentSettings, ArrayList<BasePerformanceClass> performanceClasses, String filename) {
+        this.type = type;
+        this.uri = uri;
+        this.componentSettings = componentSettings;
+        this.performanceClasses = performanceClasses;
+        this.cachePerformanceClass = true;
+        this.filename = filename;
+
+        loadSettings();
+    }
+
+
+    abstract void loadSettings();
 
     /**
      * Checks availability of the component and tries to
@@ -97,16 +123,14 @@ public abstract class BaseComponent {
      * @return                  Mapped {@link BasePerformanceClass}
      */
     protected BasePerformanceClass getPerformanceClassByResponseTime(int responseTime) {
-        for (BasePerformanceClass pc : basePerformanceClasses) {
+        for (BasePerformanceClass pc : performanceClasses) {
             if (pc.getResponseTimeRange()[0] <= responseTime && pc.getResponseTimeRange()[1] >= responseTime)
                 return pc;
         }
         return new FallbackPerformanceClass(responseTime, "");
     }
 
-    public String getFilename() {
-        return filename;
-    }
+
 
     public boolean isCachePerformanceClass() {
         return cachePerformanceClass;
@@ -120,7 +144,7 @@ public abstract class BaseComponent {
         return lastCheck;
     }
 
-    public LinkedList<String> getCriteria() {
-        return criteriaQueue;
+    public String getFilename() {
+        return filename;
     }
 }

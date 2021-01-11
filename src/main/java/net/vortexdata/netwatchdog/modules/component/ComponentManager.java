@@ -28,11 +28,14 @@ import net.vortexdata.netwatchdog.exceptions.InvalidComponentJSONException;
 import net.vortexdata.netwatchdog.modules.component.components.BaseComponent;
 import net.vortexdata.netwatchdog.modules.component.components.RestComponent;
 import net.vortexdata.netwatchdog.modules.component.components.SocketComponent;
+import net.vortexdata.netwatchdog.modules.component.performanceclasses.BasePerformanceClass;
 import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -49,10 +52,15 @@ public class ComponentManager {
 
     private final ArrayList<File> unloadedComponents;
     private final ArrayList<BaseComponent> components;
+    private final HashMap<String, Class<?>> registeredComponentTypes;
 
     public ComponentManager() {
         components = new ArrayList<>();
         unloadedComponents = new ArrayList<>();
+        registeredComponentTypes = new HashMap<>();
+
+        registerComponent("REST", RestComponent.class);
+        registerComponent("SOCKET", SocketComponent.class);
     }
 
     /**
@@ -77,6 +85,22 @@ public class ComponentManager {
             return null;
         }
 
+        String type = obj.getString("type");
+        String uri = obj.getString("uri");
+        JSONObject settings = obj.getJSONObject("settings");
+        ArrayList<BasePerformanceClass> performanceClasses = new ArrayList<>();
+
+
+        Class<?> componentClass = registeredComponentTypes.get(type);
+
+        try {
+            BaseComponent component = (BaseComponent) componentClass.getConstructors()[0].newInstance(type, uri, settings, performanceClasses);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+
+        /*
         // Determine type of component
         if (obj.getString("type").equalsIgnoreCase("REST")) {
             try {
@@ -97,8 +121,15 @@ public class ComponentManager {
         }
 
 
+         */
+
         return null;
     }
+
+    private void registerComponent(String type, Class<?> componentClass) {
+        registeredComponentTypes.put(type, componentClass);
+    }
+
 
     /**
      * Loads content from file as {@link JSONObject}.
