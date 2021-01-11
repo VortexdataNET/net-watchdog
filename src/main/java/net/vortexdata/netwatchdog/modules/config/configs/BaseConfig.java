@@ -195,7 +195,7 @@ public abstract class BaseConfig {
     public boolean create(JSONObject defaultValues) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(path, false));
-            bw.write(defaultValues.toString(3));
+            bw.write(defaultValues.toString(4));
             bw.flush();
             bw.close();
             return load(false);
