@@ -14,8 +14,7 @@
          "name":"Best Performance",
          "conditions": [
             {
-               "name": "RESPONSE_TIME_RANGE",
-               "value": "0-20",
+               "name": "RESPONSE_TIME_RANGE", "value": "0-20",
                "weight": 100,
                "critical": true
             },
