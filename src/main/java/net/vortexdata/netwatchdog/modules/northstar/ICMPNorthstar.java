@@ -24,6 +24,7 @@
 
 package net.vortexdata.netwatchdog.modules.northstar;
 
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import net.vortexdata.netwatchdog.utils.Platform;
 
 import java.io.BufferedReader;
@@ -56,7 +57,6 @@ public class ICMPNorthstar extends NorthstarBase {
 
         ProcessBuilder processBuilder = new ProcessBuilder();
         if (northstarRegister.getNetWatchdog().getAppInfo().getPlatform() == null) {
-            wasLastAttemptSuccessful = false;
             return false;
         } else if (northstarRegister.getNetWatchdog().getAppInfo().getPlatform() == Platform.LINUX || northstarRegister.getNetWatchdog().getAppInfo().getPlatform() == Platform.MAC) {
             processBuilder.command(("ping -c 1 -t "+address+" " + samples).split(" "));
@@ -84,24 +84,20 @@ public class ICMPNorthstar extends NorthstarBase {
                         line.toUpperCase().contains("INVALID") ||
                         line.toUpperCase().contains("ERROR")
                 ) {
-                    wasLastAttemptSuccessful = false;
                     return false;
                 }
             }
         } catch (IOException e) {
-            northstarRegister.getNetWatchdog().getLogger().debug(e.getMessage());
-            wasLastAttemptSuccessful = false;
+            Log.debug(e.getMessage());
             return false;
         }
 
         for (Integer i : pingResults) {
             if (i == -1 || i > timeout) {
-                wasLastAttemptSuccessful = false;
                 return false;
             }
         }
 
-        wasLastAttemptSuccessful = true;
         return true;
     }
 

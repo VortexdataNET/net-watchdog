@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.console.commands;
+package net.vortexdata.netwatchdog.modules.console.cli.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
-import net.vortexdata.netwatchdog.modules.component.BaseComponent;
+import net.vortexdata.netwatchdog.modules.component.components.BaseComponent;
 import org.jline.utils.AttributedStringBuilder;
 import org.jline.utils.AttributedStyle;
 
@@ -62,16 +62,14 @@ public class ComponentsCommand extends BaseCommand {
             }
 
             AttributedStringBuilder builder = new AttributedStringBuilder();
-            builder.append(String.format("%-32s%-32s%-32s", "Filename", "Custom Name", "Status") + "\n")
+            builder.append(String.format("%-32s%-32s%-32s", "Filename", "Custom Name", "Status")).append("\n")
             .append("----------------------------------------------------------------------------\n\n");
 
             for (BaseComponent c : netWatchdog.getComponentManager().getComponents()) {
-                builder.style(AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN))
-                        .append(String.format("%-32s%-32s%-32s", c.getFilename(), c.getName(), "loaded") + "\n");
+                builder.style(AttributedStyle.DEFAULT.foreground(AttributedStyle.GREEN)).append(String.format("%-32s%-32s%-32s", c.getFilename(), c.getFilename(), "loaded")).append("\n");
             }
             for (File f : netWatchdog.getComponentManager().getUnloadedComponents()) {
-                builder.style(AttributedStyle.DEFAULT.foreground(AttributedStyle.RED))
-                        .append(String.format("%-32s%-32s%-32s", f.getName().split("-")[0], "N/A", "not loaded") + "\n");
+                builder.style(AttributedStyle.DEFAULT.foreground(AttributedStyle.RED)).append(String.format("%-32s%-32s%-32s", f.getName().split("-")[0], "N/A", "not loaded")).append("\n");
             }
             CLI.print(builder.toAnsi());
         }

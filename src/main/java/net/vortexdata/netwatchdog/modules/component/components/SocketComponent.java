@@ -22,18 +22,17 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.component.types;
+package net.vortexdata.netwatchdog.modules.component.components;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.modules.component.BaseComponent;
-import net.vortexdata.netwatchdog.modules.component.ComponentManager;
-import net.vortexdata.netwatchdog.modules.component.PerformanceClass;
+import net.vortexdata.netwatchdog.exceptions.InvalidComponentJSONException;
+import net.vortexdata.netwatchdog.modules.component.performanceclasses.BasePerformanceClass;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import org.json.JSONObject;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * SocketComponent used to check socket endpoints or APIs.
@@ -46,16 +45,16 @@ public class SocketComponent extends BaseComponent {
 
     private final int port;
 
-    public SocketComponent(String address, String name, String filename, ArrayList<PerformanceClass> performanceClasses, boolean cachePerformanceClass, int port) {
-        super(address, name, filename, performanceClasses, cachePerformanceClass);
+    public SocketComponent(String filename, String address, ArrayList<BasePerformanceClass> basePerformanceClasses, boolean cachePerformanceClass, int port) {
+        super(filename, address, basePerformanceClasses, cachePerformanceClass);
         this.port = port;
     }
 
     @Override
-    protected PerformanceClass runPerformanceCheck() {
+    protected BasePerformanceClass runPerformanceCheck() {
         try {
             long start = System.currentTimeMillis();
-            Socket socket = new Socket(address, port);
+            Socket socket = new Socket(uri, port);
             socket.setSoTimeout(5000);
             //DataInputStream dis = new DataInputStream(socket.getInputStream());
             String response = "";
@@ -63,7 +62,7 @@ public class SocketComponent extends BaseComponent {
             long end = System.currentTimeMillis();
             socket.close();
 
-            for (PerformanceClass pc : performanceClasses)
+            for (BasePerformanceClass pc : basePerformanceClasses)
                 if (pc.lookupContent(response)) {
                     pc.setLastRecordedResponseTime((int) (end-start));
                     return pc;
@@ -71,7 +70,7 @@ public class SocketComponent extends BaseComponent {
 
 
             // Fallback on response time base evaluation
-            PerformanceClass pc = getPerformanceClassByResponseTime((int) (end-start));
+            BasePerformanceClass pc = getPerformanceClassByResponseTime((int) (end-start));
             pc.setLastRecordedResponseTime((int) (end-start));
             return pc;
         } catch (IOException e) {
@@ -79,29 +78,41 @@ public class SocketComponent extends BaseComponent {
         }
     }
 
-    public static SocketComponent getSocketComponentFromJSON(JSONObject obj, NetWatchdog netWatchdog) {
-        String name = obj.getString("name");
+
+
+
+
+    public static SocketComponent getSocketComponentFromJSON(JSONObject obj, String filename) throws InvalidComponentJSONException {
+
+        String[] neededKeys = {
+                "address"
+        };
+        if (!obj.keySet().containsAll(
+                Arrays.asList(neededKeys)
+        )) {
+            throw new InvalidComponentJSONException("Can not construct SOCKET component from JSON as required keys are missing.");
+        }
+
         String address = obj.getString("address");
-        String filename = obj.getString("filename");
+
         boolean cachePerformanceClass = true;
         try {
             if (obj.getString("cacheLastResult").equalsIgnoreCase("false"))
                 cachePerformanceClass = false;
         } catch (Exception e) {
-            netWatchdog.getLogger().debug("Couldn't find cacheLastResult key, falling back to true.");
+            Log.debug("Couldn't find cacheLastResult key, falling back to true.");
         }
         int port = 80;
         try {
             port = Integer.parseInt(obj.getString("port"));
         } catch (Exception e) {
-            netWatchdog.getLogger().error("Failed to parse port of component " + name + ", falling back to port 80.");
+            Log.error("Failed to parse port of component "+filename+", falling back to port 80.");
         }
-        ArrayList<PerformanceClass> pcs = ComponentManager.constructPerformanceClassesFromJSONArray(netWatchdog, name, obj.getJSONArray("performanceClasses"));
+        ArrayList<BasePerformanceClass> pcs = BasePerformanceClass.constructPerformanceClassesFromJSONArray(obj.getJSONArray("performanceClasses"));
 
         return new SocketComponent(
-                address,
-                name,
                 filename,
+                address,
                 pcs,
                 cachePerformanceClass,
                 port

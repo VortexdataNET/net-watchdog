@@ -26,6 +26,7 @@ package net.vortexdata.netwatchdog.modules.parameters.params;
 
 import ch.qos.logback.classic.Level;
 import net.vortexdata.netwatchdog.NetWatchdog;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 
 /**
  * Overrides the default log level of the app.
@@ -43,27 +44,27 @@ public class ParamLoglevel extends ParamBase {
     @Override
     public boolean runPreparation(String[] args, String calledName, NetWatchdog netWatchdog) {
 
-        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) netWatchdog.getLogger();
+        ch.qos.logback.classic.Logger logger = Log.LOGGER;
 
         if (args.length == 0) {
-            netWatchdog.getLogger().warn("Missing log level argument for start parameter "+calledName+", falling back to log level INFO.");
+            Log.warn("Missing log level argument for start parameter "+calledName+", falling back to log level INFO.");
             logger.setLevel(Level.INFO);
             return false;
         } else {
             if (args[0].equalsIgnoreCase("DEBUG")) {
-                netWatchdog.getLogger().debug("Using log level DEBUG.");
+                Log.debug("Using log level DEBUG.");
                 logger.setLevel(Level.DEBUG);
             } else if (args[0].equalsIgnoreCase("INFO")) {
-                netWatchdog.getLogger().debug("Using log level INFO.");
+                Log.debug("Using log level INFO.");
                 logger.setLevel(Level.INFO);
             } else if (args[0].equalsIgnoreCase("WARN")) {
-                netWatchdog.getLogger().debug("Using log level WARN.");
+                Log.debug("Using log level WARN.");
                 logger.setLevel(Level.WARN);
             } else if (args[0].equalsIgnoreCase("ERROR")) {
-                netWatchdog.getLogger().debug("Using log level ERROR.");
+                Log.debug("Using log level ERROR.");
                 logger.setLevel(Level.ERROR);
             } else {
-                netWatchdog.getLogger().debug("Unknown log level "+args[0]+", falling back to log level INFO.");
+                Log.debug("Unknown log level "+args[0]+", falling back to log level INFO.");
                 logger.setLevel(Level.INFO);
             }
         }

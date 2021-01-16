@@ -22,15 +22,12 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.config;
+package net.vortexdata.netwatchdog.exceptions;
 
-/**
- * Config Status enum.
- *
- * @author          Sandro Kierner
- * @since 0.0.1
- * @version 0.2.0
- */
-public enum ConfigStatus {
-    UNLOADED,LOADED,LOAD_FAILED
+public class InvalidComponentJSONException extends Exception {
+
+    public InvalidComponentJSONException(String message) {
+        super(message);
+    }
+
 }

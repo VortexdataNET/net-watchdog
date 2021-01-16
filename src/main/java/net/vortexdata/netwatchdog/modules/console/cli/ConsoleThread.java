@@ -24,7 +24,7 @@
 
 package net.vortexdata.netwatchdog.modules.console.cli;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 
 /**
  * Input reader CLI component.
@@ -37,26 +37,24 @@ public class ConsoleThread extends Thread {
 
     private final CommandRegister commandRegister;
     private boolean active;
-    private final NetWatchdog netWatchdog;
 
-    public ConsoleThread(CommandRegister commandRegister, NetWatchdog netWatchdog) {
+    public ConsoleThread(CommandRegister commandRegister) {
         active = true;
         this.commandRegister = commandRegister;
-        this.netWatchdog = netWatchdog;
     }
 
     @Override
     public void run() {
         active = true;
         while (active) {
-            String input = "";
+            String input;
             try {
                 input = CLI.readLine("> ");
                 if (input.length() > 0 && !commandRegister.evaluateCommand(input))
                     if (input.split(" ").length > 0)
                         CLI.print(input.split(" ")[0] + ": Command not found");
             } catch (Exception e) {
-                netWatchdog.getLogger().error("An error occurred whilst trying to parse CLI input, appending error details: " + e.getMessage());
+                Log.error("An error occurred whilst trying to parse CLI input.", e);
             }
         }
     }

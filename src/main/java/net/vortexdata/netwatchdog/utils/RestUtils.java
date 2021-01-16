@@ -29,11 +29,9 @@ import org.json.JSONException;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -43,24 +41,26 @@ import java.util.HashMap;
  * @since 0.0.1
  * @version 0.2.0
  */
+@SuppressWarnings("SameReturnValue")
 public class RestUtils {
 
     public static byte[] getPostBytes(String body) throws JSONException {
         return body.getBytes(StandardCharsets.UTF_8);
     }
 
-    public static HttpsURLConnection getPostConnection(AppInfo appInfo, byte[] data, String url, String contentType, HashMap<String, String> extraHeaders) throws IOException {
+    public static HttpsURLConnection getPostConnection(byte[] data, String url, String contentType, ArrayList<String> extraHeaders) throws IOException {
         HttpsURLConnection connection =
                 (HttpsURLConnection) new URL(url).openConnection();
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Content-Type", contentType);
-        connection.setRequestProperty("User-Agent", getUserAgentContent(appInfo));
+        connection.setRequestProperty("User-Agent", getUserAgentContent());
         connection.setConnectTimeout(5000);
 
         if (extraHeaders != null) {
-            for (String key : extraHeaders.keySet()) {
-                connection.setRequestProperty(key, extraHeaders.get(key));
+            for (String header : extraHeaders) {
+                String[] property = header.split(":");
+                connection.setRequestProperty(property[0], property[1]);
             }
         }
 
@@ -71,25 +71,25 @@ public class RestUtils {
         return connection;
     }
 
-    public static HttpsURLConnection getGetConnection(AppInfo appInfo, String url) throws IOException {
+    public static HttpsURLConnection getGetConnection(String url) throws IOException {
         HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("User-Agent", getUserAgentContent(appInfo));
+        connection.setRequestProperty("User-Agent", getUserAgentContent());
         return connection;
     }
 
     public static String readResponseStream(BufferedReader reader) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-        String line = "";
+        String line;
         while ((line = reader.readLine()) != null) {
             stringBuilder.append(line);
         }
         return stringBuilder.toString();
     }
 
-    public static String getUserAgentContent(AppInfo appInfo) {
-        return "NETWatchdog/" + appInfo.getVersionName() + " ("+appInfo.getPlatform()+"; "+appInfo.getPlatform()+" "+appInfo.getArch()+")";
+    public static String getUserAgentContent() {
+        return "NETWatchdog";
     }
 
 }

@@ -25,6 +25,7 @@
 package net.vortexdata.netwatchdog.modules.parameters;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import net.vortexdata.netwatchdog.modules.parameters.params.ParamBase;
 import net.vortexdata.netwatchdog.modules.parameters.params.ParamIgnoreCriticalConfig;
 import net.vortexdata.netwatchdog.modules.parameters.params.ParamLoglevel;
@@ -42,9 +43,9 @@ import java.util.ArrayList;
  */
 public class ParameterRegister {
 
-    private String[] args;
-    private ArrayList<ParamBase> params;
-    private NetWatchdog netWatchdog;
+    private final String[] args;
+    private final ArrayList<ParamBase> params;
+    private final NetWatchdog netWatchdog;
 
     public ParameterRegister(String[] args, NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;
@@ -62,10 +63,10 @@ public class ParameterRegister {
     public void evaluateArguments() {
 
         if (args.length == 0) {
-            netWatchdog.getLogger().debug("No arguments found, skipping evaluation.");
+            Log.debug("No arguments found, skipping evaluation.");
             return;
         } else {
-            netWatchdog.getLogger().debug("Found " + args.length + " arguments.");
+            Log.debug("Found " + args.length + " arguments.");
         }
 
         String calledName = "";
@@ -95,21 +96,6 @@ public class ParameterRegister {
         }
     }
 
-    public ParamBase getParam(String longOrShortName) {
-        if (longOrShortName.startsWith("--")) {
-            longOrShortName = longOrShortName.substring(2);
-            return getParamFromFull(longOrShortName);
-        } else if (longOrShortName.startsWith("-")) {
-            longOrShortName = longOrShortName.substring(1);
-            return getParamFromShort(longOrShortName);
-        } else {
-            if (getParamFromShort(longOrShortName) != null)
-                return getParamFromShort(longOrShortName);
-            else
-                return getParamFromFull(longOrShortName);
-        }
-    }
-
     public ParamBase getParamFromShort(String shortName) {
         for (ParamBase pb : params)
             if (pb.getShortName().equalsIgnoreCase(shortName))
@@ -128,11 +114,4 @@ public class ParameterRegister {
         return args;
     }
 
-    public ArrayList<ParamBase> getParams() {
-        return params;
-    }
-
-    public NetWatchdog getNetWatchdog() {
-        return netWatchdog;
-    }
 }

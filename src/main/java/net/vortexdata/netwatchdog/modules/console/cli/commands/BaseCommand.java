@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.console.commands;
+package net.vortexdata.netwatchdog.modules.console.cli.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.console.cli.CLI;
@@ -38,10 +38,10 @@ import java.util.HashMap;
  */
 public abstract class BaseCommand {
 
-    protected String description;
-    protected HashMap<String, String> args;
-    protected String name;
-    protected NetWatchdog netWatchdog;
+    protected final String description;
+    protected final HashMap<String, String> args;
+    protected final String name;
+    protected final NetWatchdog netWatchdog;
 
     public BaseCommand(NetWatchdog netWatchdog, String name, String description) {
         this.netWatchdog = netWatchdog;
@@ -59,21 +59,21 @@ public abstract class BaseCommand {
     public String getHelpMessage() {
         StringBuilder sb = new StringBuilder();
 
-        if (args == null || args.size() == 0)
+        if (args.size() == 0)
             if (description != null && description.isEmpty())
                 return description;
             else
                 return "Help message unavailable.";
 
-        sb.append(description + "\n\n");
+        sb.append(description).append("\n\n");
         sb.append("Usage: ");
-        sb.append(getName() + " ");
+        sb.append(getName()).append(" ");
 
-        sb.append(generateArgsString() + "\n\n");
+        sb.append(generateArgsString()).append("\n\n");
 
         sb.append("More information about all arguments:\n\n");
         for (String key : args.keySet()) {
-            sb.append("- " + key + ": " + args.get(key) + "\n");
+            sb.append("- ").append(key).append(": ").append(args.get(key)).append("\n");
         }
 
         return sb.toString();
@@ -86,22 +86,22 @@ public abstract class BaseCommand {
      * @return  {@link String} formatted as args string.
      */
     private String generateArgsString() {
-        if (args == null || args.size() == 0)
+        if (args.size() == 0)
             return "N/A";
 
-        String export = "<";
+        StringBuilder export = new StringBuilder("<");
         String[] keys = args.keySet().toArray(new String[args.size()]);
         for (int i = 0; i < keys.length; i++) {
             if (keys.length - i == 1) {
-                export += keys[i] + ">";
+                export.append(keys[i]).append(">");
                 break;
             } else if (i == 0) {
-                export += keys[i] + " | ";
+                export.append(keys[i]).append(" | ");
             } else {
-                export += keys[i] + " | ";
+                export.append(keys[i]).append(" | ");
             }
         }
-        return export;
+        return export.toString();
     }
 
     /**
@@ -126,7 +126,4 @@ public abstract class BaseCommand {
         return description;
     }
 
-    public HashMap<String, String> getArgs() {
-        return args;
-    }
 }

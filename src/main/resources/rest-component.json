@@ -1,0 +1,51 @@
+{
+   "type":"REST",
+   "uri":"https://jsonplaceholder.typicode.com/todos/1",
+   "settings": {
+      "requestBody":"{'status':'0'}",
+      "timeout": 5000,
+      "method":"POST",
+      "headers":[
+         "Content-Type:application/json"
+      ]
+   },
+   "performanceClasses": [
+      {
+         "name":"Best Performance",
+         "conditions": [
+            {
+               "name": "RESPONSE_TIME_RANGE", "value": "0-20",
+               "weight": 100,
+               "critical": true
+            },
+            {
+               "name": "RESPONSE_BODY_MATCH",
+               "value": "test",
+               "weight": 100,
+               "critical": true
+            }
+         ],
+         "webhookPosts":[
+            {
+               "address":"https://jsonplaceholder.typicode.com/posts",
+               "headers":[
+                  "Content-Type:application/json"
+               ],
+               "body":"{'test':'value'}"
+            }
+         ]
+      },
+      {
+         "name":"TIMEOUT",
+         "webhookPosts":[
+            {
+               "address":"https://jsonplaceholder.typicode.com/posts",
+               "headers":[
+                  "Content-Type:application/json"
+               ],
+               "body":"{'test':'value'}"
+            }
+         ]
+      }
+   ]
+}

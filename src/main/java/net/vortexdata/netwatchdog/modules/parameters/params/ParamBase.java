@@ -33,10 +33,11 @@ import net.vortexdata.netwatchdog.NetWatchdog;
  * @since 0.1.0
  * @version 0.3.0
  */
+@SuppressWarnings("UnusedReturnValue")
 public abstract class ParamBase {
 
-    protected String fullName;
-    protected String shortName;
+    protected final String fullName;
+    protected final String shortName;
 
     public ParamBase(String fullName, String shortName) {
         this.fullName = fullName;

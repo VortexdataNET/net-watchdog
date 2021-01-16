@@ -43,9 +43,9 @@ public class VersionUtils {
         String[] split = tag.split("\\.");
         if (split.length != 3) return false;
 
-        for (int i = 0; i < split.length; i++) {
+        for (String s : split) {
             try {
-                int parsed = Integer.parseInt(split[i]);
+                int parsed = Integer.parseInt(s);
                 if (parsed < 0) return false;
             } catch (Exception e) {
                 return false;
@@ -76,7 +76,7 @@ public class VersionUtils {
             Integer val1 = i < level1.length ? Integer.parseInt(level1[i]) : 0;
             Integer val2 = i < level2.length ? Integer.parseInt(level2[i]) : 0;
 
-            Integer res = val1.compareTo(val2);
+            int res = val1.compareTo(val2);
 
             if (res != 0) {
                 return res;

@@ -25,7 +25,7 @@
 package net.vortexdata.netwatchdog.modules.console.cli;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.modules.console.commands.*;
+import net.vortexdata.netwatchdog.modules.console.cli.commands.*;
 import org.jline.reader.impl.completer.ArgumentCompleter;
 import org.jline.reader.impl.completer.StringsCompleter;
 
@@ -40,9 +40,10 @@ import java.util.Arrays;
  * @since 0.0.1
  * @version 0.2.0
  */
+@SuppressWarnings("UnusedReturnValue")
 public class CommandRegister {
 
-    ArrayList<BaseCommand> commands;
+    final ArrayList<BaseCommand> commands;
     private final NetWatchdog netWatchdog;
 
     public CommandRegister(NetWatchdog netWatchdog) {

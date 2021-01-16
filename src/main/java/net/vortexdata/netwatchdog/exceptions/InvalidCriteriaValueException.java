@@ -22,30 +22,16 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.console.commands;
+package net.vortexdata.netwatchdog.exceptions;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.modules.console.cli.CLI;
+public class InvalidCriteriaValueException extends Exception {
 
-/**
- * Clear the CLI screen.
- *
- * @author  Sandro Kierner
- * @since 0.0.1
- * @version 0.2.0
- */
-public class ClearCommand extends BaseCommand {
-
-    public ClearCommand(NetWatchdog netWatchdog) {
-        super(netWatchdog, "clear", "Clears the console screen.");
+    public InvalidCriteriaValueException() {
+        super("The criteria value is not valid.");
     }
 
-    @Override
-    public void call(String[] args) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 200; i++)
-            sb.append("\n");
-        CLI.print(sb.toString());
+    public InvalidCriteriaValueException(String message) {
+        super(message);
     }
 
 }

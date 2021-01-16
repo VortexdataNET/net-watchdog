@@ -71,7 +71,7 @@ public class CLI {
     /**
      * Prints a string above input line. Use this to avoid
      * breaking user input display.
-     * @param msg
+     * @param msg       Message to print.
      */
     public static void print(String msg) {
         lineReader.printAbove(msg);
@@ -103,16 +103,6 @@ public class CLI {
     public static boolean promptDangerous(String message) {
         String input = CLI.readLine(message + " [type \"i-know-what-i-am-doing\"]: ");
         return (input.equalsIgnoreCase("i-know-what-i-am-doing"));
-    }
-
-    /**
-     * Displays a message to user which they have to acknowledge by using
-     * return key.
-     *
-     * @param message       {@link String} Message to display.
-     */
-    public static void promptInfo(String message) {
-        CLI.readLine(message );
     }
 
 }

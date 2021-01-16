@@ -24,11 +24,10 @@
 
 package net.vortexdata.netwatchdog.modules.config;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.config.configs.BaseConfig;
 import net.vortexdata.netwatchdog.modules.config.configs.MainConfig;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
-import net.vortexdata.netwatchdog.modules.console.cli.CLI;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -40,23 +39,21 @@ import java.util.Stack;
  * @version 0.2.0
  * @since 0.0.1
  */
+
+@SuppressWarnings("UnusedReturnValue")
 public class ConfigRegister {
 
-    private ArrayList<BaseConfig> configs;
-    private boolean ignoreCriticalConfig;
-    private final NetWatchdog netWatchdog;
+    private final ArrayList<BaseConfig> configs;
     private boolean didCriticalConfigFail;
     private boolean wereConfigsUpdated;
+    private boolean ignoreCriticalError;
 
-    public ConfigRegister(NetWatchdog netWatchdog) {
-        this.netWatchdog = netWatchdog;
-        this.ignoreCriticalConfig = false;
+    public ConfigRegister() {
         configs = new ArrayList<>();
         configs.add(new MainConfig());
         configs.add(new NorthstarConfig());
         didCriticalConfigFail = false;
         wereConfigsUpdated = false;
-        loadAll();
     }
 
     /**
@@ -78,7 +75,7 @@ public class ConfigRegister {
                         break;
                     sb.append(s).append("\n");
                 }
-                netWatchdog.getLogger().error("Integrity check for config " + config.getPath() + " failed, logging error stack: \n" + sb.toString());
+                Log.error("Integrity check for config " + config.getPath() + " failed, logging error stack: \n" + sb.toString());
                 didNoErrorOccur = false;
             }
             if (!didNoErrorOccur && config.isCritical())
@@ -92,10 +89,6 @@ public class ConfigRegister {
         return didNoErrorOccur;
     }
 
-    public NetWatchdog getNetWatchdog() {
-        return netWatchdog;
-    }
-
     public BaseConfig getConfigByPath(String path) {
         for (BaseConfig config : configs)
             if (config.getPath().equals(path))
@@ -104,7 +97,7 @@ public class ConfigRegister {
     }
 
     public void setIgnoreCriticalConfig() {
-        this.ignoreCriticalConfig = true;
+        ignoreCriticalError = true;
     }
 
     public MainConfig getMainConfig() {
@@ -113,10 +106,6 @@ public class ConfigRegister {
 
     public NorthstarConfig getNorthstarConfig() {
         return (NorthstarConfig) getConfigByPath(NorthstarConfig.CONFIG_PATH);
-    }
-
-    public boolean ignoringCriticalConfigFail() {
-        return ignoreCriticalConfig;
     }
 
     public boolean didCriticalConfigFail() {
@@ -133,6 +122,9 @@ public class ConfigRegister {
             if (c.hasBeenUpdated())
                 updatedConfigs.add(c);
         return updatedConfigs;
+    }
+    public boolean isIgnoringCriticalError() {
+        return ignoreCriticalError;
     }
 
 }

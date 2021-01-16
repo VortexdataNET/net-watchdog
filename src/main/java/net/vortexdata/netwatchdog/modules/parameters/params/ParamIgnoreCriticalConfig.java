@@ -25,6 +25,7 @@
 package net.vortexdata.netwatchdog.modules.parameters.params;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 
 /**
  * Instructs the app to ignore config check errors thrown by
@@ -41,7 +42,7 @@ public class ParamIgnoreCriticalConfig extends ParamBase {
 
     @Override
     public boolean runPreparation(String[] args, String calledName, NetWatchdog netWatchdog) {
-        netWatchdog.getLogger().warn("App is set to ignore critical configuration errors. This may cause issues during runtime! Do not use this command if you don't know what you are doing!");
+        Log.warn("App is set to ignore critical configuration errors. This may cause issues during runtime! Do not use this command if you don't know what you are doing!");
         netWatchdog.getConfigRegister().setIgnoreCriticalConfig();
         return true;
     }

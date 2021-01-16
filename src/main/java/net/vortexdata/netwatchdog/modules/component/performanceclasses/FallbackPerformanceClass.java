@@ -22,34 +22,40 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.utils;
-
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+package net.vortexdata.netwatchdog.modules.component.performanceclasses;
 
 /**
- * Primitive utility class used to store system
- * boot timestamps.
- *
  * @author  Sandro Kierner
- * @since 0.0.1
  * @version 0.2.0
+ * @since 0.0.1
+ *
+ * This performance class is a placeholder / dummy class which is
+ * returned if no performance class could be found meeting the
+ * response time or other criteria in the check component method.
+ *
+ * It is primarily used for debugging purpose to get a response
+ * time back to Query thead.
  */
-public class BootUtils {
+public class FallbackPerformanceClass extends BasePerformanceClass {
 
-    public static LocalDateTime bootStart;
-    public static LocalDateTime bootEnd;
+    private final int responseTime;
+    private final String info;
 
-    /**
-     * Calculates total boot time of app from {@link BootUtils#bootStart} and {@link BootUtils#bootEnd}.
-     * @return      Total boot time in milliseconds.
-     */
-    public static float getBootTimeMillis() {
-        return ChronoUnit.MILLIS.between(bootStart, bootEnd);
+    public FallbackPerformanceClass(int responseTime, String additionalInformation) {
+        super("Fallback", null, null, null);
+        this.responseTime = responseTime;
+        if (additionalInformation == null || additionalInformation.isEmpty())
+            info = "N/A";
+        else
+            info = additionalInformation;
     }
 
-    public static LocalDateTime getBootStart() {
-        return bootStart;
+    public int getResponseTime() {
+        return responseTime;
+    }
+
+    public String getInfo() {
+        return info;
     }
 
 }

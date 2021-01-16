@@ -22,40 +22,38 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.component;
+package net.vortexdata.netwatchdog.modules.component.performanceclasses;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
-
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
+ * Performance class webhook wrapper class.
+ *
  * @author  Sandro Kierner
- * @version 0.2.0
  * @since 0.0.1
- *
- * This performance class is a placeholder / dummy class which is
- * returned if no performance class could be found meeting the
- * response time or other criteria in the check component method.
- *
- * It is primarily used for debugging purpose to get a response
- * time back to Query thead.
+ * @version 0.2.0
  */
-public class FallbackPerformanceClass extends PerformanceClass {
+public class PerformanceClassWebhook {
 
-    private final int responseTime;
-    private final String info;
+    private final String address;
+    private final HashMap<String, String> headers;
+    private final String body;
 
-    public FallbackPerformanceClass(int responseTime, String additionalInformation) {
-        super("Fallback", null, null, null, null);
-        this.responseTime = responseTime;
-        this.info = additionalInformation;
+    public PerformanceClassWebhook(String address, HashMap<String, String> headers, String body) {
+        this.address = address;
+        this.headers = headers;
+        this.body = body;
     }
 
-    public int getResponseTime() {
-        return responseTime;
+    public String getBody() {
+        return body;
     }
 
-    public String getInfo() {
-        return info;
+    public String getAddress() {
+        return address;
+    }
+
+    public HashMap<String, String> getHeaders() {
+        return headers;
     }
 }

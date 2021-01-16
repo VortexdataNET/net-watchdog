@@ -24,6 +24,7 @@
 
 package net.vortexdata.netwatchdog.utils;
 
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -40,7 +41,7 @@ import java.io.InputStreamReader;
 public class AppInfo {
 
     private JSONObject values;
-    private Platform platform;
+    private final Platform platform;
 
     public AppInfo() {
         values = new JSONObject();
@@ -54,8 +55,8 @@ public class AppInfo {
      */
     public boolean loadProjectConfig() {
 
-        StringBuffer sb = new StringBuffer();
-        BufferedReader headBr = null;
+        StringBuilder sb = new StringBuilder();
+        BufferedReader headBr;
         try {
             InputStream headIs = getClass().getResourceAsStream("/project.json");
             headBr = new BufferedReader(new InputStreamReader(headIs));
@@ -67,11 +68,14 @@ public class AppInfo {
         }
 
         values = new JSONObject(sb.toString());
-        return true;
-    }
 
-    public JSONObject getValues() {
-        return values;
+        // Inform user about platform
+        if (getPlatform() == null)
+            Log.warn("Looks like your operating system is not supported ("+System.getProperty("os.name")+"). This may cause issues with some of the apps systems. Please either use Windows, Linux or macOS.");
+        else
+            Log.info("Platform " + getPlatform() + " detected.");
+
+        return true;
     }
 
     public String getVersionName() {
@@ -79,10 +83,6 @@ public class AppInfo {
             return values.getString("versionName");
         else
             return "0.0.0";
-    }
-
-    public String getArch() {
-        return System.getProperty("os.arch");
     }
 
     public Platform getPlatform() {

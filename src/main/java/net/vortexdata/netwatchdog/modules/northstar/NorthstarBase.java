@@ -24,11 +24,6 @@
 
 package net.vortexdata.netwatchdog.modules.northstar;
 
-import net.vortexdata.netwatchdog.NetWatchdog;
-import net.vortexdata.netwatchdog.utils.Platform;
-
-import java.net.Socket;
-
 /**
  * Wrapper class used to store Northstar information.
  *
@@ -46,11 +41,10 @@ public abstract class NorthstarBase {
         this.samples = samples;
     }
 
-    protected int samples;
+    protected final int samples;
     protected int timeout;
-    protected NorthstarRegister northstarRegister;
-    protected String address;
-    protected boolean wasLastAttemptSuccessful;
+    protected final NorthstarRegister northstarRegister;
+    protected final String address;
 
     /**
      * Determines if Northstar can be reached.

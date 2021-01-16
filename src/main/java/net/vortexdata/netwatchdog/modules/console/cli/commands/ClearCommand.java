@@ -22,31 +22,30 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.console.commands;
-
+package net.vortexdata.netwatchdog.modules.console.cli.commands;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
-import org.jline.reader.impl.completer.ArgumentCompleter;
+import net.vortexdata.netwatchdog.modules.console.cli.CLI;
 
 /**
- * Application halt command.
+ * Clear the CLI screen.
  *
  * @author  Sandro Kierner
  * @since 0.0.1
  * @version 0.2.0
  */
-public class ExitCommand extends BaseCommand {
+public class ClearCommand extends BaseCommand {
 
-    public ExitCommand(NetWatchdog netWatchdog) {
-        super(netWatchdog, "exit", "Exit and close the app.");
-    }
-
-    protected ArgumentCompleter populateArgumentCompleter() {
-        return null;
+    public ClearCommand(NetWatchdog netWatchdog) {
+        super(netWatchdog, "clear", "Clears the console screen.");
     }
 
     @Override
     public void call(String[] args) {
-        netWatchdog.shutdown();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 200; i++)
+            sb.append("\n");
+        CLI.print(sb.toString());
     }
+
 }

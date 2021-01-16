@@ -55,7 +55,6 @@ public class MainConfig extends BaseConfig {
 
         if (value.has("pollDelay")) {
             String pollDelayS = value.getString("pollDelay");
-            int pollDelay = -1;
             try {
                 if (Integer.parseInt(pollDelayS) < 0)
                     errorStack.push("The 'pollDelay' value must be higher than 0.");

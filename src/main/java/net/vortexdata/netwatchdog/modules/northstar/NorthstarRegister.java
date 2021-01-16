@@ -26,8 +26,8 @@ package net.vortexdata.netwatchdog.modules.northstar;
 
 import net.vortexdata.netwatchdog.NetWatchdog;
 import net.vortexdata.netwatchdog.modules.config.configs.NorthstarConfig;
+import net.vortexdata.netwatchdog.modules.console.logging.Log;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -42,8 +42,8 @@ import java.util.concurrent.*;
  */
 public class NorthstarRegister {
 
-    private ArrayList<NorthstarBase> northstars;
-    private NetWatchdog netWatchdog;
+    private final ArrayList<NorthstarBase> northstars;
+    private final NetWatchdog netWatchdog;
 
     public NorthstarRegister(NetWatchdog netWatchdog) {
         this.netWatchdog = netWatchdog;
@@ -60,17 +60,17 @@ public class NorthstarRegister {
 
     public int getAvailabilityPercentage() {
 
-        int threadCount = 1;
+        int threadCount;
         try {
             threadCount = netWatchdog.getConfigRegister().getNorthstarConfig().getValue().getInt("threadCount");
         } catch (Exception e) {
-            threadCount = 1;
+            threadCount = 0;
         }
 
         double successful = 0;
 
         if (threadCount < 2) {
-            netWatchdog.getLogger().debug("Determining Northstar availability sequentially...");
+            Log.debug("Determining Northstar availability sequentially...");
             if (netWatchdog.getAppInfo().getPlatform() == null)
                 return 0;
             for (NorthstarBase n : northstars) {
@@ -78,21 +78,21 @@ public class NorthstarRegister {
                     successful++;
             }
         } else {
-            netWatchdog.getLogger().debug("Determining Northstar availability multithreaded ("+threadCount+" threads)...");
+            Log.debug("Determining Northstar availability multithreaded ("+threadCount+" threads)...");
             try {
-                ArrayList<Future> availabilities = new ArrayList<Future>();
+                ArrayList<Future<Boolean>> availabilities = new ArrayList<>();
                 ExecutorService tpe = Executors.newFixedThreadPool(threadCount);
                 for (NorthstarBase n : northstars) {
                     availabilities.add(tpe.submit(n::isAvailable));
                 }
                 tpe.shutdown();
                 tpe.awaitTermination(10, TimeUnit.SECONDS);
-                for (Future f : availabilities) {
-                    if ((boolean) f.get())
+                for (Future<Boolean> f : availabilities) {
+                    if (f.get())
                         successful++;
                 }
             } catch (InterruptedException | ExecutionException e) {
-                netWatchdog.getLogger().error("Failed to determine multithreaded northstar availability percentage, appending error message: " + e.getMessage());
+                Log.error("Failed to determine multithreaded northstar availability percentage, appending error message: " + e.getMessage());
             }
         }
 
@@ -100,15 +100,7 @@ public class NorthstarRegister {
 
     }
 
-    public ArrayList<NorthstarBase> getNorthstars() {
-        return northstars;
-    }
-
     public NetWatchdog getNetWatchdog() {
-        return netWatchdog;
-    }
-
-    public NetWatchdog getNetwatchdog() {
         return netWatchdog;
     }
 

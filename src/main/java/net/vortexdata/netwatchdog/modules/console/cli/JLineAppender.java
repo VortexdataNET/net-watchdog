@@ -42,10 +42,10 @@ import ch.qos.logback.core.util.CachingDateFormatter;
  */
 public final class JLineAppender extends AppenderBase<ILoggingEvent> {
 
-    class CustomLayout extends LayoutBase<ILoggingEvent> {
+    static class CustomLayout extends LayoutBase<ILoggingEvent> {
 
-        CachingDateFormatter cachingDateFormatter = new CachingDateFormatter("HH:mm:ss.SSS");
-        ThrowableProxyConverter tpc = new ThrowableProxyConverter();
+        final CachingDateFormatter cachingDateFormatter = new CachingDateFormatter("HH:mm:ss.SSS");
+        final ThrowableProxyConverter tpc = new ThrowableProxyConverter();
 
         public void start() {
             this.tpc.start();

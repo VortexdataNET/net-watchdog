@@ -22,34 +22,16 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.utils;
+package net.vortexdata.netwatchdog.exceptions;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+public class CriteriaAlreadyInUseException extends Exception {
 
-/**
- * Primitive utility class used to store system
- * boot timestamps.
- *
- * @author  Sandro Kierner
- * @since 0.0.1
- * @version 0.2.0
- */
-public class BootUtils {
-
-    public static LocalDateTime bootStart;
-    public static LocalDateTime bootEnd;
-
-    /**
-     * Calculates total boot time of app from {@link BootUtils#bootStart} and {@link BootUtils#bootEnd}.
-     * @return      Total boot time in milliseconds.
-     */
-    public static float getBootTimeMillis() {
-        return ChronoUnit.MILLIS.between(bootStart, bootEnd);
+    public CriteriaAlreadyInUseException() {
+        super("The criteria is already in use.");
     }
 
-    public static LocalDateTime getBootStart() {
-        return bootStart;
+    public CriteriaAlreadyInUseException(String message) {
+        super(message);
     }
 
 }

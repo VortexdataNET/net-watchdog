@@ -49,7 +49,7 @@
 
 ## About
 
-The NET Watchdog was created in an effort to create a scalable, light-weight, self-sustaining system which checks for service outages or degradations. The application can then react to such events by calling webhooks which could for example notify system adminstrators, update a status page (eg. Cachet), send emails or trigger internal countermeasures.
+The NET Watchdog is a project created in an effort to provide a scalable, light-weight, self-sustaining system which checks for service outages or degradations. The application can then react to such events by calling webhooks which could for example notify system adminstrators, update a status page (eg. Cachet), send emails or trigger internal countermeasures.
 
 ### Quick Facts
 
@@ -71,7 +71,7 @@ The NET Watchdog was created in an effort to create a scalable, light-weight, se
 
 ## Getting Started
 
-Simply download the latest release and unzip it in a folder you want the application to build it's directory structure in. Once unzipped, simply run the jar files by using
+Simply download the latest release and unzip it in a folder you want the application to build its directory structure in. Once unzipped, simply run the jar files by using:
 
 ```sh
 java -jar net-watchdog.jar
@@ -93,7 +93,7 @@ apt-get install screen
 
 ## Components
 
-The services you want to check are called components by the app. A component is defined and configured by a JSON config files in the `components` directory. The files name must end with `-component.conf` to be recognized by the app.
+Services you want to check are called components by the app. A component is defined and configured by a JSON config files in the `components` directory. The files name must end with `-component.conf` to be recognized by the app.
 
 There are currently two types of components: REST and Socket components.
 
@@ -108,7 +108,7 @@ A REST (representational state transfer) component can be used to check websites
    "name":"Example Service",
    "filename":"example-service",
    "address":"https://example.com/api/myapi.php",
-   "performanceClasses":[
+   "basePerformanceClasses":[
       {
          "name":"Operational",
          "responseTimeRange":"0-80",
@@ -176,7 +176,7 @@ A socket component can connect to a server socket on a specific port (eg. heartb
    "filename":"my-database",
    "address":"192.168.0.1",
    "port":"3306",
-   "performanceClasses":[
+   "basePerformanceClasses":[
       {
          "name":"Operational",
          "responseTimeRange":"0-80",
@@ -248,7 +248,7 @@ The tables below gives an overview of all root component and performance class k
 | address            	| String, any                                                    	| N/A           | Defines the API / service address.                   	                | Yes      	| ✔️    	| ✔️      	|
 | port              	| Integer, any                                                    	| 80            | Defines socket port.                                 	                | No      	| ❌️    	| ✔️      	|
 | cacheLastResult    	| Boolean                                                         	| true          | True if webhooks should be re-run on same Performance Class result. 	| No       	| ✔️    	| ✔️      	|
-| performanceClasses 	| Array, Performance Class configuration                         	| N/A           | Defines the Performance Classes used with component. 	                | No       	| ✔️    	| ✔️      	|
+| basePerformanceClasses 	| Array, Performance Class configuration                         	| N/A           | Defines the Performance Classes used with component. 	                | No       	| ✔️    	| ✔️      	|
 
 #### Performance Class
 

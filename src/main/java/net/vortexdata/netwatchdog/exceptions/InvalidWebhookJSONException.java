@@ -22,38 +22,12 @@
  * SOFTWARE.
  */
 
-package net.vortexdata.netwatchdog.modules.component;
+package net.vortexdata.netwatchdog.exceptions;
 
-import java.util.HashMap;
+public class InvalidWebhookJSONException extends Exception {
 
-/**
- * Performance class webhook wrapper class.
- *
- * @author  Sandro Kierner
- * @since 0.0.1
- * @version 0.2.0
- */
-public class PerformanceClassWebhook {
-
-    private final String address;
-    private final HashMap<String, String> headers;
-    private final String body;
-
-    public PerformanceClassWebhook(String address, HashMap<String, String> headers, String body) {
-        this.address = address;
-        this.headers = headers;
-        this.body = body;
+    public InvalidWebhookJSONException(String message) {
+        super(message);
     }
 
-    public String getBody() {
-        return body;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public HashMap<String, String> getHeaders() {
-        return headers;
-    }
 }
